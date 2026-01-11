@@ -10,13 +10,13 @@
     "calendar": "Calendar"
   },
   "hero": {
-    "title": "Algeria's First",
+    "title": "The First",
     "titleHighlight": "Automated Content Platform",
-    "subtitle": "Create brands, schedule posts, and automate your social media content. The first Algerian platform for AI-powered content automation.",
+    "subtitle": "Create brands, schedule posts, and automate your social media content. An AI-powered platform for content automation.",
     "cta": "Start Free",
     "demo": "See How It Works",
-    "users": "The first automated content platform in Algeria",
-    "trustedBy": "Trusted by Algerian businesses"
+    "users": "The first automated content platform",
+    "trustedBy": "Trusted by businesses worldwide"
   },
   "problem": {
     "title": "Stop Manual",
@@ -121,7 +121,7 @@
   "pricing": {
     "title": "Simple",
     "titleHighlight": "Pricing",
-    "subtitle": "Start free, scale as you grow. Prices in Algerian Dinar.",
+    "subtitle": "Start free, scale as you grow.",
     "monthly": "month",
     "monthlyLabel": "Monthly",
     "yearlyLabel": "Yearly",
@@ -129,7 +129,7 @@
     "year": "year",
     "starter": {
       "name": "Free",
-      "price": "0 DA",
+      "price": "£0",
       "description": "Perfect for getting started",
       "cta": "Start Free",
       "feature1": "2 brands",
@@ -139,7 +139,7 @@
     },
     "pro": {
       "name": "Pro",
-      "price": "1,000 DA",
+      "price": "£7",
       "description": "For growing businesses",
       "cta": "Get Pro",
       "feature1": "5 brands",
@@ -150,7 +150,7 @@
     },
     "enterprise": {
       "name": "Business",
-      "price": "5,000 DA",
+      "price": "£35",
       "description": "For agencies and large teams",
       "cta": "Get Business",
       "feature1": "Unlimited brands",
@@ -166,7 +166,7 @@
     "titleHighlight": "Questions",
     "q1": {
       "question": "What is this platform?",
-      "answer": "This is Algeria's first automated content platform. It helps you create brands, generate social media content with AI, and schedule posts automatically across all platforms."
+      "answer": "This is an automated content platform. It helps you create brands, generate social media content with AI, and schedule posts automatically across all platforms."
     },
     "q2": {
       "question": "How does AI content generation work?",
@@ -189,8 +189,8 @@
       "answer": "The Free plan includes 20 posts, Pro plan includes 1,000 posts, and Business plan includes up to 90,000 posts per month. Upgrade anytime as you grow."
     },
     "q7": {
-      "question": "Is payment in Algerian Dinar?",
-      "answer": "Yes! All prices are in Algerian Dinar (DA). We're built for Algerian businesses with local payment options and support."
+      "question": "What currency are prices in?",
+      "answer": "All prices are in British Pounds (£). We accept major payment methods including credit cards and PayPal."
     },
     "q8": {
       "question": "Can I cancel anytime?",
