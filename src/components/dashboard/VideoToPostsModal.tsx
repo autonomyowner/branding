@@ -20,6 +20,7 @@ interface PostSelection {
   selected: boolean
   scheduledFor: Date | null
   status: 'draft' | 'scheduled'
+  saved: boolean
 }
 
 const POST_COUNT_OPTIONS = [5, 10, 15]
@@ -146,7 +147,8 @@ export function VideoToPostsModal({ isOpen, onClose }: VideoToPostsModalProps) {
       setPostSelections(posts.map(() => ({
         selected: true,
         scheduledFor: null,
-        status: 'draft' as const
+        status: 'draft' as const,
+        saved: false
       })))
       setStep('results')
     } catch (err) {
@@ -239,8 +241,12 @@ export function VideoToPostsModal({ isOpen, onClose }: VideoToPostsModalProps) {
   // Save single post
   const handleSavePost = (index: number) => {
     if (!selectedBrand) return
-    const content = generatedPosts[index]
     const selection = postSelections[index]
+
+    // Prevent saving if already saved
+    if (selection.saved) return
+
+    const content = generatedPosts[index]
 
     addPost({
       brandId: selectedBrand.id,
@@ -250,9 +256,9 @@ export function VideoToPostsModal({ isOpen, onClose }: VideoToPostsModalProps) {
       scheduledFor: selection.scheduledFor?.toISOString()
     })
 
-    // Mark as unselected after saving
+    // Mark as saved
     setPostSelections(prev => prev.map((sel, i) =>
-      i === index ? { ...sel, selected: false } : sel
+      i === index ? { ...sel, saved: true } : sel
     ))
   }
 
@@ -262,7 +268,8 @@ export function VideoToPostsModal({ isOpen, onClose }: VideoToPostsModalProps) {
 
     generatedPosts.forEach((content, index) => {
       const selection = postSelections[index]
-      if (!selection.selected) return
+      // Skip if not selected or already saved
+      if (!selection.selected || selection.saved) return
 
       addPost({
         brandId: selectedBrand.id,
@@ -810,30 +817,38 @@ export function VideoToPostsModal({ isOpen, onClose }: VideoToPostsModalProps) {
 
                                 {/* Action buttons */}
                                 <div className="flex flex-wrap gap-2 mt-3">
-                                  {selection.status === 'draft' ? (
-                                    <Button
-                                      size="sm"
-                                      variant="outline"
-                                      onClick={() => handleOpenScheduling(index)}
-                                    >
-                                      {t('videoToPosts.addToCalendar')}
-                                    </Button>
+                                  {selection.saved ? (
+                                    <span className="text-xs px-3 py-1.5 rounded-md bg-green-500/10 text-green-400 border border-green-500/20">
+                                      {t('videoToPosts.saved')}
+                                    </span>
                                   ) : (
-                                    <Button
-                                      size="sm"
-                                      variant="outline"
-                                      onClick={() => handleSetAsDraft(index)}
-                                    >
-                                      {t('videoToPosts.removeSchedule')}
-                                    </Button>
+                                    <>
+                                      {selection.status === 'draft' ? (
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={() => handleOpenScheduling(index)}
+                                        >
+                                          {t('videoToPosts.addToCalendar')}
+                                        </Button>
+                                      ) : (
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={() => handleSetAsDraft(index)}
+                                        >
+                                          {t('videoToPosts.removeSchedule')}
+                                        </Button>
+                                      )}
+                                      <Button
+                                        size="sm"
+                                        variant="outline"
+                                        onClick={() => handleSavePost(index)}
+                                      >
+                                        {t('videoToPosts.saveNow')}
+                                      </Button>
+                                    </>
                                   )}
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    onClick={() => handleSavePost(index)}
-                                  >
-                                    {t('videoToPosts.saveNow')}
-                                  </Button>
                                 </div>
                               </div>
                             </div>
@@ -848,15 +863,15 @@ export function VideoToPostsModal({ isOpen, onClose }: VideoToPostsModalProps) {
                 <div className="mt-4 pt-4 border-t border-border">
                   <div className="flex items-center justify-between text-sm">
                     <div className="text-muted-foreground">
-                      <span className="text-white font-medium">{postSelections.filter(s => s.selected && s.status === 'scheduled').length}</span> {t('videoToPosts.toSchedule')},
+                      <span className="text-white font-medium">{postSelections.filter(s => s.selected && !s.saved && s.status === 'scheduled').length}</span> {t('videoToPosts.toSchedule')},
                       {' '}
-                      <span className="text-white font-medium">{postSelections.filter(s => s.selected && s.status === 'draft').length}</span> {t('videoToPosts.toDraft')}
+                      <span className="text-white font-medium">{postSelections.filter(s => s.selected && !s.saved && s.status === 'draft').length}</span> {t('videoToPosts.toDraft')}
                     </div>
                     <Button
                       onClick={handleSaveSelected}
-                      disabled={!postSelections.some(s => s.selected)}
+                      disabled={!postSelections.some(s => s.selected && !s.saved)}
                     >
-                      {t('videoToPosts.saveSelected')} ({postSelections.filter(s => s.selected).length})
+                      {t('videoToPosts.saveSelected')} ({postSelections.filter(s => s.selected && !s.saved).length})
                     </Button>
                   </div>
                 </div>
