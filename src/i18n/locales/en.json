@@ -1,0 +1,344 @@
+{
+  "nav": {
+    "features": "Features",
+    "pricing": "Pricing",
+    "faq": "FAQ",
+    "signIn": "Sign In",
+    "getStarted": "Get Started",
+    "dashboard": "Dashboard",
+    "posts": "Posts",
+    "calendar": "Calendar"
+  },
+  "hero": {
+    "title": "Algeria's First",
+    "titleHighlight": "Automated Content Platform",
+    "subtitle": "Create brands, schedule posts, and automate your social media content. The first Algerian platform for AI-powered content automation.",
+    "cta": "Start Free",
+    "demo": "See How It Works",
+    "users": "The first automated content platform in Algeria",
+    "trustedBy": "Trusted by Algerian businesses"
+  },
+  "problem": {
+    "title": "Stop Manual",
+    "titleHighlight": "Content Creation",
+    "oldWay": "THE OLD WAY",
+    "newWay": "THE NEW WAY",
+    "before": {
+      "title": "Before: Manual Content Work",
+      "point1": "Creating posts one by one",
+      "point2": "Inconsistent posting schedule",
+      "point3": "Managing multiple brands separately",
+      "point4": "Hours spent on content ideas",
+      "point5": "No team collaboration"
+    },
+    "after": {
+      "title": "After: Automated Content",
+      "point1": "Generate posts automatically with AI",
+      "point2": "Schedule content in advance",
+      "point3": "Manage all brands in one place",
+      "point4": "AI generates content ideas instantly",
+      "point5": "Team collaboration built-in"
+    },
+    "flow": {
+      "step1": "Create Brand",
+      "step2": "Generate",
+      "step3": "Publish"
+    }
+  },
+  "agents": {
+    "title": "Everything You Need",
+    "titleHighlight": "In One Platform",
+    "subtitle": "Create brands, generate content, schedule posts, and collaborate with your team - all automated with AI.",
+    "sales": {
+      "category": "Brands",
+      "title": "Brand Management",
+      "description": "Create and manage multiple brands with unique voices and styles",
+      "feature1": "Multiple brand profiles",
+      "feature2": "Custom brand voice",
+      "feature3": "Brand-specific content"
+    },
+    "marketing": {
+      "category": "Content",
+      "title": "AI Content Generation",
+      "description": "Generate engaging posts for all social platforms automatically",
+      "feature1": "Instagram, Facebook, TikTok, LinkedIn",
+      "feature2": "Multiple content styles",
+      "feature3": "Brand-aligned content"
+    },
+    "research": {
+      "category": "Scheduling",
+      "title": "Smart Scheduling",
+      "description": "Plan and schedule your content calendar in advance",
+      "feature1": "Visual content calendar",
+      "feature2": "Bulk scheduling",
+      "feature3": "Optimal posting times"
+    },
+    "content": {
+      "category": "Automation",
+      "title": "Content Automation",
+      "description": "Set up automated content generation and posting workflows",
+      "feature1": "Automated post generation",
+      "feature2": "Scheduled publishing",
+      "feature3": "Content queue management"
+    },
+    "data": {
+      "category": "Teams",
+      "title": "Team Collaboration",
+      "description": "Work together with your team on content creation",
+      "feature1": "Multi-user access",
+      "feature2": "Role-based permissions",
+      "feature3": "Content approval workflow"
+    },
+    "support": {
+      "category": "Analytics",
+      "title": "Performance Tracking",
+      "description": "Track your content performance across all platforms",
+      "feature1": "Post analytics",
+      "feature2": "Engagement metrics",
+      "feature3": "Growth insights"
+    }
+  },
+  "howItWorks": {
+    "title": "How It",
+    "titleHighlight": "Works",
+    "step1": {
+      "title": "Create Brand",
+      "description": "Set up your brand with voice, style, and topics"
+    },
+    "step2": {
+      "title": "Generate Content",
+      "description": "AI creates posts tailored to your brand"
+    },
+    "step3": {
+      "title": "Schedule Posts",
+      "description": "Plan your content calendar in advance"
+    },
+    "step4": {
+      "title": "Automate",
+      "description": "Let the platform handle posting automatically"
+    }
+  },
+  "pricing": {
+    "title": "Simple",
+    "titleHighlight": "Pricing",
+    "subtitle": "Start free, scale as you grow. Prices in Algerian Dinar.",
+    "monthly": "month",
+    "monthlyLabel": "Monthly",
+    "yearlyLabel": "Yearly",
+    "savePercentage": "Save 20%",
+    "year": "year",
+    "starter": {
+      "name": "Free",
+      "price": "0 DA",
+      "description": "Perfect for getting started",
+      "cta": "Start Free",
+      "feature1": "2 brands",
+      "feature2": "Up to 20 posts",
+      "feature3": "Basic scheduling",
+      "feature4": "Community support"
+    },
+    "pro": {
+      "name": "Pro",
+      "price": "1,000 DA",
+      "description": "For growing businesses",
+      "cta": "Get Pro",
+      "feature1": "5 brands",
+      "feature2": "Up to 1,000 posts",
+      "feature3": "Advanced scheduling",
+      "feature4": "Priority support",
+      "feature5": "Team collaboration"
+    },
+    "enterprise": {
+      "name": "Business",
+      "price": "5,000 DA",
+      "description": "For agencies and large teams",
+      "cta": "Get Business",
+      "feature1": "Unlimited brands",
+      "feature2": "Up to 90,000 posts",
+      "feature3": "Full automation",
+      "feature4": "Dedicated support",
+      "feature5": "Advanced analytics",
+      "feature6": "API access"
+    }
+  },
+  "faq": {
+    "title": "Frequently Asked",
+    "titleHighlight": "Questions",
+    "q1": {
+      "question": "What is this platform?",
+      "answer": "This is Algeria's first automated content platform. It helps you create brands, generate social media content with AI, and schedule posts automatically across all platforms."
+    },
+    "q2": {
+      "question": "How does AI content generation work?",
+      "answer": "You set up your brand's voice and style, then our AI generates engaging posts tailored to your brand. You can generate content for Instagram, Facebook, TikTok, LinkedIn, and more."
+    },
+    "q3": {
+      "question": "Do I need technical knowledge?",
+      "answer": "No! The platform is designed to be simple. Just create your brand, click generate, and get professional content instantly. No coding or technical skills required."
+    },
+    "q4": {
+      "question": "What platforms are supported?",
+      "answer": "We support all major social platforms including Instagram, Facebook, TikTok, LinkedIn, Twitter/X, and more. You can manage all your content from one dashboard."
+    },
+    "q5": {
+      "question": "Can I manage multiple brands?",
+      "answer": "Yes! Depending on your plan, you can manage 2 to unlimited brands. Each brand has its own voice, style, and content. Perfect for agencies and businesses with multiple products."
+    },
+    "q6": {
+      "question": "How many posts can I create?",
+      "answer": "The Free plan includes 20 posts, Pro plan includes 1,000 posts, and Business plan includes up to 90,000 posts per month. Upgrade anytime as you grow."
+    },
+    "q7": {
+      "question": "Is payment in Algerian Dinar?",
+      "answer": "Yes! All prices are in Algerian Dinar (DA). We're built for Algerian businesses with local payment options and support."
+    },
+    "q8": {
+      "question": "Can I cancel anytime?",
+      "answer": "Yes! There are no long-term contracts. You can cancel or change your plan anytime from your dashboard."
+    }
+  },
+  "footer": {
+    "product": {
+      "title": "Product",
+      "features": "Features",
+      "pricing": "Pricing",
+      "docs": "Documentation",
+      "changelog": "Changelog"
+    },
+    "company": {
+      "title": "Company",
+      "about": "About",
+      "blog": "Blog",
+      "careers": "Careers",
+      "contact": "Contact"
+    },
+    "legal": {
+      "title": "Legal",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service",
+      "security": "Security"
+    },
+    "rights": "All rights reserved."
+  },
+  "dashboard": {
+    "welcome": "Welcome back",
+    "overview": "Overview",
+    "stats": {
+      "totalPosts": "Total Posts",
+      "scheduled": "Scheduled",
+      "published": "Published",
+      "drafts": "Drafts"
+    },
+    "recentPosts": "Recent Posts",
+    "quickActions": "Quick Actions",
+    "calendarPreview": "Calendar Preview",
+    "viewAll": "View All",
+    "viewCalendar": "View Calendar",
+    "noPosts": "No posts yet",
+    "createFirst": "Create your first post to get started",
+    "generate": "Generate",
+    "brands": "Brands"
+  },
+  "posts": {
+    "title": "Posts",
+    "filter": {
+      "all": "All Posts",
+      "draft": "Drafts",
+      "scheduled": "Scheduled",
+      "published": "Published"
+    },
+    "status": {
+      "draft": "Draft",
+      "scheduled": "Scheduled",
+      "published": "Published"
+    },
+    "platform": {
+      "instagram": "Instagram",
+      "twitter": "Twitter",
+      "linkedin": "LinkedIn",
+      "tiktok": "TikTok",
+      "facebook": "Facebook"
+    },
+    "noPosts": "No posts found",
+    "createPost": "Create your first post",
+    "scheduledFor": "Scheduled for",
+    "publishedOn": "Published on",
+    "createdOn": "Created on"
+  },
+  "calendar": {
+    "title": "Content Calendar",
+    "month": "Month",
+    "week": "Week",
+    "day": "Day",
+    "today": "Today",
+    "noEvents": "No posts scheduled for this day"
+  },
+  "brandSelector": {
+    "select": "Select Brand",
+    "manage": "Manage Brands"
+  },
+  "brandModal": {
+    "create": "Create New Brand",
+    "edit": "Edit Brand",
+    "name": "Brand Name",
+    "namePlaceholder": "Enter brand name",
+    "color": "Brand Color",
+    "voice": "Brand Voice",
+    "voiceOptions": {
+      "professional": "Professional",
+      "casual": "Casual & Friendly",
+      "witty": "Witty & Humorous",
+      "inspirational": "Inspirational",
+      "educational": "Educational"
+    },
+    "topics": "Topics",
+    "topicsPlaceholder": "e.g., tech, productivity, design",
+    "description": "Brand Description",
+    "descriptionPlaceholder": "Describe your brand's personality and values",
+    "cancel": "Cancel",
+    "create": "Create Brand",
+    "save": "Save Changes"
+  },
+  "generateModal": {
+    "title": "Generate Content",
+    "selectBrand": "Select a brand first",
+    "platform": "Platform",
+    "style": "Content Style",
+    "styleOptions": {
+      "viral": "Viral & Engaging",
+      "storytelling": "Storytelling",
+      "educational": "Educational",
+      "controversial": "Controversial Take",
+      "inspirational": "Inspirational"
+    },
+    "topic": "Topic/Theme",
+    "topicPlaceholder": "What should this post be about?",
+    "generating": "Generating...",
+    "generate": "Generate",
+    "scheduleFor": "Schedule For",
+    "scheduleOptional": "(Optional)",
+    "saveDraft": "Save as Draft",
+    "schedule": "Schedule Post",
+    "apiKeyMissing": "Please add your OpenRouter API key in settings",
+    "error": "Failed to generate content. Please try again."
+  },
+  "quickActions": {
+    "generate": "Generate Content",
+    "createBrand": "Create Brand"
+  },
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "search": "Search",
+    "filter": "Filter",
+    "settings": "Settings"
+  }
+}
