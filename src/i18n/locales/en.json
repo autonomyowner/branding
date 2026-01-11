@@ -319,6 +319,9 @@
     "scheduleOptional": "(Optional)",
     "saveDraft": "Save as Draft",
     "schedule": "Schedule Post",
+    "scheduleTitle": "Schedule Your Post",
+    "back": "Back",
+    "confirmSchedule": "Confirm Schedule",
     "apiKeyMissing": "Please add your OpenRouter API key in settings",
     "error": "Failed to generate content. Please try again."
   },

@@ -5,6 +5,7 @@ import { useData, PLATFORMS, type Platform } from '../../context/DataContext'
 import { generateContent, AVAILABLE_MODELS, CONTENT_STYLES, type ContentStyle } from '../../services/openrouter'
 import { Button } from '../ui/button'
 import { Card } from '../ui/card'
+import { DateTimePicker } from '../ui/calendar'
 
 interface GenerateModalProps {
   isOpen: boolean
@@ -20,7 +21,8 @@ export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
   const [generatedContent, setGeneratedContent] = useState('')
   const [isGenerating, setIsGenerating] = useState(false)
   const [error, setError] = useState('')
-  const [step, setStep] = useState<'configure' | 'result'>('configure')
+  const [step, setStep] = useState<'configure' | 'result' | 'schedule'>('configure')
+  const [scheduledDateTime, setScheduledDateTime] = useState<Date | null>(null)
 
   const selectedBrand = brands.find(b => b.id === selectedBrandId) || brands[0]
 
@@ -69,23 +71,31 @@ export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
     handleClose()
   }
 
-  const handleSaveAndSchedule = () => {
-    if (!selectedBrand || !generatedContent) return
-
-    // For now, schedule for tomorrow at 9am
+  const handleOpenScheduler = () => {
+    // Set default to tomorrow at 9am
     const tomorrow = new Date()
     tomorrow.setDate(tomorrow.getDate() + 1)
     tomorrow.setHours(9, 0, 0, 0)
+    setScheduledDateTime(tomorrow)
+    setStep('schedule')
+  }
+
+  const handleConfirmSchedule = () => {
+    if (!selectedBrand || !generatedContent || !scheduledDateTime) return
 
     addPost({
       brandId: selectedBrand.id,
       platform: selectedPlatform,
       content: generatedContent,
       status: 'scheduled',
-      scheduledFor: tomorrow.toISOString()
+      scheduledFor: scheduledDateTime.toISOString()
     })
 
     handleClose()
+  }
+
+  const handleBackToResult = () => {
+    setStep('result')
   }
 
   const handleClose = () => {
@@ -93,6 +103,7 @@ export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
     setGeneratedContent('')
     setTopic('')
     setError('')
+    setScheduledDateTime(null)
     onClose()
   }
 
@@ -120,13 +131,13 @@ export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          className="relative w-full max-w-2xl mx-4"
+          className={`relative w-full mx-4 ${step === 'schedule' ? 'max-w-4xl' : 'max-w-2xl'}`}
         >
           <Card className="p-6 bg-card border-border">
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold">
-                {step === 'configure' ? t('generateModal.title') : t('generateModal.title')}
+                {step === 'schedule' ? t('generateModal.scheduleTitle') : t('generateModal.title')}
               </h2>
               <button
                 onClick={handleClose}
@@ -154,7 +165,7 @@ export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
               </div>
             )}
 
-            {step === 'configure' ? (
+            {step === 'configure' && (
               <>
                 {/* Brand Selection */}
                 <div className="mb-4">
@@ -271,7 +282,9 @@ export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
                   )}
                 </Button>
               </>
-            ) : (
+            )}
+
+            {step === 'result' && (
               <>
                 {/* Generated Content Display */}
                 <div className="mb-6">
@@ -294,8 +307,59 @@ export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
                   <Button variant="outline" onClick={handleSaveAsDraft} className="flex-1">
                     {t('generateModal.saveDraft')}
                   </Button>
-                  <Button onClick={handleSaveAndSchedule} className="flex-1">
+                  <Button onClick={handleOpenScheduler} className="flex-1">
                     {t('generateModal.schedule')}
+                  </Button>
+                </div>
+              </>
+            )}
+
+            {step === 'schedule' && (
+              <>
+                {/* Schedule Step */}
+                <div className="mb-6">
+                  <div className="flex items-center gap-2 mb-4">
+                    <button
+                      onClick={handleBackToResult}
+                      className="p-1.5 rounded-lg hover:bg-white/10 transition-colors text-muted-foreground hover:text-white"
+                    >
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
+                    <span className="text-lg font-semibold">{t('generateModal.scheduleTitle')}</span>
+                  </div>
+
+                  {/* Content Preview */}
+                  <div className="mb-6 p-3 rounded-lg bg-background/50 border border-border">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-xs text-muted-foreground">{selectedPlatform}</span>
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-white/10">
+                        {selectedBrand?.name}
+                      </span>
+                    </div>
+                    <p className="text-sm text-muted-foreground line-clamp-2">{generatedContent}</p>
+                  </div>
+
+                  {/* Date Time Picker */}
+                  <DateTimePicker
+                    selectedDateTime={scheduledDateTime}
+                    onDateTimeSelect={setScheduledDateTime}
+                    minDate={new Date()}
+                  />
+                </div>
+
+                {/* Confirm Button */}
+                <div className="flex gap-3">
+                  <Button variant="outline" onClick={handleBackToResult} className="flex-1">
+                    {t('generateModal.back')}
+                  </Button>
+                  <Button
+                    onClick={handleConfirmSchedule}
+                    disabled={!scheduledDateTime}
+                    className="flex-1"
+                  >
+                    {t('generateModal.confirmSchedule')}
                   </Button>
                 </div>
               </>

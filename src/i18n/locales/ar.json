@@ -319,6 +319,9 @@
     "scheduleOptional": "(اختياري)",
     "saveDraft": "حفظ كمسودة",
     "schedule": "جدولة المنشور",
+    "scheduleTitle": "جدولة منشورك",
+    "back": "رجوع",
+    "confirmSchedule": "تأكيد الجدولة",
     "apiKeyMissing": "يرجى إضافة مفتاح OpenRouter API الخاص بك في الإعدادات",
     "error": "فشل إنشاء المحتوى. يرجى المحاولة مرة أخرى."
   },
