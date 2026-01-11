@@ -12,11 +12,11 @@ export function LanguageSwitcher() {
   return (
     <Button
       onClick={toggleLanguage}
-      variant="outline"
+      variant="ghost"
       size="sm"
-      className="font-medium"
+      className="text-xs px-2 py-1 h-7 text-muted-foreground hover:text-white"
     >
-      {i18n.language === 'en' ? 'العربية' : 'English'}
+      {i18n.language === 'en' ? 'AR' : 'EN'}
     </Button>
   );
 }
