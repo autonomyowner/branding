@@ -543,18 +543,6 @@ export function HowItWorks() {
           </motion.div>
         </div>
 
-        {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, delay: 0.7 }}
-          className="text-center mt-16"
-        >
-          <p className="text-muted-foreground mb-4">Ready to get started?</p>
-          <button className="text-primary font-medium hover:underline">
-            View documentation →
-          </button>
-        </motion.div>
       </div>
     </section>
   )
