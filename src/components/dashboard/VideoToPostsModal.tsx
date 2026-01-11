@@ -205,17 +205,27 @@ export function VideoToPostsModal({ isOpen, onClose }: VideoToPostsModalProps) {
     setSchedulingIndex(index)
   }
 
-  // Confirm scheduling for a post
-  const handleConfirmScheduling = (date: Date) => {
+  // Update scheduling date/time (without closing)
+  const handleUpdateScheduleDateTime = (date: Date) => {
     if (schedulingIndex === null) return
     setPostSelections(prev => prev.map((sel, i) =>
       i === schedulingIndex ? { ...sel, scheduledFor: date, status: 'scheduled' } : sel
     ))
+  }
+
+  // Confirm scheduling and close picker
+  const handleConfirmScheduling = () => {
     setSchedulingIndex(null)
   }
 
   // Cancel scheduling
   const handleCancelScheduling = () => {
+    if (schedulingIndex !== null) {
+      // Revert to draft if canceling
+      setPostSelections(prev => prev.map((sel, i) =>
+        i === schedulingIndex ? { ...sel, scheduledFor: null, status: 'draft' } : sel
+      ))
+    }
     setSchedulingIndex(null)
   }
 
@@ -713,9 +723,28 @@ export function VideoToPostsModal({ isOpen, onClose }: VideoToPostsModalProps) {
                             <div className="text-xs text-muted-foreground line-clamp-2 mb-2">{post}</div>
                             <DateTimePicker
                               selectedDateTime={selection.scheduledFor}
-                              onDateTimeSelect={handleConfirmScheduling}
+                              onDateTimeSelect={handleUpdateScheduleDateTime}
                               minDate={new Date()}
                             />
+                            {/* Confirm/Cancel buttons */}
+                            <div className="flex gap-2 pt-2 border-t border-border">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={handleCancelScheduling}
+                                className="flex-1"
+                              >
+                                {t('videoToPosts.cancel')}
+                              </Button>
+                              <Button
+                                size="sm"
+                                onClick={handleConfirmScheduling}
+                                disabled={!selection.scheduledFor}
+                                className="flex-1"
+                              >
+                                {t('videoToPosts.confirmSchedule')}
+                              </Button>
+                            </div>
                           </div>
                         ) : (
                           <>
