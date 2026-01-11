@@ -29,6 +29,7 @@ export interface UserSettings {
   name: string
   openRouterApiKey: string
   youtubeApiKey: string
+  elevenLabsApiKey: string
   selectedModel: string
   creditsUsed: number
   lastCreditReset: number
@@ -38,6 +39,7 @@ const DEFAULT_SETTINGS: UserSettings = {
   name: 'User',
   openRouterApiKey: '',
   youtubeApiKey: '',
+  elevenLabsApiKey: '',
   selectedModel: 'anthropic/claude-3-haiku',
   creditsUsed: 0,
   lastCreditReset: Date.now()

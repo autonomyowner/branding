@@ -8,6 +8,7 @@ import { BrandSelector } from "./BrandSelector"
 import { ContentCalendarPreview } from "./ContentCalendarPreview"
 import { GenerateModal } from "./GenerateModal"
 import { VideoToPostsModal } from "./VideoToPostsModal"
+import { VoiceoverModal } from "./VoiceoverModal"
 import { BrandModal } from "./BrandModal"
 import { SettingsModal } from "./SettingsModal"
 import { useData } from "../../context/DataContext"
@@ -18,6 +19,7 @@ export function Dashboard() {
   const { t } = useTranslation()
   const [isGenerateModalOpen, setIsGenerateModalOpen] = useState(false)
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
+  const [isVoiceoverModalOpen, setIsVoiceoverModalOpen] = useState(false)
   const [isBrandModalOpen, setIsBrandModalOpen] = useState(false)
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
   const { settings } = useData()
@@ -100,6 +102,7 @@ export function Dashboard() {
             onGenerateContent={() => setIsGenerateModalOpen(true)}
             onAddBrand={() => setIsBrandModalOpen(true)}
             onRepurpose={() => setIsVideoModalOpen(true)}
+            onVoiceover={() => setIsVoiceoverModalOpen(true)}
           />
         </motion.div>
 
@@ -134,6 +137,10 @@ export function Dashboard() {
       <VideoToPostsModal
         isOpen={isVideoModalOpen}
         onClose={() => setIsVideoModalOpen(false)}
+      />
+      <VoiceoverModal
+        isOpen={isVoiceoverModalOpen}
+        onClose={() => setIsVoiceoverModalOpen(false)}
       />
       <BrandModal
         isOpen={isBrandModalOpen}

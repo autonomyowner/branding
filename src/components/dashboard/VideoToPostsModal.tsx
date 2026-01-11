@@ -7,6 +7,7 @@ import { extractVideoId, fetchVideoInfo, fetchTranscript, type VideoInfo } from 
 import { Button } from '../ui/button'
 import { Card } from '../ui/card'
 import { DateTimePicker } from '../ui/calendar'
+import { VoiceoverModal } from './VoiceoverModal'
 
 interface VideoToPostsModalProps {
   isOpen: boolean
@@ -52,6 +53,10 @@ export function VideoToPostsModal({ isOpen, onClose }: VideoToPostsModalProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [progress, setProgress] = useState('')
+
+  // Voiceover modal state
+  const [isVoiceoverOpen, setIsVoiceoverOpen] = useState(false)
+  const [voiceoverText, setVoiceoverText] = useState('')
 
   const selectedBrand = brands.find(b => b.id === selectedBrandId) || brands[0]
 
@@ -286,6 +291,12 @@ export function VideoToPostsModal({ isOpen, onClose }: VideoToPostsModalProps) {
   const handleRemovePost = (index: number) => {
     setGeneratedPosts(posts => posts.filter((_, i) => i !== index))
     setPostSelections(prev => prev.filter((_, i) => i !== index))
+  }
+
+  // Open voiceover modal with post content
+  const handleOpenVoiceover = (postContent: string) => {
+    setVoiceoverText(postContent)
+    setIsVoiceoverOpen(true)
   }
 
   // Reset and close
@@ -849,6 +860,14 @@ export function VideoToPostsModal({ isOpen, onClose }: VideoToPostsModalProps) {
                                       </Button>
                                     </>
                                   )}
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => handleOpenVoiceover(post)}
+                                    className="text-purple-400 border-purple-500/30 hover:bg-purple-500/10"
+                                  >
+                                    {t('videoToPosts.voiceover')}
+                                  </Button>
                                 </div>
                               </div>
                             </div>
@@ -880,6 +899,13 @@ export function VideoToPostsModal({ isOpen, onClose }: VideoToPostsModalProps) {
           </Card>
         </motion.div>
       </div>
+
+      {/* Voiceover Modal */}
+      <VoiceoverModal
+        isOpen={isVoiceoverOpen}
+        onClose={() => setIsVoiceoverOpen(false)}
+        initialText={voiceoverText}
+      />
     </AnimatePresence>
   )
 }

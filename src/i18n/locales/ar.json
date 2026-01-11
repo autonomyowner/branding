@@ -328,12 +328,22 @@
   "quickActions": {
     "generate": "إنشاء محتوى",
     "createBrand": "إنشاء علامة تجارية",
+    "voiceover": "نص + تعليق صوتي",
+    "voiceoverDesc": "أنشئ نصوصاً وولّد تعليقات صوتية بالذكاء الاصطناعي",
+    "voiceoverButton": "إنشاء تعليق صوتي",
     "videoToPosts": "يوتيوب إلى منشورات",
     "videoToPostsDesc": "حول أي فيديو يوتيوب إلى منشورات متعددة",
     "videoToPostsButton": "استيراد فيديو"
   },
   "videoToPosts": {
     "title": "يوتيوب إلى منشورات",
+    "urlMode": "من رابط",
+    "manualMode": "لصق النص",
+    "manualModeHint": "ليس لديك مفتاح YouTube API؟ لا مشكلة! انسخ النص مباشرة من يوتيوب والصقه هنا.",
+    "transcriptLabel": "نص الفيديو",
+    "characters": "حرف",
+    "min100": "100 كحد أدنى",
+    "continueWithTranscript": "متابعة مع النص",
     "pasteUrl": "الصق رابط يوتيوب",
     "fetchVideo": "جلب الفيديو",
     "fetching": "جاري الجلب...",
@@ -361,7 +371,20 @@
     "remove": "إزالة",
     "save": "حفظ",
     "cancel": "إلغاء",
-    "saveDraft": "حفظ كمسودة"
+    "saveDraft": "حفظ كمسودة",
+    "selectAll": "تحديد الكل",
+    "selected": "محدد",
+    "saveSelected": "حفظ المحدد",
+    "draft": "مسودة",
+    "schedulePost": "جدولة هذا المنشور",
+    "confirmSchedule": "تأكيد الجدولة",
+    "addToCalendar": "إضافة للتقويم",
+    "removeSchedule": "إزالة الجدولة",
+    "saveNow": "حفظ الآن",
+    "saved": "تم الحفظ",
+    "toSchedule": "مجدولة",
+    "toDraft": "كمسودات",
+    "voiceover": "تعليق صوتي"
   },
   "settings": {
     "title": "الإعدادات",
@@ -385,12 +408,55 @@
       "getKey": "احصل على مفتاح API مجاني من Google Cloud Console",
       "connected": "تم تعيين مفتاح YouTube API - الاستخراج التلقائي مفعل"
     },
+    "elevenLabsApiKey": {
+      "title": "مفتاح ElevenLabs API (اختياري)",
+      "label": "مفتاح ElevenLabs API",
+      "description": "يتيح توليد التعليقات الصوتية بالذكاء الاصطناعي لنصوصك",
+      "info": "أضف مفتاح ElevenLabs API لتوليد تعليقات صوتية احترافية لمحتواك.",
+      "getKey": "احصل على مفتاح API من ElevenLabs",
+      "connected": "تم تعيين مفتاح ElevenLabs API - التعليق الصوتي مفعل"
+    },
     "usage": {
       "title": "إحصائيات الاستخدام",
       "creditsUsed": "الاعتمادات المستخدمة",
       "creditsRemaining": "الاعتمادات المتبقية",
       "resetInfo": "يتم إعادة تعيين الاعتمادات شهرياً"
     }
+  },
+  "voiceover": {
+    "title": "نص + تعليق صوتي",
+    "script": "النص الخاص بك",
+    "scriptPlaceholder": "أدخل أو الصق النص هنا...",
+    "scriptRequired": "يرجى إدخال نص",
+    "characterLimitExceeded": "النص يتجاوز الحد المسموح 5000 حرف",
+    "optimizeForVoice": "تحسين للصوت",
+    "optimize": "تحسين النص",
+    "optimizing": "جاري التحسين...",
+    "optimizeDescription": "سيقوم الذكاء الاصطناعي بتحسين نصك للكلام الطبيعي",
+    "style": {
+      "conversational": "محادثة",
+      "professional": "احترافي",
+      "energetic": "حيوي",
+      "calm": "هادئ"
+    },
+    "selectVoice": "اختر الصوت",
+    "refreshVoices": "تحديث",
+    "loading": "جاري التحميل...",
+    "noVoices": "لا توجد أصوات متاحة",
+    "loadVoices": "تحميل الأصوات",
+    "enterApiKeyFirst": "أدخل مفتاح ElevenLabs API لتحميل الأصوات",
+    "preview": "معاينة",
+    "generate": "إنشاء تعليق صوتي",
+    "generating": "جاري الإنشاء...",
+    "audioReady": "تعليقك الصوتي جاهز!",
+    "clickToPlay": "اضغط تشغيل للمعاينة",
+    "download": "تحميل MP3",
+    "apiKeyMissing": "يرجى إضافة مفتاح ElevenLabs API",
+    "apiKeyPlaceholder": "أدخل مفتاح ElevenLabs API",
+    "getApiKey": "احصل على مفتاح API من",
+    "errorLoadingVoices": "فشل تحميل الأصوات. تحقق من مفتاح API.",
+    "errorOptimizing": "فشل تحسين النص",
+    "errorGenerating": "فشل إنشاء التعليق الصوتي"
   },
   "common": {
     "loading": "جاري التحميل...",

@@ -6,9 +6,10 @@ interface QuickActionsProps {
   onGenerateContent: () => void
   onAddBrand: () => void
   onRepurpose?: () => void
+  onVoiceover?: () => void
 }
 
-export function QuickActions({ onGenerateContent, onAddBrand, onRepurpose }: QuickActionsProps) {
+export function QuickActions({ onGenerateContent, onAddBrand, onRepurpose, onVoiceover }: QuickActionsProps) {
   const { t } = useTranslation()
 
   const actions = [
@@ -29,12 +30,12 @@ export function QuickActions({ onGenerateContent, onAddBrand, onRepurpose }: Qui
       gradient: "from-blue-500/10 to-cyan-500/10"
     },
     {
-      id: 'calendar',
-      title: "View Calendar",
-      description: "Manage scheduled posts",
-      buttonText: "Open Calendar",
+      id: 'voiceover',
+      title: t('quickActions.voiceover'),
+      description: t('quickActions.voiceoverDesc'),
+      buttonText: t('quickActions.voiceoverButton'),
       primary: false,
-      gradient: "from-green-500/10 to-emerald-500/10"
+      gradient: "from-purple-500/10 to-pink-500/10"
     },
     {
       id: 'repurpose',
@@ -53,8 +54,8 @@ export function QuickActions({ onGenerateContent, onAddBrand, onRepurpose }: Qui
       case 'brand':
         onAddBrand()
         break
-      case 'calendar':
-        window.location.href = '/calendar'
+      case 'voiceover':
+        onVoiceover?.()
         break
       case 'repurpose':
         onRepurpose?.()

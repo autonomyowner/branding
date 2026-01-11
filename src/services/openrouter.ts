@@ -604,3 +604,109 @@ export const CONTENT_STYLES: { value: ContentStyle; label: string; description: 
   { value: 'controversial', label: 'Controversial', description: 'Bold takes that spark debate' },
   { value: 'inspirational', label: 'Inspirational', description: 'Motivating and uplifting content' },
 ]
+
+// ============================================================================
+// VOICEOVER SCRIPT GENERATION
+// Transform social media posts or text into natural speaking scripts
+// ============================================================================
+
+interface GenerateVoiceoverScriptParams {
+  text: string
+  apiKey: string
+  model?: string
+  style?: 'conversational' | 'professional' | 'energetic' | 'calm'
+}
+
+export async function generateVoiceoverScript({
+  text,
+  apiKey,
+  model = 'anthropic/claude-3-haiku',
+  style = 'conversational'
+}: GenerateVoiceoverScriptParams): Promise<string> {
+
+  const styleInstructions: Record<string, string> = {
+    conversational: "Natural, like talking to a friend. Casual pacing with natural pauses.",
+    professional: "Clear, authoritative, and polished. Suitable for business content.",
+    energetic: "Upbeat, enthusiastic, and dynamic. Great for motivational content.",
+    calm: "Soothing, measured, and relaxed. Perfect for educational or meditative content."
+  }
+
+  const systemPrompt = `You are an expert voiceover script writer. Your job is to transform text into natural, engaging scripts optimized for text-to-speech.
+
+## YOUR TASK
+Transform the input text into a voiceover script that sounds natural when spoken aloud.
+
+## STYLE
+${styleInstructions[style]}
+
+## TRANSFORMATION RULES
+1. REMOVE social media elements:
+   - Hashtags (#anything)
+   - @ mentions (@anyone)
+   - Emojis and special characters
+   - "Link in bio" or platform-specific CTAs
+   - URLs and links
+
+2. OPTIMIZE for speech:
+   - Use commas and periods for natural pauses
+   - Write numbers as words when appropriate (e.g., "five" instead of "5" for small numbers)
+   - Expand abbreviations (e.g., "versus" instead of "vs")
+   - Break long sentences into shorter ones
+   - Add transitional phrases for flow
+
+3. MAINTAIN the core message:
+   - Keep the hook engaging
+   - Preserve key insights and value
+   - Maintain the original tone and intent
+   - Keep it concise (30 seconds to 2 minutes when spoken)
+
+4. FORMAT for TTS:
+   - Use proper punctuation for pacing
+   - Avoid ALL CAPS (except for acronyms)
+   - Use "..." for longer pauses
+   - Keep paragraphs short
+
+## OUTPUT FORMAT
+Return ONLY the voiceover script. No explanations, no meta-commentary.
+The script should be ready for direct text-to-speech conversion.`
+
+  const userPrompt = `Transform this text into a ${style} voiceover script:
+
+${text}
+
+Return only the optimized voiceover script.`
+
+  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+      'HTTP-Referer': window.location.origin,
+      'X-Title': 'Branding'
+    },
+    body: JSON.stringify({
+      model,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt }
+      ],
+      max_tokens: 1000,
+      temperature: 0.7
+    })
+  })
+
+  if (!response.ok) {
+    const error = await response.text()
+    throw new Error(`OpenRouter API error: ${error}`)
+  }
+
+  const data: OpenRouterResponse = await response.json()
+  return data.choices[0]?.message?.content || text
+}
+
+export const VOICEOVER_STYLES = [
+  { value: 'conversational', label: 'Conversational', description: 'Natural, like talking to a friend' },
+  { value: 'professional', label: 'Professional', description: 'Clear and authoritative' },
+  { value: 'energetic', label: 'Energetic', description: 'Upbeat and dynamic' },
+  { value: 'calm', label: 'Calm', description: 'Soothing and relaxed' },
+] as const
