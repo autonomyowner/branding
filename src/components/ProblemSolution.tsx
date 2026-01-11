@@ -62,47 +62,31 @@ function ChaoticElements({ isActive }: { isActive: boolean }) {
         animate={isActive ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0 }}
         transition={{ delay: 0.5, duration: 0.5 }}
       >
-        {/* Clock face */}
-        <circle cx="100" cy="90" r="25" fill="hsl(0, 40%, 15%)" stroke="hsl(0, 70%, 50%)" strokeWidth="2" />
-
-        {/* Hour markers */}
-        {[0, 90, 180, 270].map((angle, i) => (
-          <line
-            key={i}
-            x1={100 + 20 * Math.cos((angle - 90) * Math.PI / 180)}
-            y1={90 + 20 * Math.sin((angle - 90) * Math.PI / 180)}
-            x2={100 + 23 * Math.cos((angle - 90) * Math.PI / 180)}
-            y2={90 + 23 * Math.sin((angle - 90) * Math.PI / 180)}
-            stroke="hsl(0, 70%, 50%)"
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
-        ))}
-
-        {/* Hour hand (short, thick) */}
-        <motion.path
-          d="M 100 90 L 100 78"
+        <circle cx="100" cy="90" r="25" fill="none" stroke="hsl(0, 70%, 50%)" strokeWidth="2" strokeDasharray="4 2" />
+        <motion.line
+          x1="100"
+          y1="90"
+          x2="100"
+          y2="72"
           stroke="hsl(0, 70%, 60%)"
-          strokeWidth="3"
-          strokeLinecap="round"
-          animate={isActive ? { rotate: [0, 360] } : {}}
-          transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-          style={{ transformOrigin: "100px 90px" }}
-        />
-
-        {/* Minute hand (long, thinner) */}
-        <motion.path
-          d="M 100 90 L 100 70"
-          stroke="hsl(0, 70%, 70%)"
           strokeWidth="2"
           strokeLinecap="round"
           animate={isActive ? { rotate: [0, 360] } : {}}
           transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
           style={{ transformOrigin: "100px 90px" }}
         />
-
-        {/* Center dot */}
-        <circle cx="100" cy="90" r="3" fill="hsl(0, 70%, 60%)" />
+        <motion.line
+          x1="100"
+          y1="90"
+          x2="112"
+          y2="90"
+          stroke="hsl(0, 70%, 60%)"
+          strokeWidth="2"
+          strokeLinecap="round"
+          animate={isActive ? { rotate: [0, 360] } : {}}
+          transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+          style={{ transformOrigin: "100px 90px" }}
+        />
       </motion.g>
 
       {/* Stress indicators */}

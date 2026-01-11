@@ -3,6 +3,69 @@ import { useTranslation } from "react-i18next"
 import { Button } from "./ui/button"
 import { Badge } from "./ui/badge"
 
+// Floating orb component
+function FloatingOrb({ size, x, y, delay, duration }: {
+  size: number
+  x: string
+  y: string
+  delay: number
+  duration: number
+}) {
+  return (
+    <motion.div
+      className="absolute rounded-full"
+      style={{
+        width: size,
+        height: size,
+        left: x,
+        top: y,
+        background: `radial-gradient(circle, hsl(262, 83%, 58%) 0%, transparent 70%)`,
+        filter: "blur(1px)"
+      }}
+      animate={{
+        y: [0, -20, 0],
+        opacity: [0.3, 0.6, 0.3],
+        scale: [1, 1.1, 1]
+      }}
+      transition={{
+        duration,
+        delay,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }}
+    />
+  )
+}
+
+// Animated connection line
+function ConnectionLine({ startX, startY, endX, endY, delay }: {
+  startX: number
+  startY: number
+  endX: number
+  endY: number
+  delay: number
+}) {
+  return (
+    <motion.line
+      x1={startX}
+      y1={startY}
+      x2={endX}
+      y2={endY}
+      stroke="hsl(262, 83%, 58%)"
+      strokeWidth="1"
+      strokeOpacity="0.2"
+      initial={{ pathLength: 0 }}
+      animate={{ pathLength: [0, 1, 0] }}
+      transition={{
+        duration: 3,
+        delay,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }}
+    />
+  )
+}
+
 export function Hero() {
   const { t } = useTranslation()
 
@@ -13,6 +76,128 @@ export function Hero() {
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-primary/20 rounded-full blur-[150px]" />
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-purple-500/10 rounded-full blur-[120px]" />
       <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-violet-500/10 rounded-full blur-[100px]" />
+
+      {/* Floating Orbs */}
+      <FloatingOrb size={8} x="15%" y="30%" delay={0} duration={4} />
+      <FloatingOrb size={6} x="85%" y="25%" delay={0.5} duration={3.5} />
+      <FloatingOrb size={10} x="10%" y="60%" delay={1} duration={4.5} />
+      <FloatingOrb size={5} x="90%" y="65%" delay={1.5} duration={3} />
+      <FloatingOrb size={7} x="20%" y="80%" delay={0.8} duration={4} />
+      <FloatingOrb size={6} x="80%" y="75%" delay={0.3} duration={3.8} />
+
+      {/* Subtle SVG visualization behind content */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <svg
+          viewBox="0 0 800 600"
+          className="w-full h-full max-w-6xl opacity-30"
+          preserveAspectRatio="xMidYMid meet"
+        >
+          <defs>
+            <filter id="heroGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="2" result="coloredBlur" />
+              <feMerge>
+                <feMergeNode in="coloredBlur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+
+          <g filter="url(#heroGlow)">
+            {/* Orbital rings */}
+            <motion.ellipse
+              cx="400"
+              cy="300"
+              rx="250"
+              ry="100"
+              fill="none"
+              stroke="hsl(262, 83%, 58%)"
+              strokeWidth="0.5"
+              strokeOpacity="0.3"
+              strokeDasharray="8 4"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+              style={{ transformOrigin: "400px 300px" }}
+            />
+            <motion.ellipse
+              cx="400"
+              cy="300"
+              rx="200"
+              ry="80"
+              fill="none"
+              stroke="hsl(262, 83%, 58%)"
+              strokeWidth="0.5"
+              strokeOpacity="0.2"
+              strokeDasharray="4 8"
+              animate={{ rotate: -360 }}
+              transition={{ duration: 45, repeat: Infinity, ease: "linear" }}
+              style={{ transformOrigin: "400px 300px" }}
+            />
+
+            {/* Connection lines */}
+            <ConnectionLine startX={150} startY={200} endX={300} endY={280} delay={0} />
+            <ConnectionLine startX={500} startY={280} endX={650} endY={200} delay={1} />
+            <ConnectionLine startX={200} startY={400} endX={350} endY={320} delay={0.5} />
+            <ConnectionLine startX={450} startY={320} endX={600} endY={400} delay={1.5} />
+
+            {/* Small nodes */}
+            {[
+              { cx: 150, cy: 200, delay: 0 },
+              { cx: 650, cy: 200, delay: 0.5 },
+              { cx: 200, cy: 400, delay: 1 },
+              { cx: 600, cy: 400, delay: 1.5 },
+            ].map((node, i) => (
+              <motion.circle
+                key={i}
+                cx={node.cx}
+                cy={node.cy}
+                r="4"
+                fill="hsl(262, 83%, 58%)"
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{
+                  scale: [0.8, 1.2, 0.8],
+                  opacity: [0.3, 0.7, 0.3]
+                }}
+                transition={{
+                  duration: 3,
+                  delay: node.delay,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              />
+            ))}
+
+            {/* Traveling particles on orbit */}
+            <motion.circle
+              r="3"
+              fill="white"
+              animate={{
+                cx: [650, 400, 150, 400, 650],
+                cy: [300, 200, 300, 400, 300]
+              }}
+              transition={{
+                duration: 12,
+                repeat: Infinity,
+                ease: "linear"
+              }}
+              style={{ filter: "drop-shadow(0 0 4px white)" }}
+            />
+            <motion.circle
+              r="2"
+              fill="hsl(262, 83%, 70%)"
+              animate={{
+                cx: [150, 400, 650, 400, 150],
+                cy: [300, 380, 300, 220, 300]
+              }}
+              transition={{
+                duration: 10,
+                repeat: Infinity,
+                ease: "linear"
+              }}
+              style={{ filter: "drop-shadow(0 0 3px hsl(262, 83%, 70%))" }}
+            />
+          </g>
+        </svg>
+      </div>
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
         {/* Badge */}
