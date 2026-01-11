@@ -334,6 +334,13 @@
   },
   "videoToPosts": {
     "title": "YouTube to Posts",
+    "urlMode": "From URL",
+    "manualMode": "Paste Transcript",
+    "manualModeHint": "Don't have a YouTube API key? No problem! Copy the transcript directly from YouTube and paste it here.",
+    "transcriptLabel": "Video Transcript",
+    "characters": "characters",
+    "min100": "minimum 100",
+    "continueWithTranscript": "Continue with Transcript",
     "pasteUrl": "Paste YouTube URL",
     "fetchVideo": "Fetch Video",
     "fetching": "Fetching...",
@@ -361,7 +368,17 @@
     "remove": "Remove",
     "save": "Save",
     "cancel": "Cancel",
-    "saveDraft": "Save as Draft"
+    "saveDraft": "Save as Draft",
+    "selectAll": "Select All",
+    "selected": "selected",
+    "saveSelected": "Save Selected",
+    "draft": "Draft",
+    "schedulePost": "Schedule This Post",
+    "addToCalendar": "Add to Calendar",
+    "removeSchedule": "Remove Schedule",
+    "saveNow": "Save Now",
+    "toSchedule": "scheduled",
+    "toDraft": "as drafts"
   },
   "settings": {
     "title": "Settings",
