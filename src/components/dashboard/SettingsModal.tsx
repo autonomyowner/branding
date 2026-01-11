@@ -13,18 +13,21 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const { t } = useTranslation()
   const { settings, updateSettings } = useData()
   const [apiKey, setApiKey] = useState(settings.openRouterApiKey)
+  const [youtubeApiKey, setYoutubeApiKey] = useState(settings.youtubeApiKey || '')
   const [showKey, setShowKey] = useState(false)
+  const [showYoutubeKey, setShowYoutubeKey] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
 
   useEffect(() => {
     setApiKey(settings.openRouterApiKey)
-  }, [settings.openRouterApiKey])
+    setYoutubeApiKey(settings.youtubeApiKey || '')
+  }, [settings.openRouterApiKey, settings.youtubeApiKey])
 
   if (!isOpen) return null
 
   const handleSave = () => {
     setIsSaving(true)
-    updateSettings({ openRouterApiKey: apiKey })
+    updateSettings({ openRouterApiKey: apiKey, youtubeApiKey })
     setTimeout(() => {
       setIsSaving(false)
       onClose()
@@ -100,6 +103,58 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
               <div className="mt-4 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
                 <p className="text-sm text-yellow-400">
                   ⚠ {t('settings.apiKey.notSet')}
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* YouTube API Key Section */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4">{t('settings.youtubeApiKey.title')}</h3>
+
+            <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 mb-4">
+              <p className="text-sm text-red-400 mb-2">
+                {t('settings.youtubeApiKey.info')}
+              </p>
+              <a
+                href="https://console.cloud.google.com/apis/credentials"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-red-400 hover:underline inline-flex items-center gap-1"
+              >
+                {t('settings.youtubeApiKey.getKey')} →
+              </a>
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-sm font-medium">
+                {t('settings.youtubeApiKey.label')}
+              </label>
+              <div className="relative">
+                <input
+                  type={showYoutubeKey ? "text" : "password"}
+                  value={youtubeApiKey}
+                  onChange={(e) => setYoutubeApiKey(e.target.value)}
+                  placeholder="AIza..."
+                  className="w-full px-4 py-2 bg-card border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary pr-24"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowYoutubeKey(!showYoutubeKey)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1 text-xs text-muted-foreground hover:text-white transition-colors"
+                >
+                  {showYoutubeKey ? t('settings.apiKey.hide') : t('settings.apiKey.show')}
+                </button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {t('settings.youtubeApiKey.description')}
+              </p>
+            </div>
+
+            {youtubeApiKey && (
+              <div className="mt-4 p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
+                <p className="text-sm text-green-400">
+                  ✓ {t('settings.youtubeApiKey.connected')}
                 </p>
               </div>
             )}

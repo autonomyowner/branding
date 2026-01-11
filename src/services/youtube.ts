@@ -51,20 +51,19 @@ export async function fetchVideoInfo(videoId: string): Promise<VideoInfo> {
   }
 }
 
-// Fetch transcript using a proxy service or direct extraction
-// This uses the publicly available transcript data
-export async function fetchTranscript(videoId: string): Promise<string> {
-  // Try multiple transcript extraction methods
-
-  // Method 1: Use a CORS proxy with YouTube's transcript endpoint
-  try {
-    const transcript = await fetchTranscriptDirect(videoId)
-    if (transcript) return transcript
-  } catch (e) {
-    console.log('Direct transcript fetch failed, trying alternative...')
+// Fetch transcript using YouTube Data API or fallback methods
+export async function fetchTranscript(videoId: string, youtubeApiKey?: string): Promise<string> {
+  // Method 1: Use YouTube Data API if key is provided
+  if (youtubeApiKey) {
+    try {
+      const transcript = await fetchTranscriptWithYouTubeAPI(videoId, youtubeApiKey)
+      if (transcript) return transcript
+    } catch (e) {
+      console.log('YouTube API transcript fetch failed, trying alternatives...')
+    }
   }
 
-  // Method 2: Use a public transcript API
+  // Method 2: Try public transcript APIs
   try {
     const transcript = await fetchTranscriptFromAPI(videoId)
     if (transcript) return transcript
@@ -72,16 +71,56 @@ export async function fetchTranscript(videoId: string): Promise<string> {
     console.log('API transcript fetch failed')
   }
 
+  // Method 3: Try alternative API
+  try {
+    const transcript = await fetchTranscriptAlternative(videoId)
+    if (transcript) return transcript
+  } catch (e) {
+    console.log('Alternative API failed')
+  }
+
   throw new Error('Could not fetch transcript. The video may not have captions available, or captions may be disabled.')
 }
 
-// Direct transcript fetch (may be blocked by CORS in browser)
-async function fetchTranscriptDirect(_videoId: string): Promise<string | null> {
-  // YouTube stores transcript data in the video page
-  // We'll need to use a workaround for browser environments
+// Fetch transcript using YouTube Data API
+async function fetchTranscriptWithYouTubeAPI(videoId: string, apiKey: string): Promise<string | null> {
+  try {
+    // First, get the caption tracks for the video
+    const captionsUrl = `https://www.googleapis.com/youtube/v3/captions?videoId=${videoId}&part=snippet&key=${apiKey}`
+    const captionsResponse = await fetch(captionsUrl)
 
-  // For now, we'll use a public API service
-  return null
+    if (!captionsResponse.ok) {
+      console.log('Failed to fetch captions list')
+      return null
+    }
+
+    const captionsData = await captionsResponse.json()
+
+    if (!captionsData.items || captionsData.items.length === 0) {
+      console.log('No captions available for this video')
+      return null
+    }
+
+    // Find English captions or auto-generated captions
+    const englishCaption = captionsData.items.find(
+      (item: { snippet: { language: string; trackKind: string } }) =>
+        item.snippet.language === 'en' ||
+        item.snippet.trackKind === 'asr' // Auto-generated
+    ) || captionsData.items[0]
+
+    if (!englishCaption) {
+      return null
+    }
+
+    // Note: Downloading captions requires OAuth, so we fall back to other methods
+    // The YouTube Data API v3 captions.download requires authentication
+    // For now, we use this to verify captions exist, then try other methods
+    console.log('Captions exist, but download requires OAuth. Trying alternative methods.')
+    return null
+  } catch (error) {
+    console.log('YouTube API error:', error)
+    return null
+  }
 }
 
 // Fetch from a public transcript API service

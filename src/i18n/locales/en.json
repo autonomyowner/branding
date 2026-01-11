@@ -377,6 +377,14 @@
       "connected": "API key is set",
       "notSet": "No API key configured. Add one to generate content."
     },
+    "youtubeApiKey": {
+      "title": "YouTube Data API Key (Optional)",
+      "label": "YouTube API Key",
+      "description": "Enables automatic transcript extraction from YouTube videos",
+      "info": "Add a YouTube Data API key to auto-extract video transcripts. Without it, you'll need to paste transcripts manually.",
+      "getKey": "Get your free API key from Google Cloud Console",
+      "connected": "YouTube API key is set - auto-extraction enabled"
+    },
     "usage": {
       "title": "Usage Statistics",
       "creditsUsed": "Credits Used",

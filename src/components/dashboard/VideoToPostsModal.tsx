@@ -60,9 +60,9 @@ export function VideoToPostsModal({ isOpen, onClose }: VideoToPostsModalProps) {
       setVideoInfo(info)
       setProgress(t('videoToPosts.fetchingTranscript'))
 
-      // Try to fetch transcript
+      // Try to fetch transcript (with YouTube API key if available)
       try {
-        const transcriptText = await fetchTranscript(videoId)
+        const transcriptText = await fetchTranscript(videoId, settings.youtubeApiKey)
         setTranscript(transcriptText)
         setStep('configure')
       } catch {

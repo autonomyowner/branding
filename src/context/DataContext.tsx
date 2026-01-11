@@ -28,6 +28,7 @@ export interface Post {
 export interface UserSettings {
   name: string
   openRouterApiKey: string
+  youtubeApiKey: string
   selectedModel: string
   creditsUsed: number
   lastCreditReset: number
@@ -36,6 +37,7 @@ export interface UserSettings {
 const DEFAULT_SETTINGS: UserSettings = {
   name: 'User',
   openRouterApiKey: '',
+  youtubeApiKey: '',
   selectedModel: 'anthropic/claude-3-haiku',
   creditsUsed: 0,
   lastCreditReset: Date.now()

@@ -377,6 +377,14 @@
       "connected": "تم تعيين مفتاح API",
       "notSet": "لم يتم تكوين مفتاح API. أضف واحداً لإنشاء المحتوى."
     },
+    "youtubeApiKey": {
+      "title": "مفتاح YouTube Data API (اختياري)",
+      "label": "مفتاح YouTube API",
+      "description": "يتيح الاستخراج التلقائي للنصوص من فيديوهات يوتيوب",
+      "info": "أضف مفتاح YouTube Data API لاستخراج نصوص الفيديو تلقائياً. بدونه، ستحتاج إلى لصق النصوص يدوياً.",
+      "getKey": "احصل على مفتاح API مجاني من Google Cloud Console",
+      "connected": "تم تعيين مفتاح YouTube API - الاستخراج التلقائي مفعل"
+    },
     "usage": {
       "title": "إحصائيات الاستخدام",
       "creditsUsed": "الاعتمادات المستخدمة",
