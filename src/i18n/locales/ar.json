@@ -326,9 +326,31 @@
     "generate": "إنشاء محتوى",
     "createBrand": "إنشاء علامة تجارية"
   },
+  "settings": {
+    "title": "الإعدادات",
+    "apiKey": {
+      "title": "مفتاح OpenRouter API",
+      "label": "مفتاح API",
+      "placeholder": "sk-or-v1-...",
+      "description": "يتم تخزين مفتاح API الخاص بك محلياً ولا يتم إرساله إلى خوادمنا",
+      "info": "تحتاج إلى مفتاح OpenRouter API لإنشاء المحتوى بالذكاء الاصطناعي",
+      "getKey": "احصل على مفتاح API من OpenRouter",
+      "show": "إظهار",
+      "hide": "إخفاء",
+      "connected": "تم تعيين مفتاح API",
+      "notSet": "لم يتم تكوين مفتاح API. أضف واحداً لإنشاء المحتوى."
+    },
+    "usage": {
+      "title": "إحصائيات الاستخدام",
+      "creditsUsed": "الاعتمادات المستخدمة",
+      "creditsRemaining": "الاعتمادات المتبقية",
+      "resetInfo": "يتم إعادة تعيين الاعتمادات شهرياً"
+    }
+  },
   "common": {
     "loading": "جاري التحميل...",
     "save": "حفظ",
+    "saving": "جاري الحفظ...",
     "cancel": "إلغاء",
     "delete": "حذف",
     "edit": "تعديل",

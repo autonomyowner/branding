@@ -326,9 +326,31 @@
     "generate": "Generate Content",
     "createBrand": "Create Brand"
   },
+  "settings": {
+    "title": "Settings",
+    "apiKey": {
+      "title": "OpenRouter API Key",
+      "label": "API Key",
+      "placeholder": "sk-or-v1-...",
+      "description": "Your API key is stored locally and never sent to our servers",
+      "info": "You need an OpenRouter API key to generate content with AI",
+      "getKey": "Get your API key from OpenRouter",
+      "show": "Show",
+      "hide": "Hide",
+      "connected": "API key is set",
+      "notSet": "No API key configured. Add one to generate content."
+    },
+    "usage": {
+      "title": "Usage Statistics",
+      "creditsUsed": "Credits Used",
+      "creditsRemaining": "Credits Remaining",
+      "resetInfo": "Credits reset monthly"
+    }
+  },
   "common": {
     "loading": "Loading...",
     "save": "Save",
+    "saving": "Saving...",
     "cancel": "Cancel",
     "delete": "Delete",
     "edit": "Edit",
