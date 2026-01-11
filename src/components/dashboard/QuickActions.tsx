@@ -38,11 +38,11 @@ export function QuickActions({ onGenerateContent, onAddBrand, onRepurpose }: Qui
     },
     {
       id: 'repurpose',
-      title: "Repurpose Content",
-      description: "Turn 1 post into 10",
-      buttonText: "Repurpose",
+      title: t('quickActions.videoToPosts'),
+      description: t('quickActions.videoToPostsDesc'),
+      buttonText: t('quickActions.videoToPostsButton'),
       primary: false,
-      gradient: "from-orange-500/10 to-yellow-500/10"
+      gradient: "from-red-500/10 to-orange-500/10"
     }
   ]
   const handleClick = (actionId: string) => {

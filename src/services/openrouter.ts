@@ -9,6 +9,17 @@ interface GenerateContentParams {
   style?: ContentStyle
 }
 
+interface GenerateFromVideoParams {
+  brand: Brand
+  platform: Platform
+  transcript: string
+  videoTitle: string
+  numberOfPosts: number
+  apiKey: string
+  model?: string
+  style?: ContentStyle
+}
+
 export type ContentStyle = 'viral' | 'storytelling' | 'educational' | 'controversial' | 'inspirational'
 
 interface OpenRouterResponse {
@@ -458,6 +469,133 @@ export const AVAILABLE_MODELS = [
   { value: 'google/gemini-flash-1.5', label: 'Gemini Flash (Fast)' },
   { value: 'meta-llama/llama-3.1-70b-instruct', label: 'Llama 3.1 70B (Powerful)' },
 ]
+
+// ============================================================================
+// VIDEO TO POSTS GENERATION
+// Generate multiple social media posts from video transcript
+// ============================================================================
+
+export async function generateFromVideo({
+  brand,
+  platform,
+  transcript,
+  videoTitle,
+  numberOfPosts,
+  apiKey,
+  model = 'anthropic/claude-3.5-sonnet',
+  style = 'viral'
+}: GenerateFromVideoParams): Promise<string[]> {
+
+  const styleInstructions: Record<ContentStyle, string> = {
+    viral: "Optimize for maximum shareability and engagement. Use curiosity gaps, bold hooks, and emotional triggers.",
+    storytelling: "Lead with personal narratives extracted from the video. Make it relatable and emotional.",
+    educational: "Deliver high-value insights from the video. Use numbered lists, clear takeaways, and actionable advice.",
+    controversial: "Extract bold takes from the video. Challenge conventional wisdom. Be provocative but substantive.",
+    inspirational: "Pull motivating moments from the video. Use transformation stories, emotional language, and empowering CTAs."
+  }
+
+  const systemPrompt = `You are an elite content repurposing specialist. Your job is to transform video content into viral social media posts.
+
+## YOUR EXPERTISE
+- Master of extracting the most engaging moments from long-form content
+- Expert in adapting content for different platforms while maintaining the core message
+- Skilled in identifying quotable moments, key insights, and shareable takeaways
+- Trained in creating hooks that make people stop scrolling
+
+## BRAND CONTEXT
+Brand: ${brand.name}
+Description: ${brand.description}
+Voice/Tone: ${brand.voice}
+Core Topics: ${brand.topics.join(', ')}
+
+## STYLE DIRECTION
+${styleInstructions[style]}
+
+${COPYWRITING_FRAMEWORKS}
+
+${VIRAL_HOOKS}
+
+${PLATFORM_MASTERY[platform]}
+
+${STORYTELLING_TECHNIQUES}
+
+${PSYCHOLOGY_TRIGGERS}
+
+## VIDEO CONTENT TO REPURPOSE
+Title: "${videoTitle}"
+
+Transcript:
+${transcript.slice(0, 12000)} ${transcript.length > 12000 ? '...[transcript truncated]' : ''}
+
+## YOUR TASK
+Create exactly ${numberOfPosts} unique ${platform} posts from this video content.
+
+## CRITICAL RULES
+1. Each post must be COMPLETELY UNIQUE - different angles, quotes, or insights
+2. Extract the BEST moments - don't just summarize, find the gold
+3. Adapt the language to ${platform}'s style and character limits
+4. Each post should work STANDALONE - no "part 1/2" or references to other posts
+5. Use direct quotes from the video when they're powerful (mark with "")
+6. Create hooks that reference the original content value
+7. Every post must have a clear CTA appropriate for ${platform}
+
+## OUTPUT FORMAT
+Return ONLY a JSON array of ${numberOfPosts} posts. No explanations, no numbering outside the array.
+Format: ["post 1 content here", "post 2 content here", ...]
+
+Each post should be ready to copy-paste directly to ${platform}.`
+
+  const userPrompt = `Generate ${numberOfPosts} unique ${style} ${platform} posts from the video transcript above. Return as a JSON array of strings.`
+
+  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+      'HTTP-Referer': window.location.origin,
+      'X-Title': 'Branding'
+    },
+    body: JSON.stringify({
+      model,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt }
+      ],
+      max_tokens: 4000,
+      temperature: 0.9
+    })
+  })
+
+  if (!response.ok) {
+    const error = await response.text()
+    throw new Error(`OpenRouter API error: ${error}`)
+  }
+
+  const data: OpenRouterResponse = await response.json()
+  const content = data.choices[0]?.message?.content || '[]'
+
+  // Parse the JSON array of posts
+  try {
+    // Extract JSON array from the response (in case there's extra text)
+    const jsonMatch = content.match(/\[[\s\S]*\]/)
+    if (jsonMatch) {
+      const posts = JSON.parse(jsonMatch[0])
+      if (Array.isArray(posts)) {
+        return posts.map(post => String(post).trim())
+      }
+    }
+    throw new Error('Invalid response format')
+  } catch {
+    // If JSON parsing fails, try to split by common patterns
+    const lines = content.split(/\n\n+/).filter(line =>
+      line.trim().length > 50 && !line.startsWith('[') && !line.startsWith(']')
+    )
+    if (lines.length >= numberOfPosts) {
+      return lines.slice(0, numberOfPosts)
+    }
+    throw new Error('Failed to parse generated posts. Please try again.')
+  }
+}
 
 export const CONTENT_STYLES: { value: ContentStyle; label: string; description: string }[] = [
   { value: 'viral', label: 'Viral', description: 'Maximum shareability and engagement' },

@@ -7,6 +7,7 @@ import { QuickActions } from "./QuickActions"
 import { BrandSelector } from "./BrandSelector"
 import { ContentCalendarPreview } from "./ContentCalendarPreview"
 import { GenerateModal } from "./GenerateModal"
+import { VideoToPostsModal } from "./VideoToPostsModal"
 import { BrandModal } from "./BrandModal"
 import { SettingsModal } from "./SettingsModal"
 import { useData } from "../../context/DataContext"
@@ -16,6 +17,7 @@ import { Button } from "../ui/button"
 export function Dashboard() {
   const { t } = useTranslation()
   const [isGenerateModalOpen, setIsGenerateModalOpen] = useState(false)
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false)
   const [isBrandModalOpen, setIsBrandModalOpen] = useState(false)
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
   const { settings } = useData()
@@ -97,6 +99,7 @@ export function Dashboard() {
           <QuickActions
             onGenerateContent={() => setIsGenerateModalOpen(true)}
             onAddBrand={() => setIsBrandModalOpen(true)}
+            onRepurpose={() => setIsVideoModalOpen(true)}
           />
         </motion.div>
 
@@ -127,6 +130,10 @@ export function Dashboard() {
       <GenerateModal
         isOpen={isGenerateModalOpen}
         onClose={() => setIsGenerateModalOpen(false)}
+      />
+      <VideoToPostsModal
+        isOpen={isVideoModalOpen}
+        onClose={() => setIsVideoModalOpen(false)}
       />
       <BrandModal
         isOpen={isBrandModalOpen}
