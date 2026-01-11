@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next"
 import { Card } from "../ui/card"
 import { Badge } from "../ui/badge"
 import { Button } from "../ui/button"
-import { useData, type Post } from "../../context/DataContext"
+import { useData } from "../../context/DataContext"
 
 const platformColors: Record<string, string> = {
   Instagram: "bg-pink-500/10 text-pink-400 border-pink-500/20",
@@ -37,11 +37,7 @@ function formatScheduledTime(dateString?: string): string {
   return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) + `, ${timeStr}`
 }
 
-interface RecentPostsProps {
-  onEditPost?: (post: Post) => void
-}
-
-export function RecentPosts({ onEditPost }: RecentPostsProps) {
+export function RecentPosts() {
   const { t } = useTranslation()
   const { posts, brands, deletePost, updatePost } = useData()
 

@@ -5,11 +5,10 @@ import { Button } from "../ui/button"
 interface QuickActionsProps {
   onGenerateContent: () => void
   onAddBrand: () => void
-  onViewCalendar?: () => void
   onRepurpose?: () => void
 }
 
-export function QuickActions({ onGenerateContent, onAddBrand, onViewCalendar, onRepurpose }: QuickActionsProps) {
+export function QuickActions({ onGenerateContent, onAddBrand, onRepurpose }: QuickActionsProps) {
   const { t } = useTranslation()
 
   const actions = [

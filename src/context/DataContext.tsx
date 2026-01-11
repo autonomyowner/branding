@@ -1,4 +1,4 @@
-import { createContext, useContext, ReactNode, useCallback } from 'react'
+import { createContext, useContext, type ReactNode, useCallback } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 
 // Types inlined to avoid import issues
@@ -158,9 +158,6 @@ export function DataProvider({ children }: { children: ReactNode }) {
   }, [setSettings])
 
   const getStats = useCallback(() => {
-    const now = Date.now()
-    const thirtyDaysAgo = now - (30 * 24 * 60 * 60 * 1000)
-
     return {
       postsGenerated: posts.length,
       postsScheduled: posts.filter(p => p.status === 'scheduled').length,

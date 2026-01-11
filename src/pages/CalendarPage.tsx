@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { useTranslation } from "react-i18next"
 import { useData, type Post, type Platform } from "../context/DataContext"
 import { Card } from "../components/ui/card"
@@ -53,7 +53,7 @@ interface DayData {
 
 export function CalendarPage() {
   const { t } = useTranslation()
-  const { posts, brands, updatePost, deletePost } = useData()
+  const { posts, brands, deletePost } = useData()
   const [currentDate, setCurrentDate] = useState(new Date())
   const [selectedDay, setSelectedDay] = useState<Date | null>(null)
   const [selectedPlatform, setSelectedPlatform] = useState<Platform | 'all'>('all')
@@ -64,7 +64,6 @@ export function CalendarPage() {
     const month = currentDate.getMonth()
 
     const firstDay = new Date(year, month, 1)
-    const lastDay = new Date(year, month + 1, 0)
 
     const startDate = new Date(firstDay)
     startDate.setDate(startDate.getDate() - firstDay.getDay())
@@ -265,7 +264,7 @@ export function CalendarPage() {
                       {/* Post Indicators */}
                       {day.posts.length > 0 && (
                         <div className="space-y-1">
-                          {day.posts.slice(0, 3).map((post, i) => (
+                          {day.posts.slice(0, 3).map((post) => (
                             <div
                               key={post.id}
                               className={`text-xs px-1.5 py-0.5 rounded truncate ${platformColors[post.platform]} ${

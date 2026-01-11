@@ -2,7 +2,6 @@ import { motion } from "framer-motion"
 import { useInView } from "framer-motion"
 import { useRef } from "react"
 import { useTranslation } from "react-i18next"
-import { Badge } from "./ui/badge"
 
 export function HowItWorks() {
   const { t } = useTranslation()

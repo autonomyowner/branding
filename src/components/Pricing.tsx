@@ -1,4 +1,4 @@
-import { useRef, MouseEvent } from "react"
+import { useRef, type MouseEvent } from "react"
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion"
 import { useInView } from "framer-motion"
 import { useTranslation } from "react-i18next"
