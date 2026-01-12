@@ -50,14 +50,6 @@
     "titleHighlight": "In One Platform",
     "subtitle": "Create brands, generate content, schedule posts, and collaborate with your team - all automated with AI.",
     "sales": {
-      "category": "Brands",
-      "title": "Brand Management",
-      "description": "Create and manage multiple brands with unique voices and styles",
-      "feature1": "Multiple brand profiles",
-      "feature2": "Custom brand voice",
-      "feature3": "Brand-specific content"
-    },
-    "marketing": {
       "category": "Content",
       "title": "AI Content Generation",
       "description": "Generate engaging posts for all social platforms automatically",
@@ -65,37 +57,45 @@
       "feature2": "Multiple content styles",
       "feature3": "Brand-aligned content"
     },
+    "marketing": {
+      "category": "Images",
+      "title": "AI Image Generation",
+      "description": "Create stunning AI images with Flux & SDXL models",
+      "feature1": "Flux & SDXL models",
+      "feature2": "Custom prompts",
+      "feature3": "High-quality outputs"
+    },
     "research": {
+      "category": "Voice",
+      "title": "Script + Voiceover",
+      "description": "Create scripts and generate professional AI voiceovers",
+      "feature1": "Natural voice generation",
+      "feature2": "Multiple voice options",
+      "feature3": "Script optimization"
+    },
+    "content": {
+      "category": "Repurpose",
+      "title": "YouTube to Posts",
+      "description": "Turn any YouTube video into multiple social media posts",
+      "feature1": "Automatic transcript extraction",
+      "feature2": "Multi-post generation",
+      "feature3": "Content repurposing"
+    },
+    "data": {
+      "category": "Brands",
+      "title": "Brand Management",
+      "description": "Create and manage multiple brands with unique voices and styles",
+      "feature1": "Multiple brand profiles",
+      "feature2": "Custom brand voice",
+      "feature3": "Brand-specific content"
+    },
+    "support": {
       "category": "Scheduling",
       "title": "Smart Scheduling",
       "description": "Plan and schedule your content calendar in advance",
       "feature1": "Visual content calendar",
       "feature2": "Bulk scheduling",
       "feature3": "Optimal posting times"
-    },
-    "content": {
-      "category": "Automation",
-      "title": "Content Automation",
-      "description": "Set up automated content generation and posting workflows",
-      "feature1": "Automated post generation",
-      "feature2": "Scheduled publishing",
-      "feature3": "Content queue management"
-    },
-    "data": {
-      "category": "Teams",
-      "title": "Team Collaboration",
-      "description": "Work together with your team on content creation",
-      "feature1": "Multi-user access",
-      "feature2": "Role-based permissions",
-      "feature3": "Content approval workflow"
-    },
-    "support": {
-      "category": "Analytics",
-      "title": "Performance Tracking",
-      "description": "Track your content performance across all platforms",
-      "feature1": "Post analytics",
-      "feature2": "Engagement metrics",
-      "feature3": "Growth insights"
     }
   },
   "howItWorks": {
