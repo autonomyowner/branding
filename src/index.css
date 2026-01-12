@@ -1,6 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap');
+/* Optimized font loading - only load Inter with swap for better performance */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -37,10 +36,33 @@
   body {
     @apply bg-background text-foreground font-sans antialiased;
     margin: 0;
+    /* Improve text rendering on mobile */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeSpeed;
   }
 
   html {
-    scroll-behavior: smooth;
+    /* Disable smooth scroll on mobile for better performance */
+    scroll-behavior: auto;
+  }
+
+  @media (min-width: 768px) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  /* Optimize images for mobile */
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Prevent layout shifts */
+  * {
+    box-sizing: border-box;
   }
 }
 
@@ -54,11 +76,26 @@
   }
 
   .glass {
-    @apply bg-black/50 backdrop-blur-xl border border-white/10;
+    @apply bg-black/50 border border-white/10;
+    /* Reduce blur on mobile for better performance */
+    backdrop-filter: blur(10px);
+  }
+
+  @media (min-width: 768px) {
+    .glass {
+      backdrop-filter: blur(40px);
+    }
   }
 
   .glow-purple {
-    box-shadow: 0 0 60px rgba(139, 92, 246, 0.3);
+    /* Reduce shadow intensity on mobile */
+    box-shadow: 0 0 30px rgba(139, 92, 246, 0.2);
+  }
+
+  @media (min-width: 768px) {
+    .glow-purple {
+      box-shadow: 0 0 60px rgba(139, 92, 246, 0.3);
+    }
   }
 
   .grid-pattern {
@@ -66,6 +103,17 @@
       linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
       linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
     background-size: 60px 60px;
+  }
+
+  /* Optimize animations on mobile */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 
   .preserve-3d {

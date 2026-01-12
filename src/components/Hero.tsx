@@ -1,7 +1,30 @@
 import { motion } from "framer-motion"
 import { useTranslation } from "react-i18next"
+import { useState, useEffect } from "react"
 import { Button } from "./ui/button"
 import { Badge } from "./ui/badge"
+
+// Detect if device prefers reduced motion or is mobile for performance
+const useReducedMotion = () => {
+  const [shouldReduceMotion, setShouldReduceMotion] = useState(false)
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const isMobile = window.innerWidth < 768
+    setShouldReduceMotion(mediaQuery.matches || isMobile)
+
+    const handler = () => setShouldReduceMotion(mediaQuery.matches || window.innerWidth < 768)
+    mediaQuery.addEventListener('change', handler)
+    window.addEventListener('resize', handler)
+
+    return () => {
+      mediaQuery.removeEventListener('change', handler)
+      window.removeEventListener('resize', handler)
+    }
+  }, [])
+
+  return shouldReduceMotion
+}
 
 // Floating orb component
 function FloatingOrb({ size, x, y, delay, duration }: {
@@ -68,6 +91,7 @@ function ConnectionLine({ startX, startY, endX, endY, delay }: {
 
 export function Hero() {
   const { t } = useTranslation()
+  const reduceMotion = useReducedMotion()
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
@@ -77,21 +101,26 @@ export function Hero() {
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-purple-500/10 rounded-full blur-[120px]" />
       <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-violet-500/10 rounded-full blur-[100px]" />
 
-      {/* Floating Orbs */}
-      <FloatingOrb size={8} x="15%" y="30%" delay={0} duration={4} />
-      <FloatingOrb size={6} x="85%" y="25%" delay={0.5} duration={3.5} />
-      <FloatingOrb size={10} x="10%" y="60%" delay={1} duration={4.5} />
-      <FloatingOrb size={5} x="90%" y="65%" delay={1.5} duration={3} />
-      <FloatingOrb size={7} x="20%" y="80%" delay={0.8} duration={4} />
-      <FloatingOrb size={6} x="80%" y="75%" delay={0.3} duration={3.8} />
+      {/* Floating Orbs - Only render on desktop for better mobile performance */}
+      {!reduceMotion && (
+        <>
+          <FloatingOrb size={8} x="15%" y="30%" delay={0} duration={4} />
+          <FloatingOrb size={6} x="85%" y="25%" delay={0.5} duration={3.5} />
+          <FloatingOrb size={10} x="10%" y="60%" delay={1} duration={4.5} />
+          <FloatingOrb size={5} x="90%" y="65%" delay={1.5} duration={3} />
+          <FloatingOrb size={7} x="20%" y="80%" delay={0.8} duration={4} />
+          <FloatingOrb size={6} x="80%" y="75%" delay={0.3} duration={3.8} />
+        </>
+      )}
 
-      {/* Subtle SVG visualization behind content */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <svg
-          viewBox="0 0 800 600"
-          className="w-full h-full max-w-6xl opacity-30"
-          preserveAspectRatio="xMidYMid meet"
-        >
+      {/* Subtle SVG visualization behind content - Hidden on mobile for performance */}
+      {!reduceMotion && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <svg
+            viewBox="0 0 800 600"
+            className="w-full h-full max-w-6xl opacity-30"
+            preserveAspectRatio="xMidYMid meet"
+          >
           <defs>
             <filter id="heroGlow" x="-50%" y="-50%" width="200%" height="200%">
               <feGaussianBlur stdDeviation="2" result="coloredBlur" />
@@ -198,6 +227,7 @@ export function Hero() {
           </g>
         </svg>
       </div>
+      )}
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
         {/* Badge */}
@@ -216,7 +246,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6"
+          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 leading-tight"
         >
           <span className="text-white">{t('hero.title')}</span>
           <br />
@@ -228,7 +258,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10"
+          className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 px-4"
         >
           {t('hero.subtitle')}
         </motion.p>
