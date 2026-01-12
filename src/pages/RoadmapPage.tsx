@@ -758,6 +758,94 @@ export function RoadmapPage() {
           </Card>
         </motion.div>
 
+        {/* Flippa Valuation */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-8"
+        >
+          <Card className="p-6 border-emerald-500/50">
+            <h2 className="text-xl font-semibold mb-2">Flippa Exit Value</h2>
+            <p className="text-sm text-muted-foreground mb-6">SaaS multiples: 3-5x ARR for established businesses</p>
+
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+              <div className="p-4 bg-white/5 rounded-lg text-center border border-red-500/30">
+                <p className="text-xs text-muted-foreground mb-1">Month 1</p>
+                <p className="text-sm font-medium mb-1">£350 MRR</p>
+                <p className="text-xs text-muted-foreground mb-2">£4,200 ARR</p>
+                <div className="border-t border-white/10 pt-2">
+                  <p className="text-lg font-bold text-red-400">£4k-£8k</p>
+                  <p className="text-xs text-muted-foreground">1-2x (Too early)</p>
+                </div>
+              </div>
+
+              <div className="p-4 bg-white/5 rounded-lg text-center border border-yellow-500/30">
+                <p className="text-xs text-muted-foreground mb-1">Month 3</p>
+                <p className="text-sm font-medium mb-1">£1,000 MRR</p>
+                <p className="text-xs text-muted-foreground mb-2">£12,000 ARR</p>
+                <div className="border-t border-white/10 pt-2">
+                  <p className="text-lg font-bold text-yellow-400">£24k-£36k</p>
+                  <p className="text-xs text-muted-foreground">2-3x (Growing)</p>
+                </div>
+              </div>
+
+              <div className="p-4 bg-white/5 rounded-lg text-center border border-primary/30">
+                <p className="text-xs text-muted-foreground mb-1">Month 6</p>
+                <p className="text-sm font-medium mb-1">£1,500 MRR</p>
+                <p className="text-xs text-muted-foreground mb-2">£18,000 ARR</p>
+                <div className="border-t border-white/10 pt-2">
+                  <p className="text-lg font-bold text-primary">£54k-£72k</p>
+                  <p className="text-xs text-muted-foreground">3-4x (Proven)</p>
+                </div>
+              </div>
+
+              <div className="p-4 bg-white/5 rounded-lg text-center border border-emerald-500/50">
+                <p className="text-xs text-muted-foreground mb-1">Month 12</p>
+                <p className="text-sm font-medium mb-1">£2,500 MRR</p>
+                <p className="text-xs text-muted-foreground mb-2">£30,000 ARR</p>
+                <div className="border-t border-white/10 pt-2">
+                  <p className="text-lg font-bold text-emerald-400">£90k-£150k</p>
+                  <p className="text-xs text-muted-foreground">3-5x (Strong)</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-emerald-500/10 rounded-lg p-4 border border-emerald-500/30">
+              <h3 className="text-sm font-semibold mb-3">What Increases Your Multiple:</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                <div className="flex items-center gap-2">
+                  <span className="text-emerald-400">✓</span>
+                  <span>Low churn rate (&lt; 5% monthly)</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-emerald-400">✓</span>
+                  <span>High profit margins (&gt; 60%)</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-emerald-400">✓</span>
+                  <span>Consistent MoM growth</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-emerald-400">✓</span>
+                  <span>Diverse customer base</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-emerald-400">✓</span>
+                  <span>Automated processes</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-emerald-400">✓</span>
+                  <span>Annual plans (lower churn)</span>
+                </div>
+              </div>
+            </div>
+
+            <p className="text-center text-muted-foreground text-sm mt-4">
+              <span className="text-emerald-400 font-semibold">Recommendation:</span> Build to Month 6-12 for best exit multiple
+            </p>
+          </Card>
+        </motion.div>
+
         {/* Footer */}
         <div className="mt-12 text-center text-muted-foreground text-sm">
           <p>Progress saves automatically to your browser</p>
