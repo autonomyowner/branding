@@ -1,16 +1,19 @@
-import { useRef, type MouseEvent } from "react"
+import { useRef, useState, type MouseEvent } from "react"
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion"
 import { useInView } from "framer-motion"
 import { useTranslation } from "react-i18next"
 import { Button } from "./ui/button"
 import { Card } from "./ui/card"
 import { Badge } from "./ui/badge"
+import { StripeCheckout } from "./StripeCheckout"
 import { cn } from "../lib/utils"
 
 interface Plan {
   name: string
   description: string
   price: string
+  priceYearly?: string
+  saveAmount?: string
   features: string[]
   cta: string
   popular: boolean
@@ -98,6 +101,15 @@ export function Pricing() {
   const { t } = useTranslation()
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
+  const [checkoutOpen, setCheckoutOpen] = useState(false)
+  const [selectedPlan, setSelectedPlan] = useState<{ name: string; price: string; isYearly: boolean } | null>(null)
+  const [isYearly, setIsYearly] = useState(true)
+
+  const handleSelectPlan = (plan: Plan) => {
+    const price = isYearly && plan.priceYearly ? plan.priceYearly : plan.price
+    setSelectedPlan({ name: plan.name, price, isYearly: isYearly && !!plan.priceYearly })
+    setCheckoutOpen(true)
+  }
 
   const plans: Plan[] = [
     {
@@ -117,6 +129,8 @@ export function Pricing() {
       name: t('pricing.pro.name'),
       description: t('pricing.pro.description'),
       price: t('pricing.pro.price'),
+      priceYearly: t('pricing.pro.priceYearly'),
+      saveAmount: t('pricing.pro.saveAmount'),
       features: [
         t('pricing.pro.feature1'),
         t('pricing.pro.feature2'),
@@ -131,6 +145,8 @@ export function Pricing() {
       name: t('pricing.enterprise.name'),
       description: t('pricing.enterprise.description'),
       price: t('pricing.enterprise.price'),
+      priceYearly: t('pricing.enterprise.priceYearly'),
+      saveAmount: t('pricing.enterprise.saveAmount'),
       features: [
         t('pricing.enterprise.feature1'),
         t('pricing.enterprise.feature2'),
@@ -163,6 +179,40 @@ export function Pricing() {
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-8">
             {t('pricing.subtitle')}
           </p>
+
+          {/* Billing Toggle */}
+          <div className="flex items-center justify-center gap-3">
+            <span className={cn(
+              "text-sm font-medium transition-colors",
+              !isYearly ? "text-white" : "text-muted-foreground"
+            )}>
+              {t('pricing.monthlyLabel')}
+            </span>
+            <button
+              onClick={() => setIsYearly(!isYearly)}
+              className={cn(
+                "relative w-14 h-7 rounded-full transition-colors duration-200",
+                isYearly ? "bg-primary" : "bg-white/20"
+              )}
+            >
+              <motion.div
+                className="absolute top-1 w-5 h-5 bg-white rounded-full shadow-md"
+                animate={{ left: isYearly ? "calc(100% - 24px)" : "4px" }}
+                transition={{ type: "spring", stiffness: 500, damping: 30 }}
+              />
+            </button>
+            <span className={cn(
+              "text-sm font-medium transition-colors",
+              isYearly ? "text-white" : "text-muted-foreground"
+            )}>
+              {t('pricing.yearlyLabel')}
+            </span>
+            {isYearly && (
+              <Badge variant="secondary" className="ml-2 bg-green-500/20 text-green-400 border-green-500/30">
+                {t('pricing.savePercentage')}
+              </Badge>
+            )}
+          </div>
         </motion.div>
 
         {/* Pricing Cards with 3D Tilt */}
@@ -190,18 +240,22 @@ export function Pricing() {
                 <div className="mb-6" style={{ transform: "translateZ(40px)" }}>
                   <div className="flex items-baseline gap-1">
                     <span className="text-4xl font-bold">
-                      {plan.price}
+                      {isYearly && plan.priceYearly ? plan.priceYearly : plan.price}
                     </span>
                     <span className="text-muted-foreground">
-                      /{t('pricing.monthly')}
+                      /{isYearly && plan.priceYearly ? t('pricing.year') : t('pricing.monthly')}
                     </span>
                   </div>
+                  {isYearly && plan.saveAmount && (
+                    <p className="text-sm text-green-400 mt-1">{plan.saveAmount}</p>
+                  )}
                 </div>
 
                 <Button
                   variant={plan.popular ? "default" : "outline"}
                   className="w-full mb-6"
                   style={{ transform: "translateZ(50px)" }}
+                  onClick={() => handleSelectPlan(plan)}
                 >
                   {plan.cta}
                 </Button>
@@ -220,6 +274,15 @@ export function Pricing() {
         </div>
 
       </div>
+
+      {/* Stripe Checkout Modal */}
+      <StripeCheckout
+        isOpen={checkoutOpen}
+        onClose={() => setCheckoutOpen(false)}
+        planName={selectedPlan?.name || ""}
+        planPrice={selectedPlan?.price || ""}
+        isYearly={selectedPlan?.isYearly || false}
+      />
     </section>
   )
 }

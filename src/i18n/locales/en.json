@@ -139,7 +139,9 @@
     },
     "pro": {
       "name": "Pro",
-      "price": "£7",
+      "price": "£9",
+      "priceYearly": "£79",
+      "saveAmount": "Save £29",
       "description": "For growing businesses",
       "cta": "Get Pro",
       "feature1": "5 brands",
@@ -150,7 +152,9 @@
     },
     "enterprise": {
       "name": "Business",
-      "price": "£35",
+      "price": "£39",
+      "priceYearly": "£299",
+      "saveAmount": "Save £169",
       "description": "For agencies and large teams",
       "cta": "Get Business",
       "feature1": "Unlimited brands",
