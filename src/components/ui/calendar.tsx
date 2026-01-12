@@ -7,7 +7,7 @@ interface CalendarProps {
   minDate?: Date
 }
 
-const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+const DAYS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
 const MONTHS = [
   'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December'
@@ -76,32 +76,37 @@ export function Calendar({ selectedDate, onDateSelect, minDate = new Date() }: C
   return (
     <div className="w-full">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-5">
         <button
           onClick={() => navigateMonth(-1)}
-          className="p-2 rounded-lg hover:bg-white/10 transition-colors text-muted-foreground hover:text-white"
+          className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center transition-all hover:scale-105 active:scale-95"
         >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
+          <span className="text-white/60 text-sm">←</span>
         </button>
-        <h3 className="text-lg font-semibold">
-          {MONTHS[currentMonth.getMonth()]} {currentMonth.getFullYear()}
-        </h3>
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.h3
+            key={currentMonth.toISOString()}
+            initial={{ opacity: 0, y: direction > 0 ? 10 : -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: direction > 0 ? -10 : 10 }}
+            transition={{ duration: 0.15 }}
+            className="font-display text-base font-semibold"
+          >
+            {MONTHS[currentMonth.getMonth()]} <span className="text-white/40">{currentMonth.getFullYear()}</span>
+          </motion.h3>
+        </AnimatePresence>
         <button
           onClick={() => navigateMonth(1)}
-          className="p-2 rounded-lg hover:bg-white/10 transition-colors text-muted-foreground hover:text-white"
+          className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center transition-all hover:scale-105 active:scale-95"
         >
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
+          <span className="text-white/60 text-sm">→</span>
         </button>
       </div>
 
       {/* Day headers */}
       <div className="grid grid-cols-7 gap-1 mb-2">
         {DAYS.map(day => (
-          <div key={day} className="text-center text-xs font-medium text-muted-foreground py-2">
+          <div key={day} className="text-center text-[10px] font-semibold text-white/30 uppercase tracking-wider py-2">
             {day}
           </div>
         ))}
@@ -111,9 +116,9 @@ export function Calendar({ selectedDate, onDateSelect, minDate = new Date() }: C
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={currentMonth.toISOString()}
-          initial={{ opacity: 0, x: direction * 20 }}
+          initial={{ opacity: 0, x: direction * 15 }}
           animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: direction * -20 }}
+          exit={{ opacity: 0, x: direction * -15 }}
           transition={{ duration: 0.2 }}
           className="grid grid-cols-7 gap-1"
         >
@@ -127,15 +132,18 @@ export function Calendar({ selectedDate, onDateSelect, minDate = new Date() }: C
               className={`
                 aspect-square rounded-lg text-sm font-medium transition-all relative
                 ${!date ? 'invisible' : ''}
-                ${isDateDisabled(date) ? 'text-muted-foreground/30 cursor-not-allowed' : 'hover:bg-white/10 cursor-pointer'}
-                ${isDateSelected(date) ? 'bg-primary text-primary-foreground' : ''}
-                ${isToday(date) && !isDateSelected(date) ? 'border border-primary/50' : ''}
+                ${isDateDisabled(date)
+                  ? 'text-white/15 cursor-not-allowed'
+                  : 'text-white/70 hover:text-white hover:bg-white/10 cursor-pointer'}
+                ${isDateSelected(date)
+                  ? 'bg-gradient-to-br from-amber-500 to-orange-500 text-black font-semibold shadow-lg shadow-amber-500/20'
+                  : ''}
+                ${isToday(date) && !isDateSelected(date)
+                  ? 'ring-1 ring-amber-500/50 text-amber-400'
+                  : ''}
               `}
             >
               {date?.getDate()}
-              {isToday(date) && (
-                <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary" />
-              )}
             </motion.button>
           ))}
         </motion.div>
@@ -159,31 +167,63 @@ export function TimePicker({ selectedTime, onTimeSelect }: TimePickerProps) {
     return `${displayHour}:${minute.toString().padStart(2, '0')} ${period}`
   }
 
+  // Group times by period (Morning, Afternoon, Evening, Night)
+  const getTimePeriod = (hour: number) => {
+    if (hour >= 5 && hour < 12) return 'Morning'
+    if (hour >= 12 && hour < 17) return 'Afternoon'
+    if (hour >= 17 && hour < 21) return 'Evening'
+    return 'Night'
+  }
+
+  const groupedTimes = useMemo(() => {
+    const groups: Record<string, { hour: number; minute: number }[]> = {
+      Morning: [],
+      Afternoon: [],
+      Evening: [],
+      Night: []
+    }
+
+    hours.forEach(hour => {
+      minutes.forEach(minute => {
+        const period = getTimePeriod(hour)
+        groups[period].push({ hour, minute })
+      })
+    })
+
+    return groups
+  }, [])
+
   return (
     <div className="space-y-4">
-      <div>
-        <label className="block text-sm font-medium mb-2 text-muted-foreground">Select Time</label>
-        <div className="grid grid-cols-4 gap-2 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
-          {hours.map(hour =>
-            minutes.map(minute => (
-              <motion.button
-                key={`${hour}-${minute}`}
-                onClick={() => onTimeSelect({ hour, minute })}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className={`
-                  px-2 py-2 rounded-lg text-xs font-medium transition-all
-                  ${selectedTime.hour === hour && selectedTime.minute === minute
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-background border border-border hover:border-white/30'
-                  }
-                `}
-              >
-                {formatTime(hour, minute)}
-              </motion.button>
-            ))
-          )}
-        </div>
+      <label className="block text-sm font-semibold text-white/60">Select Time</label>
+      <div className="space-y-4 max-h-[240px] overflow-y-auto pr-2 custom-scrollbar">
+        {Object.entries(groupedTimes).map(([period, times]) => (
+          <div key={period}>
+            <div className="text-[10px] font-semibold text-white/30 uppercase tracking-wider mb-2">{period}</div>
+            <div className="grid grid-cols-4 gap-1.5">
+              {times.map(({ hour, minute }) => {
+                const isSelected = selectedTime.hour === hour && selectedTime.minute === minute
+                return (
+                  <motion.button
+                    key={`${hour}-${minute}`}
+                    onClick={() => onTimeSelect({ hour, minute })}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className={`
+                      px-2 py-2 rounded-lg text-xs font-medium transition-all
+                      ${isSelected
+                        ? 'bg-gradient-to-br from-amber-500 to-orange-500 text-black font-semibold shadow-lg shadow-amber-500/20'
+                        : 'bg-white/[0.03] border border-white/5 text-white/60 hover:bg-white/[0.06] hover:text-white hover:border-white/10'
+                      }
+                    `}
+                  >
+                    {formatTime(hour, minute)}
+                  </motion.button>
+                )
+              })}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   )
@@ -236,20 +276,25 @@ export function DateTimePicker({ selectedDateTime, onDateTimeSelect, minDate }: 
   return (
     <div className="space-y-6">
       {/* Selected DateTime Display */}
-      {selectedDate && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="p-4 rounded-xl bg-primary/10 border border-primary/20"
-        >
-          <p className="text-sm text-muted-foreground mb-1">Scheduled for</p>
-          <p className="text-lg font-semibold text-primary">{formatSelectedDateTime()}</p>
-        </motion.div>
-      )}
+      <AnimatePresence>
+        {selectedDate && (
+          <motion.div
+            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+            className="p-4 rounded-xl bg-gradient-to-br from-amber-500/10 to-orange-500/5 border border-amber-500/20"
+          >
+            <p className="text-xs font-medium text-white/40 mb-1 uppercase tracking-wider">Scheduled for</p>
+            <p className="text-base font-semibold bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
+              {formatSelectedDateTime()}
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Calendar */}
-        <div className="p-4 rounded-xl bg-background border border-border">
+        <div className="p-5 rounded-xl bg-white/[0.03] border border-white/5">
           <Calendar
             selectedDate={selectedDate}
             onDateSelect={handleDateSelect}
@@ -258,7 +303,7 @@ export function DateTimePicker({ selectedDateTime, onDateTimeSelect, minDate }: 
         </div>
 
         {/* Time Picker */}
-        <div className="p-4 rounded-xl bg-background border border-border">
+        <div className="p-5 rounded-xl bg-white/[0.03] border border-white/5">
           <TimePicker
             selectedTime={selectedTime}
             onTimeSelect={handleTimeSelect}
