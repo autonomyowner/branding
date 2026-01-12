@@ -5,6 +5,7 @@ import { LandingPage } from "./pages/LandingPage"
 import { DashboardPage } from "./pages/DashboardPage"
 import { PostsPage } from "./pages/PostsPage"
 import { CalendarPage } from "./pages/CalendarPage"
+import { RoadmapPage } from "./pages/RoadmapPage"
 import { DataProvider } from "./context/DataContext"
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/posts" element={<PostsPage />} />
           <Route path="/calendar" element={<CalendarPage />} />
+          <Route path="/roadmap1" element={<RoadmapPage />} />
         </Routes>
       </BrowserRouter>
     </DataProvider>
