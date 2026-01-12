@@ -7,9 +7,10 @@ interface QuickActionsProps {
   onAddBrand: () => void
   onRepurpose?: () => void
   onVoiceover?: () => void
+  onGenerateImage?: () => void
 }
 
-export function QuickActions({ onGenerateContent, onAddBrand, onRepurpose, onVoiceover }: QuickActionsProps) {
+export function QuickActions({ onGenerateContent, onAddBrand, onRepurpose, onVoiceover, onGenerateImage }: QuickActionsProps) {
   const { t } = useTranslation()
 
   const actions = [
@@ -22,12 +23,12 @@ export function QuickActions({ onGenerateContent, onAddBrand, onRepurpose, onVoi
       gradient: "from-primary/20 to-purple-500/20"
     },
     {
-      id: 'brand',
-      title: t('quickActions.createBrand'),
-      description: "Add a new brand profile",
-      buttonText: "Add Brand",
+      id: 'image',
+      title: "Generate Image",
+      description: "Create AI images with Flux & SDXL",
+      buttonText: "Create Image",
       primary: false,
-      gradient: "from-blue-500/10 to-cyan-500/10"
+      gradient: "from-orange-500/10 to-amber-500/10"
     },
     {
       id: 'voiceover',
@@ -44,6 +45,14 @@ export function QuickActions({ onGenerateContent, onAddBrand, onRepurpose, onVoi
       buttonText: t('quickActions.videoToPostsButton'),
       primary: false,
       gradient: "from-red-500/10 to-orange-500/10"
+    },
+    {
+      id: 'brand',
+      title: t('quickActions.createBrand'),
+      description: "Add a new brand profile",
+      buttonText: "Add Brand",
+      primary: false,
+      gradient: "from-blue-500/10 to-cyan-500/10"
     }
   ]
   const handleClick = (actionId: string) => {
@@ -60,13 +69,16 @@ export function QuickActions({ onGenerateContent, onAddBrand, onRepurpose, onVoi
       case 'repurpose':
         onRepurpose?.()
         break
+      case 'image':
+        onGenerateImage?.()
+        break
     }
   }
 
   return (
     <div>
       <h2 className="text-lg font-semibold mb-4">{t('dashboard.quickActions')}</h2>
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
         {actions.map((action) => (
           <Card
             key={action.id}

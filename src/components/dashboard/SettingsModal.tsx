@@ -15,22 +15,25 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const [apiKey, setApiKey] = useState(settings.openRouterApiKey)
   const [youtubeApiKey, setYoutubeApiKey] = useState(settings.youtubeApiKey || '')
   const [elevenLabsApiKey, setElevenLabsApiKey] = useState(settings.elevenLabsApiKey || '')
+  const [replicateApiKey, setReplicateApiKey] = useState(settings.replicateApiKey || '')
   const [showKey, setShowKey] = useState(false)
   const [showYoutubeKey, setShowYoutubeKey] = useState(false)
   const [showElevenLabsKey, setShowElevenLabsKey] = useState(false)
+  const [showReplicateKey, setShowReplicateKey] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
 
   useEffect(() => {
-    setApiKey(settings.openRouterApiKey)
+    setApiKey(settings.openRouterApiKey || '')
     setYoutubeApiKey(settings.youtubeApiKey || '')
     setElevenLabsApiKey(settings.elevenLabsApiKey || '')
-  }, [settings.openRouterApiKey, settings.youtubeApiKey, settings.elevenLabsApiKey])
+    setReplicateApiKey(settings.replicateApiKey || '')
+  }, [settings])
 
   if (!isOpen) return null
 
   const handleSave = () => {
     setIsSaving(true)
-    updateSettings({ openRouterApiKey: apiKey, youtubeApiKey, elevenLabsApiKey })
+    updateSettings({ openRouterApiKey: apiKey, youtubeApiKey, elevenLabsApiKey, replicateApiKey })
     setTimeout(() => {
       setIsSaving(false)
       onClose()
@@ -210,6 +213,58 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
               <div className="mt-4 p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
                 <p className="text-sm text-green-400">
                   ✓ {t('settings.elevenLabsApiKey.connected')}
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* fal.ai API Key Section */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4">fal.ai API Key (Image Generation)</h3>
+
+            <div className="bg-orange-500/10 border border-orange-500/20 rounded-lg p-4 mb-4">
+              <p className="text-sm text-orange-400 mb-2">
+                Generate AI images with Flux, SD3, and more. Fast & affordable.
+              </p>
+              <a
+                href="https://fal.ai/dashboard/keys"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-orange-400 hover:underline inline-flex items-center gap-1"
+              >
+                Get your fal.ai API key →
+              </a>
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-sm font-medium">
+                API Key
+              </label>
+              <div className="relative">
+                <input
+                  type={showReplicateKey ? "text" : "password"}
+                  value={replicateApiKey}
+                  onChange={(e) => setReplicateApiKey(e.target.value)}
+                  placeholder="fal_..."
+                  className="w-full px-4 py-2 bg-card border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary pr-24"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowReplicateKey(!showReplicateKey)}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1 text-xs text-muted-foreground hover:text-white transition-colors"
+                >
+                  {showReplicateKey ? t('settings.apiKey.hide') : t('settings.apiKey.show')}
+                </button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Required for AI image generation features.
+              </p>
+            </div>
+
+            {replicateApiKey && (
+              <div className="mt-4 p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
+                <p className="text-sm text-green-400">
+                  ✓ fal.ai API key configured
                 </p>
               </div>
             )}
