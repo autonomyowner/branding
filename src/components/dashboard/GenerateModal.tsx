@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { useData, PLATFORMS, type Platform } from '../../context/DataContext'
+import { useSubscription } from '../../context/SubscriptionContext'
 import { generateContent, AVAILABLE_MODELS, CONTENT_STYLES, type ContentStyle } from '../../services/openrouter'
 import { Button } from '../ui/button'
 import { Card } from '../ui/card'
@@ -15,6 +16,7 @@ interface GenerateModalProps {
 export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
   const { t } = useTranslation()
   const { brands, selectedBrandId, settings, addPost, updateSettings } = useData()
+  const { canCreatePost, incrementPostCount, openUpgradeModal, getUsagePercentage, getRemainingCount } = useSubscription()
   const [selectedPlatform, setSelectedPlatform] = useState<Platform>('Instagram')
   const [selectedStyle, setSelectedStyle] = useState<ContentStyle>('viral')
   const [topic, setTopic] = useState('')
@@ -27,6 +29,13 @@ export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
   const selectedBrand = brands.find(b => b.id === selectedBrandId) || brands[0]
 
   const handleGenerate = async () => {
+    // Check post limit before generating
+    if (!canCreatePost()) {
+      handleClose()
+      openUpgradeModal('post')
+      return
+    }
+
     if (!settings.openRouterApiKey) {
       setError(t('generateModal.apiKeyMissing'))
       return
@@ -68,6 +77,9 @@ export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
       status: 'draft'
     })
 
+    // Increment post count for subscription tracking
+    incrementPostCount()
+
     handleClose()
   }
 
@@ -90,6 +102,9 @@ export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
       status: 'scheduled',
       scheduledFor: scheduledDateTime.toISOString()
     })
+
+    // Increment post count for subscription tracking
+    incrementPostCount()
 
     handleClose()
   }
@@ -255,6 +270,30 @@ export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
                     ))}
                   </select>
                 </div>
+
+                {/* Usage Warning */}
+                {getUsagePercentage('posts', 0) >= 80 && (
+                  <div className={`mb-4 p-3 rounded-lg flex items-center justify-between ${
+                    getUsagePercentage('posts', 0) >= 100
+                      ? 'bg-red-500/10 border border-red-500/20'
+                      : 'bg-yellow-500/10 border border-yellow-500/20'
+                  }`}>
+                    <div className="flex items-center gap-2">
+                      <svg className={`w-4 h-4 ${getUsagePercentage('posts', 0) >= 100 ? 'text-red-400' : 'text-yellow-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      </svg>
+                      <span className={`text-sm ${getUsagePercentage('posts', 0) >= 100 ? 'text-red-400' : 'text-yellow-400'}`}>
+                        {getRemainingCount('posts', 0)} posts remaining this month
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => { handleClose(); openUpgradeModal('post'); }}
+                      className="text-xs text-primary hover:underline"
+                    >
+                      Upgrade
+                    </button>
+                  </div>
+                )}
 
                 {/* Error */}
                 {error && (

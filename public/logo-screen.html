@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logo Screen</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0f0a1a 0%, #1a1025 50%, #0d0812 100%);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Subtle animated background */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(167, 139, 250, 0.08) 0%, transparent 70%);
+      transform: translate(-50%, -50%);
+      animation: pulse-bg 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse-bg {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+      50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+    }
+
+    .logo-container {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 48px;
+    }
+
+    .logo-wrapper {
+      position: relative;
+      width: 320px;
+      height: 320px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Glow ring */
+    .logo-wrapper::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      background: conic-gradient(
+        from 0deg,
+        transparent,
+        rgba(167, 139, 250, 0.3),
+        rgba(124, 58, 237, 0.5),
+        rgba(167, 139, 250, 0.3),
+        transparent
+      );
+      animation: rotate-glow 8s linear infinite;
+      filter: blur(20px);
+    }
+
+    @keyframes rotate-glow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .logo-svg {
+      width: 240px;
+      height: 240px;
+      filter: drop-shadow(0 0 40px rgba(167, 139, 250, 0.4));
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Animated bars in the logo */
+    .logo-svg .bar {
+      animation: bar-float 3s ease-in-out infinite;
+    }
+
+    .logo-svg .bar-1 { animation-delay: 0s; }
+    .logo-svg .bar-2 { animation-delay: 0.2s; }
+    .logo-svg .bar-3 { animation-delay: 0.4s; }
+    .logo-svg .bar-4 { animation-delay: 0.6s; }
+
+    @keyframes bar-float {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(4px); }
+    }
+
+    .brand-text {
+      text-align: center;
+      z-index: 1;
+    }
+
+    .brand-name {
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 48px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #A78BFA 0%, #7C3AED 50%, #A78BFA 100%);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradient-shift 4s ease infinite;
+      letter-spacing: -1px;
+    }
+
+    @keyframes gradient-shift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .brand-tagline {
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 16px;
+      color: rgba(167, 139, 250, 0.6);
+      margin-top: 12px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+    }
+
+    /* Floating particles */
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: rgba(167, 139, 250, 0.6);
+      border-radius: 50%;
+      animation: float-particle 6s ease-in-out infinite;
+    }
+
+    .particle:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+    .particle:nth-child(2) { top: 60%; left: 5%; animation-delay: 1s; }
+    .particle:nth-child(3) { top: 80%; left: 15%; animation-delay: 2s; }
+    .particle:nth-child(4) { top: 30%; right: 10%; animation-delay: 0.5s; }
+    .particle:nth-child(5) { top: 70%; right: 8%; animation-delay: 1.5s; }
+    .particle:nth-child(6) { top: 90%; right: 20%; animation-delay: 2.5s; }
+
+    @keyframes float-particle {
+      0%, 100% { transform: translateY(0) scale(1); opacity: 0.6; }
+      50% { transform: translateY(-20px) scale(1.5); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+
+  <div class="logo-container">
+    <div class="logo-wrapper">
+      <svg class="logo-svg" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#A78BFA"/>
+            <stop offset="100%" style="stop-color:#7C3AED"/>
+          </linearGradient>
+        </defs>
+        <rect class="bar bar-1" x="4" y="6" width="16" height="3" rx="1.5" fill="url(#grad)"/>
+        <rect class="bar bar-2" x="4" y="12" width="24" height="3" rx="1.5" fill="url(#grad)" opacity="0.8"/>
+        <rect class="bar bar-3" x="4" y="18" width="20" height="3" rx="1.5" fill="url(#grad)" opacity="0.6"/>
+        <rect class="bar bar-4" x="4" y="24" width="12" height="3" rx="1.5" fill="url(#grad)" opacity="0.4"/>
+      </svg>
+    </div>
+
+    <div class="brand-text">
+      <div class="brand-name">T21</div>
+      <div class="brand-tagline">Content Automation</div>
+    </div>
+  </div>
+</body>
+</html>

@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { useEffect, lazy, Suspense } from "react"
 import { useTranslation } from "react-i18next"
 import { DataProvider } from "./context/DataContext"
+import { SubscriptionProvider, useSubscription } from "./context/SubscriptionContext"
+import { UpgradeModal } from "./components/UpgradeModal"
 
 // Lazy load route components for better performance
 const LandingPage = lazy(() => import("./pages/LandingPage").then(m => ({ default: m.LandingPage })))
@@ -10,8 +12,21 @@ const PostsPage = lazy(() => import("./pages/PostsPage").then(m => ({ default: m
 const CalendarPage = lazy(() => import("./pages/CalendarPage").then(m => ({ default: m.CalendarPage })))
 const RoadmapPage = lazy(() => import("./pages/RoadmapPage").then(m => ({ default: m.RoadmapPage })))
 
-function App() {
+// Global upgrade modal component
+function GlobalUpgradeModal() {
+  const { showUpgradeModal, closeUpgradeModal, upgradeModalTrigger } = useSubscription()
+  return (
+    <UpgradeModal
+      isOpen={showUpgradeModal}
+      onClose={closeUpgradeModal}
+      trigger={upgradeModalTrigger}
+    />
+  )
+}
+
+function AppContent() {
   const { i18n } = useTranslation()
+  const { checkAndResetMonthly } = useSubscription()
 
   useEffect(() => {
     const currentLang = i18n.language
@@ -21,8 +36,13 @@ function App() {
     document.documentElement.lang = currentLang
   }, [i18n.language])
 
+  // Check and reset monthly counts on app load
+  useEffect(() => {
+    checkAndResetMonthly()
+  }, [checkAndResetMonthly])
+
   return (
-    <DataProvider>
+    <>
       <BrowserRouter>
         <Suspense fallback={
           <div className="min-h-screen bg-background flex items-center justify-center">
@@ -38,6 +58,17 @@ function App() {
           </Routes>
         </Suspense>
       </BrowserRouter>
+      <GlobalUpgradeModal />
+    </>
+  )
+}
+
+function App() {
+  return (
+    <DataProvider>
+      <SubscriptionProvider>
+        <AppContent />
+      </SubscriptionProvider>
     </DataProvider>
   )
 }

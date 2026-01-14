@@ -89,8 +89,8 @@ export function FAQ() {
           <p className="text-muted-foreground mb-2">Still have questions?</p>
           <p className="text-white font-medium">
             Contact us at{" "}
-            <a href="mailto:support@agentos.ai" className="text-primary hover:underline">
-              support@agentos.ai
+            <a href="mailto:support@branding.ai" className="text-primary hover:underline">
+              support@branding.ai
             </a>
           </p>
         </motion.div>

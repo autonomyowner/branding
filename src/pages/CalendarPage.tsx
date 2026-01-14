@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react"
+import { Link } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import { useTranslation } from "react-i18next"
 import { useData, type Post, type Platform } from "../context/DataContext"
@@ -229,12 +230,12 @@ export function CalendarPage() {
           <div className="flex items-center gap-8">
             <Logo />
             <nav className="hidden md:flex items-center gap-6">
-              <a href="/dashboard" className="text-sm text-white/50 hover:text-white transition-colors">{t('nav.dashboard')}</a>
-              <a href="/posts" className="text-sm text-white/50 hover:text-white transition-colors">{t('nav.posts')}</a>
-              <a href="/calendar" className="text-sm text-white font-medium relative">
+              <Link to="/dashboard" className="text-sm text-white/50 hover:text-white transition-colors">{t('nav.dashboard')}</Link>
+              <Link to="/posts" className="text-sm text-white/50 hover:text-white transition-colors">{t('nav.posts')}</Link>
+              <Link to="/calendar" className="text-sm text-white font-medium relative">
                 {t('nav.calendar')}
                 <span className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-amber-400 to-orange-500" />
-              </a>
+              </Link>
             </nav>
           </div>
         </div>
@@ -589,7 +590,7 @@ export function CalendarPage() {
                   )}
 
                   <Button asChild className="w-full mt-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-semibold shadow-lg shadow-amber-500/20">
-                    <a href="/dashboard">Schedule Post</a>
+                    <Link to="/dashboard">Schedule Post</Link>
                   </Button>
                 </>
               )}

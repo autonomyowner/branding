@@ -28,12 +28,12 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            <a href="#" className="text-2xl font-bold tracking-tight mb-4 block">
-              <span className="text-white">Agent</span>
-              <span className="text-primary">OS</span>
+            <a href="/" className="text-2xl font-bold tracking-tight mb-4 block">
+              <span className="text-white">Brand</span>
+              <span className="text-primary">ing</span>
             </a>
             <p className="text-sm text-muted-foreground mb-4">
-              Automate your business with intelligent AI agents.
+              Automate your content with AI-powered tools.
             </p>
             <div className="flex gap-4">
               {["Twitter", "GitHub", "LinkedIn"].map((social) => (
@@ -71,7 +71,7 @@ export function Footer() {
         {/* Bottom */}
         <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground">
-            © 2024 AgentOS. {t('footer.rights')}
+            © 2024 Branding. {t('footer.rights')}
           </p>
           <div className="flex items-center gap-4">
             <span className="text-xs text-muted-foreground">

@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { Link } from "react-router-dom"
 import { motion } from "framer-motion"
 import { useTranslation } from "react-i18next"
 import { useData } from "../context/DataContext"
@@ -74,9 +75,9 @@ export function PostsPage() {
           <div className="flex items-center gap-8">
             <Logo />
             <nav className="hidden md:flex items-center gap-6">
-              <a href="/dashboard" className="text-sm text-muted-foreground hover:text-white transition-colors">{t('nav.dashboard')}</a>
-              <a href="/posts" className="text-sm text-white font-medium">{t('nav.posts')}</a>
-              <a href="/calendar" className="text-sm text-muted-foreground hover:text-white transition-colors">{t('nav.calendar')}</a>
+              <Link to="/dashboard" className="text-sm text-muted-foreground hover:text-white transition-colors">{t('nav.dashboard')}</Link>
+              <Link to="/posts" className="text-sm text-white font-medium">{t('nav.posts')}</Link>
+              <Link to="/calendar" className="text-sm text-muted-foreground hover:text-white transition-colors">{t('nav.calendar')}</Link>
             </nav>
           </div>
         </div>
@@ -156,7 +157,7 @@ export function PostsPage() {
             </p>
             {posts.length === 0 && (
               <Button asChild className="mt-4">
-                <a href="/dashboard">{t('nav.dashboard')}</a>
+                <Link to="/dashboard">{t('nav.dashboard')}</Link>
               </Button>
             )}
           </Card>

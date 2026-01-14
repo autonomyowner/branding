@@ -6,6 +6,7 @@ import { Button } from "./ui/button"
 import { Card } from "./ui/card"
 import { Badge } from "./ui/badge"
 import { StripeCheckout } from "./StripeCheckout"
+import { EmailCaptureModal } from "./EmailCaptureModal"
 import { cn } from "../lib/utils"
 
 interface Plan {
@@ -102,12 +103,24 @@ export function Pricing() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
   const [checkoutOpen, setCheckoutOpen] = useState(false)
+  const [emailCaptureOpen, setEmailCaptureOpen] = useState(false)
   const [selectedPlan, setSelectedPlan] = useState<{ name: string; price: string; isYearly: boolean } | null>(null)
   const [isYearly, setIsYearly] = useState(true)
 
   const handleSelectPlan = (plan: Plan) => {
+    // Don't show email capture for free plan
+    if (plan.price === '£0' || plan.price === '$0') {
+      window.location.href = '/dashboard'
+      return
+    }
+
     const price = isYearly && plan.priceYearly ? plan.priceYearly : plan.price
     setSelectedPlan({ name: plan.name, price, isYearly: isYearly && !!plan.priceYearly })
+    setEmailCaptureOpen(true)
+  }
+
+  const handleEmailCaptured = () => {
+    setEmailCaptureOpen(false)
     setCheckoutOpen(true)
   }
 
@@ -273,7 +286,90 @@ export function Pricing() {
           ))}
         </div>
 
+        {/* Feature Comparison Table */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="mt-16"
+        >
+          <h3 className="text-2xl font-bold text-center mb-8">
+            {t('pricing.compare') || 'Compare Plans'}
+          </h3>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border">
+                  <th className="text-left py-4 px-4 font-medium text-muted-foreground">Feature</th>
+                  <th className="text-center py-4 px-4 font-medium">Free</th>
+                  <th className="text-center py-4 px-4 font-medium bg-primary/5 rounded-t-lg">Pro</th>
+                  <th className="text-center py-4 px-4 font-medium">Business</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b border-border/50">
+                  <td className="py-3 px-4 text-muted-foreground">Brands</td>
+                  <td className="py-3 px-4 text-center">2</td>
+                  <td className="py-3 px-4 text-center bg-primary/5">5</td>
+                  <td className="py-3 px-4 text-center">Unlimited</td>
+                </tr>
+                <tr className="border-b border-border/50">
+                  <td className="py-3 px-4 text-muted-foreground">Posts per month</td>
+                  <td className="py-3 px-4 text-center">20</td>
+                  <td className="py-3 px-4 text-center bg-primary/5">1,000</td>
+                  <td className="py-3 px-4 text-center">90,000</td>
+                </tr>
+                <tr className="border-b border-border/50">
+                  <td className="py-3 px-4 text-muted-foreground">AI Image Generation</td>
+                  <td className="py-3 px-4 text-center text-muted-foreground">-</td>
+                  <td className="py-3 px-4 text-center bg-primary/5 text-primary">✓</td>
+                  <td className="py-3 px-4 text-center text-primary">✓</td>
+                </tr>
+                <tr className="border-b border-border/50">
+                  <td className="py-3 px-4 text-muted-foreground">AI Voiceover</td>
+                  <td className="py-3 px-4 text-center text-muted-foreground">-</td>
+                  <td className="py-3 px-4 text-center bg-primary/5 text-primary">✓</td>
+                  <td className="py-3 px-4 text-center text-primary">✓</td>
+                </tr>
+                <tr className="border-b border-border/50">
+                  <td className="py-3 px-4 text-muted-foreground">YouTube Repurposing</td>
+                  <td className="py-3 px-4 text-center text-muted-foreground">-</td>
+                  <td className="py-3 px-4 text-center bg-primary/5 text-primary">✓</td>
+                  <td className="py-3 px-4 text-center text-primary">✓</td>
+                </tr>
+                <tr className="border-b border-border/50">
+                  <td className="py-3 px-4 text-muted-foreground">Team Collaboration</td>
+                  <td className="py-3 px-4 text-center text-muted-foreground">-</td>
+                  <td className="py-3 px-4 text-center bg-primary/5 text-muted-foreground">-</td>
+                  <td className="py-3 px-4 text-center text-primary">✓</td>
+                </tr>
+                <tr className="border-b border-border/50">
+                  <td className="py-3 px-4 text-muted-foreground">API Access</td>
+                  <td className="py-3 px-4 text-center text-muted-foreground">-</td>
+                  <td className="py-3 px-4 text-center bg-primary/5 text-muted-foreground">-</td>
+                  <td className="py-3 px-4 text-center text-primary">✓</td>
+                </tr>
+                <tr>
+                  <td className="py-3 px-4 text-muted-foreground">Support</td>
+                  <td className="py-3 px-4 text-center">Community</td>
+                  <td className="py-3 px-4 text-center bg-primary/5 rounded-b-lg">Priority</td>
+                  <td className="py-3 px-4 text-center">Dedicated</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </motion.div>
+
       </div>
+
+      {/* Email Capture Modal */}
+      <EmailCaptureModal
+        isOpen={emailCaptureOpen}
+        onClose={() => setEmailCaptureOpen(false)}
+        onContinue={handleEmailCaptured}
+        planName={selectedPlan?.name || ""}
+        planPrice={selectedPlan?.price || ""}
+      />
 
       {/* Stripe Checkout Modal */}
       <StripeCheckout

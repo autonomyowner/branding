@@ -18,7 +18,9 @@ interface Section {
   tasks: Task[]
 }
 
-const initialSections: Section[] = [
+type RoadmapType = "outreach" | "ads" | "quick10"
+
+const initialOutreachSections: Section[] = [
   {
     id: "daily",
     title: "Daily 6-Hour Schedule",
@@ -142,26 +144,302 @@ const initialSections: Section[] = [
   },
 ]
 
+const initialAdsSections: Section[] = [
+  {
+    id: "daily-ads",
+    title: "Daily 4-6 Hour Schedule",
+    subtitle: "Paid Ads + Organic Content Strategy",
+    tasks: [
+      { id: "ad1", text: "Hour 1: Create & launch Facebook/Instagram ads (3-5 variations)", completed: false },
+      { id: "ad2", text: "Hour 2: Create organic content (3 Reels, 5 Stories, 2 Posts)", completed: false },
+      { id: "ad3", text: "Hour 3: Monitor ad performance + adjust targeting/budgets", completed: false },
+      { id: "ad4", text: "Hour 4: Engage with ALL comments + DMs (ads + organic)", completed: false },
+      { id: "ad5", text: "Hour 5: Content creation for YouTube, TikTok, Blog", completed: false },
+      { id: "ad6", text: "Hour 6: Analyze metrics + plan next day (CTR, CPA, engagement)", completed: false },
+    ]
+  },
+  {
+    id: "week1-ads",
+    title: "Week 1: Foundation",
+    subtitle: "Setup ads + organic content engine",
+    budget: "$200 ad spend",
+    tasks: [
+      { id: "w1a-1", text: "Set up Facebook Business Manager + Meta Pixel", completed: false },
+      { id: "w1a-2", text: "Create Instagram & TikTok Business accounts", completed: false },
+      { id: "w1a-3", text: "Install Meta Pixel on T21 landing page", completed: false },
+      { id: "w1a-4", text: "Create 5 ad creative variations (video + image)", completed: false },
+      { id: "w1a-5", text: "Set up conversion tracking (sign-ups + trials)", completed: false },
+      { id: "w1a-6", text: "Define target audiences (5 different segments)", completed: false },
+      { id: "w1a-7", text: "Launch first campaign: $100 budget, broad targeting", completed: false },
+      { id: "w1a-8", text: "Post 2-3 Reels per day (product demos, tips, before/after)", completed: false },
+      { id: "w1a-9", text: "Post 3-5 Stories per day (behind-the-scenes, features)", completed: false },
+      { id: "w1a-10", text: "Start YouTube channel - upload first demo video", completed: false },
+      { id: "w1a-11", text: "Create lookalike audience from website visitors", completed: false },
+      { id: "w1a-12", text: "Write 2 blog posts for SEO (organic search traffic)", completed: false },
+    ]
+  },
+  {
+    id: "week2-ads",
+    title: "Week 2: Optimize",
+    subtitle: "Scale ads + grow organic reach",
+    budget: "$300 ad spend",
+    tasks: [
+      { id: "w2a-1", text: "Analyze Week 1 data (CPA, CTR, conversion rate)", completed: false },
+      { id: "w2a-2", text: "Kill underperforming ad sets (CPA > $15)", completed: false },
+      { id: "w2a-3", text: "Double budget on best-performing ads ($150)", completed: false },
+      { id: "w2a-4", text: "Create retargeting campaign for website visitors ($80)", completed: false },
+      { id: "w2a-5", text: "Launch Instagram Story ads ($70)", completed: false },
+      { id: "w2a-6", text: "Post 3 Reels per day (use trending audio + hashtags)", completed: false },
+      { id: "w2a-7", text: "Post 5 Stories per day + engage with followers", completed: false },
+      { id: "w2a-8", text: "Upload 2 YouTube videos (tutorials, case studies)", completed: false },
+      { id: "w2a-9", text: "Write 3 blog posts + share on social media", completed: false },
+      { id: "w2a-10", text: "Test carousel ads vs single image vs video", completed: false },
+      { id: "w2a-11", text: "Partner with 2 micro-influencers for shoutouts", completed: false },
+      { id: "w2a-12", text: "Start TikTok - post 2 videos per day", completed: false },
+    ]
+  },
+  {
+    id: "week3-ads",
+    title: "Week 3: Scale",
+    subtitle: "Maximize paid + organic growth",
+    budget: "$500 ad spend",
+    tasks: [
+      { id: "w3a-1", text: "Scale best ad sets to $250 total budget", completed: false },
+      { id: "w3a-2", text: "Launch conversion campaign targeting lookalikes ($150)", completed: false },
+      { id: "w3a-3", text: "Create testimonial-based ads from trial users", completed: false },
+      { id: "w3a-4", text: "Run Instagram Reels ads ($100 budget)", completed: false },
+      { id: "w3a-5", text: "Post 4 Reels per day across Instagram + TikTok", completed: false },
+      { id: "w3a-6", text: "Post 2 YouTube videos (long-form tutorials)", completed: false },
+      { id: "w3a-7", text: "Write 4 blog posts targeting high-intent keywords", completed: false },
+      { id: "w3a-8", text: "Run organic giveaway (follow + tag friends)", completed: false },
+      { id: "w3a-9", text: "Collaborate with 3 micro-influencers (content trades)", completed: false },
+      { id: "w3a-10", text: "Create Pinterest account + pin all blog posts", completed: false },
+      { id: "w3a-11", text: "Optimize best-performing organic content (repost/repurpose)", completed: false },
+    ]
+  },
+  {
+    id: "week4-ads",
+    title: "Week 4: Maximize",
+    subtitle: "Peak paid + organic performance",
+    budget: "$800 ad spend",
+    tasks: [
+      { id: "w4a-1", text: "Allocate $560 to proven winning ad sets", completed: false },
+      { id: "w4a-2", text: "Test $240 on new audiences/creatives", completed: false },
+      { id: "w4a-3", text: "Launch urgency-based ads (limited time offer)", completed: false },
+      { id: "w4a-4", text: "Create case study video ads from customers", completed: false },
+      { id: "w4a-5", text: "Run retargeting to video viewers (50%+ watched)", completed: false },
+      { id: "w4a-6", text: "Post 5 Reels per day (comparison, results, tutorials)", completed: false },
+      { id: "w4a-7", text: "Upload 3 YouTube videos (SEO-optimized)", completed: false },
+      { id: "w4a-8", text: "Write 5 blog posts + optimize old posts", completed: false },
+      { id: "w4a-9", text: "Create organic referral program (share = bonus)", completed: false },
+      { id: "w4a-10", text: "Repurpose top content across all platforms", completed: false },
+      { id: "w4a-11", text: "Document what worked for Month 2 playbook", completed: false },
+      { id: "w4a-12", text: "Hit 50-80 paying customers & £500-800 MRR", completed: false },
+    ]
+  },
+  {
+    id: "facebook-ads",
+    title: "Facebook Ads Strategy",
+    subtitle: "Campaign structure",
+    tasks: [
+      { id: "fb-1", text: "Campaign objective: Conversions (not traffic)", completed: false },
+      { id: "fb-2", text: "Target: Social media managers, content creators, 25-45", completed: false },
+      { id: "fb-3", text: "Placements: Facebook Feed + Instagram Feed + Stories", completed: false },
+      { id: "fb-4", text: "Budget: Start $20-30/day, scale to $100-200/day", completed: false },
+      { id: "fb-5", text: "Creative: Short video demos (15-30 sec)", completed: false },
+      { id: "fb-6", text: "Copy: Problem → Solution → CTA format", completed: false },
+      { id: "fb-7", text: "Test 5 ad variations per week", completed: false },
+      { id: "fb-8", text: "Target CPA: Under £10 per trial sign-up", completed: false },
+    ]
+  },
+  {
+    id: "instagram-growth",
+    title: "Instagram Organic Growth",
+    subtitle: "Build following + engagement (no outreach)",
+    tasks: [
+      { id: "ig-1", text: "Post 3-5 Reels per day (trending audio + viral hooks)", completed: false },
+      { id: "ig-2", text: "Create 5-7 Stories per day (behind-the-scenes, tips, polls)", completed: false },
+      { id: "ig-3", text: "Use 25-30 relevant hashtags per post", completed: false },
+      { id: "ig-4", text: "Engage with 50-100 posts in your niche daily", completed: false },
+      { id: "ig-5", text: "Reply to ALL comments within 1 hour", completed: false },
+      { id: "ig-6", text: "Create content in trending formats (transformations, tutorials)", completed: false },
+      { id: "ig-7", text: "Collaborate with other creators (duets/shares)", completed: false },
+      { id: "ig-8", text: "Post user testimonials, results, case studies", completed: false },
+    ]
+  },
+  {
+    id: "content-seo",
+    title: "Content Creation & Organic Traffic",
+    subtitle: "Long-term SEO + YouTube strategy",
+    tasks: [
+      { id: "seo-1", text: "YouTube: Upload 2-3 videos per week (tutorials, demos)", completed: false },
+      { id: "seo-2", text: "Blog: Write 3-5 SEO-optimized posts per week", completed: false },
+      { id: "seo-3", text: "TikTok: Post 2-3 short videos daily", completed: false },
+      { id: "seo-4", text: "Pinterest: Pin all blog posts + infographics", completed: false },
+      { id: "seo-5", text: "Reddit: Share valuable content (no spam) in relevant subs", completed: false },
+      { id: "seo-6", text: "Quora: Answer questions with helpful content", completed: false },
+      { id: "seo-7", text: "Repurpose content: 1 YouTube video → 5 TikToks → 1 blog post", completed: false },
+      { id: "seo-8", text: "Build email list from all organic channels", completed: false },
+    ]
+  },
+]
+
+const initialQuick10Sections: Section[] = [
+  {
+    id: "week1-quick",
+    title: "Week 1: Low-Hanging Fruit",
+    subtitle: "Get first 3-5 customers from personal network",
+    budget: "$0",
+    tasks: [
+      { id: "q1-1", text: "Message 20 friends/family/colleagues about T21", completed: false },
+      { id: "q1-2", text: "Offer free 3-month Pro trial to first 5 who try it", completed: false },
+      { id: "q1-3", text: "Post about T21 on your personal social media", completed: false },
+      { id: "q1-4", text: "DM everyone who likes/comments with trial offer", completed: false },
+      { id: "q1-5", text: "Convert 3-5 trials to paid (offer 50% lifetime discount)", completed: false },
+      { id: "q1-6", text: "Post in 5 Facebook groups (provide value first)", completed: false },
+      { id: "q1-7", text: "Post in 5 Reddit communities (helpful, not spam)", completed: false },
+      { id: "q1-8", text: "Join 3 Slack/Discord communities for creators", completed: false },
+    ]
+  },
+  {
+    id: "week2-quick",
+    title: "Week 2: Product Hunt + Communities",
+    subtitle: "Launch + get 3-5 more customers",
+    budget: "$0-50",
+    tasks: [
+      { id: "q2-1", text: "Prepare Product Hunt launch (screenshots, video)", completed: false },
+      { id: "q2-2", text: "Schedule launch for Tuesday/Wednesday", completed: false },
+      { id: "q2-3", text: "Message 50 people to upvote on launch day", completed: false },
+      { id: "q2-4", text: "Reply to EVERY Product Hunt comment within 5 minutes", completed: false },
+      { id: "q2-5", text: "Offer PH exclusive: 50% off forever for first 20", completed: false },
+      { id: "q2-6", text: "Convert 3-5 Product Hunt users to paid", completed: false },
+      { id: "q2-7", text: "Post in 10 more Facebook groups (different ones)", completed: false },
+      { id: "q2-8", text: "DM 20 warm leads from communities with demo", completed: false },
+    ]
+  },
+  {
+    id: "week3-quick",
+    title: "Week 3: Direct Outreach + Deals",
+    subtitle: "Final push to hit 10 customers",
+    budget: "$0-100",
+    tasks: [
+      { id: "q3-1", text: "DM 50 Instagram creators (10k-50k followers)", completed: false },
+      { id: "q3-2", text: "DM 50 TikTok creators offering free Pro trial", completed: false },
+      { id: "q3-3", text: "Send 100 personalized LinkedIn messages", completed: false },
+      { id: "q3-4", text: "Offer lifetime deal: £99 one-time (if desperate)", completed: false },
+      { id: "q3-5", text: "Submit to AppSumo/DealMirror (may take time)", completed: false },
+      { id: "q3-6", text: "Post testimonials from first customers everywhere", completed: false },
+      { id: "q3-7", text: "Run small $50 Facebook ad to retarget visitors", completed: false },
+      { id: "q3-8", text: "Hit 10 paying customers → STOP and run for 3 months", completed: false },
+    ]
+  },
+  {
+    id: "personal-network",
+    title: "Personal Network Strategy",
+    subtitle: "Easiest first customers",
+    tasks: [
+      { id: "pn-1", text: "List 50 people you know who create content", completed: false },
+      { id: "pn-2", text: "Send personalized message (not copy-paste)", completed: false },
+      { id: "pn-3", text: "Offer: Free Pro for 3 months, then 50% off forever", completed: false },
+      { id: "pn-4", text: "Follow up with demo call if interested", completed: false },
+      { id: "pn-5", text: "Ask them to refer friends (offer referral bonus)", completed: false },
+      { id: "pn-6", text: "Convert at least 2-3 from personal network", completed: false },
+    ]
+  },
+  {
+    id: "product-hunt",
+    title: "Product Hunt Launch",
+    subtitle: "Get 2-5 customers in 1 day",
+    tasks: [
+      { id: "ph-1", text: "Create compelling tagline + description", completed: false },
+      { id: "ph-2", text: "Make 30-second demo video (screen recording)", completed: false },
+      { id: "ph-3", text: "Prepare 5 screenshots showing key features", completed: false },
+      { id: "ph-4", text: "Launch Tuesday-Thursday (best days)", completed: false },
+      { id: "ph-5", text: "Reply to every comment within 5 minutes", completed: false },
+      { id: "ph-6", text: "Offer Product Hunt exclusive deal in comments", completed: false },
+      { id: "ph-7", text: "Message top hunters to try product before launch", completed: false },
+      { id: "ph-8", text: "Post launch on Twitter, LinkedIn, communities", completed: false },
+    ]
+  },
+  {
+    id: "communities",
+    title: "Reddit + Facebook Groups",
+    subtitle: "Free traffic from communities",
+    tasks: [
+      { id: "com-1", text: "Join 10 Facebook groups (social media managers)", completed: false },
+      { id: "com-2", text: "Join 10 subreddits (r/socialmedia, r/marketing, etc)", completed: false },
+      { id: "com-3", text: "Provide value first - answer questions for 1 week", completed: false },
+      { id: "com-4", text: "Share T21 when relevant (not spam)", completed: false },
+      { id: "com-5", text: "DM people who engage with your posts", completed: false },
+      { id: "com-6", text: "Post case study/results after getting customers", completed: false },
+    ]
+  },
+]
+
 // Weekly metrics targets
-const weeklyTargets = [
+const outreachWeeklyTargets = [
   { week: 1, reached: "1,500-2,000", conversations: "100-150", trials: "20-40", paid: "3-8", revenue: "£21-56" },
   { week: 2, reached: "3,500-4,500", conversations: "250-350", trials: "50-80", paid: "10-20", revenue: "£70-140" },
   { week: 3, reached: "6,000-7,000", conversations: "400-550", trials: "80-120", paid: "20-35", revenue: "£140-245" },
   { week: 4, reached: "8,000-10,000", conversations: "600-800", trials: "120-180", paid: "35-60", revenue: "£245-420" },
 ]
 
+const adsWeeklyTargets = [
+  { week: 1, reached: "2,000-3,000", adSpend: "$200", impressions: "50k-80k", trials: "30-50", paid: "5-12", revenue: "£35-84" },
+  { week: 2, reached: "5,000-8,000", adSpend: "$300", impressions: "120k-180k", trials: "70-100", paid: "15-25", revenue: "£105-175" },
+  { week: 3, reached: "10,000-15,000", adSpend: "$500", impressions: "250k-350k", trials: "120-160", paid: "30-50", revenue: "£210-350" },
+  { week: 4, reached: "18,000-25,000", adSpend: "$800", impressions: "450k-600k", trials: "180-250", paid: "50-80", revenue: "£350-560" },
+]
+
 export function RoadmapPage() {
-  const [sections, setSections] = useState<Section[]>(() => {
-    const saved = localStorage.getItem("t21-roadmap-progress-v2")
+  const [roadmapType, setRoadmapType] = useState<RoadmapType>(() => {
+    const saved = localStorage.getItem("t21-selected-roadmap")
+    return (saved as RoadmapType) || "outreach"
+  })
+
+  const [outreachSections, setOutreachSections] = useState<Section[]>(() => {
+    const saved = localStorage.getItem("t21-roadmap-outreach-v2")
     if (saved) {
       return JSON.parse(saved)
     }
-    return initialSections
+    return initialOutreachSections
   })
 
+  const [adsSections, setAdsSections] = useState<Section[]>(() => {
+    const saved = localStorage.getItem("t21-roadmap-ads-v2")
+    if (saved) {
+      return JSON.parse(saved)
+    }
+    return initialAdsSections
+  })
+
+  const [quick10Sections, setQuick10Sections] = useState<Section[]>(() => {
+    const saved = localStorage.getItem("t21-roadmap-quick10-v2")
+    if (saved) {
+      return JSON.parse(saved)
+    }
+    return initialQuick10Sections
+  })
+
+  const sections = roadmapType === "outreach" ? outreachSections : roadmapType === "ads" ? adsSections : quick10Sections
+  const setSections = roadmapType === "outreach" ? setOutreachSections : roadmapType === "ads" ? setAdsSections : setQuick10Sections
+  const weeklyTargets = roadmapType === "outreach" ? outreachWeeklyTargets : roadmapType === "ads" ? adsWeeklyTargets : []
+
   useEffect(() => {
-    localStorage.setItem("t21-roadmap-progress-v2", JSON.stringify(sections))
-  }, [sections])
+    localStorage.setItem("t21-roadmap-outreach-v2", JSON.stringify(outreachSections))
+  }, [outreachSections])
+
+  useEffect(() => {
+    localStorage.setItem("t21-roadmap-ads-v2", JSON.stringify(adsSections))
+  }, [adsSections])
+
+  useEffect(() => {
+    localStorage.setItem("t21-roadmap-quick10-v2", JSON.stringify(quick10Sections))
+  }, [quick10Sections])
+
+  useEffect(() => {
+    localStorage.setItem("t21-selected-roadmap", roadmapType)
+  }, [roadmapType])
 
   const toggleTask = (sectionId: string, taskId: string) => {
     setSections(prev => prev.map(section => {
@@ -181,8 +459,15 @@ export function RoadmapPage() {
   }
 
   const resetProgress = () => {
-    if (confirm("Reset all progress? This cannot be undone.")) {
-      setSections(initialSections)
+    const roadmapName = roadmapType === "outreach" ? "Outreach" : roadmapType === "ads" ? "Ads" : "Quick 10"
+    if (confirm(`Reset ${roadmapName} roadmap progress? This cannot be undone.`)) {
+      if (roadmapType === "outreach") {
+        setOutreachSections(initialOutreachSections)
+      } else if (roadmapType === "ads") {
+        setAdsSections(initialAdsSections)
+      } else {
+        setQuick10Sections(initialQuick10Sections)
+      }
     }
   }
 
@@ -205,21 +490,76 @@ export function RoadmapPage() {
         </div>
       </header>
 
+      {/* Roadmap Selector */}
+      <div className="max-w-5xl mx-auto px-6 pt-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <button
+            onClick={() => setRoadmapType("outreach")}
+            className={`p-4 rounded-lg border-2 transition-all ${
+              roadmapType === "outreach"
+                ? "border-primary bg-primary/10"
+                : "border-white/10 bg-white/5 hover:bg-white/10"
+            }`}
+          >
+            <h3 className="font-semibold mb-1">Roadmap 1: Outreach</h3>
+            <p className="text-sm text-muted-foreground">LinkedIn + Cold Email</p>
+            <p className="text-xs text-muted-foreground mt-1">Target: £250-420 MRR</p>
+          </button>
+          <button
+            onClick={() => setRoadmapType("ads")}
+            className={`p-4 rounded-lg border-2 transition-all ${
+              roadmapType === "ads"
+                ? "border-primary bg-primary/10"
+                : "border-white/10 bg-white/5 hover:bg-white/10"
+            }`}
+          >
+            <h3 className="font-semibold mb-1">Roadmap 2: Ads & Social</h3>
+            <p className="text-sm text-muted-foreground">Facebook + Instagram</p>
+            <p className="text-xs text-muted-foreground mt-1">Target: £350-560 MRR</p>
+          </button>
+          <button
+            onClick={() => setRoadmapType("quick10")}
+            className={`p-4 rounded-lg border-2 transition-all ${
+              roadmapType === "quick10"
+                ? "border-emerald-500 bg-emerald-500/10"
+                : "border-white/10 bg-white/5 hover:bg-white/10"
+            }`}
+          >
+            <h3 className="font-semibold mb-1">Roadmap 3: Quick 10</h3>
+            <p className="text-sm text-muted-foreground">Get 10 customers FAST</p>
+            <p className="text-xs text-emerald-400 mt-1">Budget: $0-100 | 2-3 weeks</p>
+          </button>
+        </div>
+      </div>
+
       <main className="max-w-5xl mx-auto px-6 py-12">
         {/* Hero */}
         <motion.div
+          key={roadmapType}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-12"
         >
           <h1 className="text-4xl font-bold mb-2">
-            30-Day <span className="text-primary">Revenue Roadmap</span>
+            {roadmapType === "quick10" ? "Quick 10 Customers" : "30-Day"} <span className="text-primary">
+              {roadmapType === "outreach" ? "Outreach" : roadmapType === "ads" ? "Ads & Social Media" : "Flippa Exit"}
+            </span> Roadmap
           </h1>
           <p className="text-muted-foreground mb-2">
-            6 hours/day = 180 hours of focused sales work
+            {roadmapType === "outreach"
+              ? "6 hours/day = 180 hours of focused sales work (LinkedIn + Cold Email)"
+              : roadmapType === "ads"
+              ? "4-6 hours/day = Paid ads + organic content (Instagram, TikTok, YouTube, Blog)"
+              : "2-3 weeks to get 10 paying customers with $0-100 budget"
+            }
           </p>
           <p className="text-xl font-semibold text-primary">
-            Expected outcome: £350-700 revenue + £250-420 MRR
+            {roadmapType === "outreach"
+              ? "Expected outcome: £350-700 revenue + £250-420 MRR"
+              : roadmapType === "ads"
+              ? "Expected outcome: £500-900 revenue + £350-560 MRR (paid + organic traffic)"
+              : "Goal: 10 customers = £70-150 MRR → Sell on Flippa for £800-£3,600"
+            }
           </p>
         </motion.div>
 
@@ -249,62 +589,148 @@ export function RoadmapPage() {
 
         {/* The Math */}
         <motion.div
+          key={`math-${roadmapType}`}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15 }}
           className="mb-8"
         >
           <Card className="p-6 border-primary/50">
-            <h2 className="text-xl font-semibold mb-4">The Math: 180 Hours</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-6">
-              <div className="p-4 bg-white/5 rounded-lg">
-                <p className="text-3xl font-bold">6h</p>
-                <p className="text-sm text-muted-foreground">Daily</p>
+            <h2 className="text-xl font-semibold mb-4">
+              {roadmapType === "outreach"
+                ? "The Math: 180 Hours"
+                : roadmapType === "ads"
+                ? "The Math: 120-180 Hours + $1,800 Ad Budget"
+                : "The Math: Just Get 10 Customers"
+              }
+            </h2>
+            {roadmapType === "quick10" ? (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-6">
+                <div className="p-4 bg-white/5 rounded-lg">
+                  <p className="text-3xl font-bold">10</p>
+                  <p className="text-sm text-muted-foreground">Target Customers</p>
+                </div>
+                <div className="p-4 bg-white/5 rounded-lg">
+                  <p className="text-3xl font-bold">2-3</p>
+                  <p className="text-sm text-muted-foreground">Weeks</p>
+                </div>
+                <div className="p-4 bg-white/5 rounded-lg">
+                  <p className="text-3xl font-bold">$0-100</p>
+                  <p className="text-sm text-muted-foreground">Total Budget</p>
+                </div>
+                <div className="p-4 bg-white/5 rounded-lg">
+                  <p className="text-3xl font-bold">£70-150</p>
+                  <p className="text-sm text-muted-foreground">MRR Goal</p>
+                </div>
               </div>
-              <div className="p-4 bg-white/5 rounded-lg">
-                <p className="text-3xl font-bold">180h</p>
-                <p className="text-sm text-muted-foreground">Monthly</p>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center mb-6">
+                <div className="p-4 bg-white/5 rounded-lg">
+                  <p className="text-3xl font-bold">{roadmapType === "outreach" ? "6h" : "4-6h"}</p>
+                  <p className="text-sm text-muted-foreground">Daily</p>
+                </div>
+                <div className="p-4 bg-white/5 rounded-lg">
+                  <p className="text-3xl font-bold">{roadmapType === "outreach" ? "180h" : "150h"}</p>
+                  <p className="text-sm text-muted-foreground">Monthly</p>
+                </div>
+                <div className="p-4 bg-white/5 rounded-lg">
+                  <p className="text-3xl font-bold">{roadmapType === "outreach" ? "10K" : "25K"}</p>
+                  <p className="text-sm text-muted-foreground">People Reached</p>
+                </div>
+                <div className="p-4 bg-white/5 rounded-lg">
+                  <p className="text-3xl font-bold">{roadmapType === "outreach" ? "£400" : "£500"}</p>
+                  <p className="text-sm text-muted-foreground">Expected MRR</p>
+                </div>
               </div>
-              <div className="p-4 bg-white/5 rounded-lg">
-                <p className="text-3xl font-bold">10K</p>
-                <p className="text-sm text-muted-foreground">People Reached</p>
+            )}
+            {roadmapType === "quick10" ? (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
+                <div className="flex justify-between p-2 bg-white/5 rounded">
+                  <span className="text-muted-foreground">Personal network</span>
+                  <span className="font-medium">3-5 customers</span>
+                </div>
+                <div className="flex justify-between p-2 bg-white/5 rounded">
+                  <span className="text-muted-foreground">Product Hunt</span>
+                  <span className="font-medium">2-5 customers</span>
+                </div>
+                <div className="flex justify-between p-2 bg-white/5 rounded">
+                  <span className="text-muted-foreground">Communities</span>
+                  <span className="font-medium">2-3 customers</span>
+                </div>
+                <div className="flex justify-between p-2 bg-white/5 rounded">
+                  <span className="text-muted-foreground">Total budget</span>
+                  <span className="font-medium">$0-100</span>
+                </div>
+                <div className="flex justify-between p-2 bg-white/5 rounded">
+                  <span className="text-muted-foreground">Timeline</span>
+                  <span className="font-medium">2-3 weeks</span>
+                </div>
+                <div className="flex justify-between p-2 bg-white/5 rounded">
+                  <span className="text-muted-foreground">Flippa value</span>
+                  <span className="font-medium">£800-£3,600</span>
+                </div>
               </div>
-              <div className="p-4 bg-white/5 rounded-lg">
-                <p className="text-3xl font-bold">£400</p>
-                <p className="text-sm text-muted-foreground">Expected MRR</p>
+            ) : roadmapType === "outreach" ? (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
+                <div className="flex justify-between p-2 bg-white/5 rounded">
+                  <span className="text-muted-foreground">LinkedIn requests</span>
+                  <span className="font-medium">2,000-2,500</span>
+                </div>
+                <div className="flex justify-between p-2 bg-white/5 rounded">
+                  <span className="text-muted-foreground">Cold emails</span>
+                  <span className="font-medium">5,000-7,000</span>
+                </div>
+                <div className="flex justify-between p-2 bg-white/5 rounded">
+                  <span className="text-muted-foreground">Conversations</span>
+                  <span className="font-medium">600-800</span>
+                </div>
+                <div className="flex justify-between p-2 bg-white/5 rounded">
+                  <span className="text-muted-foreground">Trials</span>
+                  <span className="font-medium">120-180</span>
+                </div>
+                <div className="flex justify-between p-2 bg-white/5 rounded">
+                  <span className="text-muted-foreground">Paid customers</span>
+                  <span className="font-medium">35-60</span>
+                </div>
+                <div className="flex justify-between p-2 bg-white/5 rounded">
+                  <span className="text-muted-foreground">Content pieces</span>
+                  <span className="font-medium">60-90</span>
+                </div>
               </div>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
-              <div className="flex justify-between p-2 bg-white/5 rounded">
-                <span className="text-muted-foreground">LinkedIn requests</span>
-                <span className="font-medium">2,000-2,500</span>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
+                <div className="flex justify-between p-2 bg-white/5 rounded">
+                  <span className="text-muted-foreground">Total ad spend</span>
+                  <span className="font-medium">$1,800</span>
+                </div>
+                <div className="flex justify-between p-2 bg-white/5 rounded">
+                  <span className="text-muted-foreground">Paid impressions</span>
+                  <span className="font-medium">450k-600k</span>
+                </div>
+                <div className="flex justify-between p-2 bg-white/5 rounded">
+                  <span className="text-muted-foreground">Organic reach</span>
+                  <span className="font-medium">200k-350k</span>
+                </div>
+                <div className="flex justify-between p-2 bg-white/5 rounded">
+                  <span className="text-muted-foreground">Content pieces</span>
+                  <span className="font-medium">300-400</span>
+                </div>
+                <div className="flex justify-between p-2 bg-white/5 rounded">
+                  <span className="text-muted-foreground">Trials</span>
+                  <span className="font-medium">180-250</span>
+                </div>
+                <div className="flex justify-between p-2 bg-white/5 rounded">
+                  <span className="text-muted-foreground">Paid customers</span>
+                  <span className="font-medium">50-80</span>
+                </div>
               </div>
-              <div className="flex justify-between p-2 bg-white/5 rounded">
-                <span className="text-muted-foreground">Cold emails</span>
-                <span className="font-medium">5,000-7,000</span>
-              </div>
-              <div className="flex justify-between p-2 bg-white/5 rounded">
-                <span className="text-muted-foreground">Conversations</span>
-                <span className="font-medium">600-800</span>
-              </div>
-              <div className="flex justify-between p-2 bg-white/5 rounded">
-                <span className="text-muted-foreground">Trials</span>
-                <span className="font-medium">120-180</span>
-              </div>
-              <div className="flex justify-between p-2 bg-white/5 rounded">
-                <span className="text-muted-foreground">Paid customers</span>
-                <span className="font-medium">35-60</span>
-              </div>
-              <div className="flex justify-between p-2 bg-white/5 rounded">
-                <span className="text-muted-foreground">Content pieces</span>
-                <span className="font-medium">60-90</span>
-              </div>
-            </div>
+            )}
           </Card>
         </motion.div>
 
         {/* Weekly Targets Table */}
         <motion.div
+          key={`targets-${roadmapType}`}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
@@ -318,7 +744,14 @@ export function RoadmapPage() {
                   <tr className="border-b border-white/10">
                     <th className="text-left py-3 px-2">Week</th>
                     <th className="text-left py-3 px-2">Reached</th>
-                    <th className="text-left py-3 px-2">Conversations</th>
+                    {roadmapType === "outreach" ? (
+                      <th className="text-left py-3 px-2">Conversations</th>
+                    ) : (
+                      <>
+                        <th className="text-left py-3 px-2">Ad Spend</th>
+                        <th className="text-left py-3 px-2">Impressions</th>
+                      </>
+                    )}
                     <th className="text-left py-3 px-2">Trials</th>
                     <th className="text-left py-3 px-2">Paid</th>
                     <th className="text-left py-3 px-2 text-primary">Revenue</th>
@@ -329,7 +762,14 @@ export function RoadmapPage() {
                     <tr key={w.week} className="border-b border-white/5">
                       <td className="py-3 px-2 font-medium">Week {w.week}</td>
                       <td className="py-3 px-2">{w.reached}</td>
-                      <td className="py-3 px-2">{w.conversations}</td>
+                      {roadmapType === "outreach" ? (
+                        <td className="py-3 px-2">{"conversations" in w ? w.conversations : ""}</td>
+                      ) : (
+                        <>
+                          <td className="py-3 px-2">{"adSpend" in w ? w.adSpend : ""}</td>
+                          <td className="py-3 px-2">{"impressions" in w ? w.impressions : ""}</td>
+                        </>
+                      )}
                       <td className="py-3 px-2">{w.trials}</td>
                       <td className="py-3 px-2">{w.paid}</td>
                       <td className="py-3 px-2 text-primary font-semibold">{w.revenue}</td>
@@ -397,6 +837,7 @@ export function RoadmapPage() {
 
         {/* Channel Breakdown */}
         <motion.div
+          key={`channels-${roadmapType}`}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
@@ -404,8 +845,9 @@ export function RoadmapPage() {
         >
           <Card className="p-6">
             <h2 className="text-xl font-semibold mb-4">Revenue by Channel</h2>
-            <div className="space-y-4">
-              <div>
+            {roadmapType === "outreach" ? (
+              <div className="space-y-4">
+                <div>
                 <div className="flex justify-between mb-1">
                   <span className="text-sm">LinkedIn (35%)</span>
                   <span className="text-sm text-primary">£140-210</span>
@@ -449,19 +891,172 @@ export function RoadmapPage() {
                 <div className="h-2 bg-white/10 rounded-full overflow-hidden">
                   <div className="h-full bg-pink-500 w-[5%]" />
                 </div>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="space-y-4">
+                <div>
+                  <div className="flex justify-between mb-1">
+                    <span className="text-sm">Paid Ads (50%)</span>
+                    <span className="text-sm text-primary">£175-280</span>
+                  </div>
+                  <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                    <div className="h-full bg-blue-500 w-[50%]" />
+                  </div>
+                </div>
+                <div>
+                  <div className="flex justify-between mb-1">
+                    <span className="text-sm">Instagram Organic (20%)</span>
+                    <span className="text-sm text-primary">£70-112</span>
+                  </div>
+                  <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                    <div className="h-full bg-pink-500 w-[20%]" />
+                  </div>
+                </div>
+                <div>
+                  <div className="flex justify-between mb-1">
+                    <span className="text-sm">TikTok Organic (15%)</span>
+                    <span className="text-sm text-primary">£52-84</span>
+                  </div>
+                  <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                    <div className="h-full bg-purple-500 w-[15%]" />
+                  </div>
+                </div>
+                <div>
+                  <div className="flex justify-between mb-1">
+                    <span className="text-sm">YouTube/SEO (10%)</span>
+                    <span className="text-sm text-primary">£35-56</span>
+                  </div>
+                  <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                    <div className="h-full bg-red-500 w-[10%]" />
+                  </div>
+                </div>
+                <div>
+                  <div className="flex justify-between mb-1">
+                    <span className="text-sm">Influencers (5%)</span>
+                    <span className="text-sm text-primary">£17-28</span>
+                  </div>
+                  <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+                    <div className="h-full bg-orange-500 w-[5%]" />
+                  </div>
+                </div>
+              </div>
+            )}
           </Card>
         </motion.div>
 
-        {/* Templates Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35 }}
-          className="mb-8 space-y-6"
-        >
-          {/* Cold Email Template */}
+        {/* Influencer Partnership Guide - Only for Ads */}
+        {roadmapType === "ads" && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.35 }}
+            className="mb-8"
+          >
+            <Card className="p-6 border-purple-500/50">
+              <h2 className="text-xl font-semibold mb-2">10 Micro-Influencer Partnership Strategy</h2>
+              <p className="text-sm text-muted-foreground mb-6">Offer: $50 upfront + 20% of MRR from their referrals</p>
+
+              {/* How to Find Them */}
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold mb-3">Where to Find Micro-Influencers (5k-50k followers):</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="bg-white/5 rounded-lg p-4">
+                    <p className="font-semibold mb-2 text-blue-400">Instagram Search:</p>
+                    <ul className="text-sm space-y-1 text-muted-foreground">
+                      <li>• #socialmediamanager (2M+ posts)</li>
+                      <li>• #contentcreator (50M+ posts)</li>
+                      <li>• #socialmediatips (500k+ posts)</li>
+                      <li>• Filter: 5k-50k followers</li>
+                    </ul>
+                  </div>
+                  <div className="bg-white/5 rounded-lg p-4">
+                    <p className="font-semibold mb-2 text-pink-400">TikTok Search:</p>
+                    <ul className="text-sm space-y-1 text-muted-foreground">
+                      <li>• "social media tips"</li>
+                      <li>• "content creator hacks"</li>
+                      <li>• Filter: 10k-100k followers</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              {/* Target Profiles */}
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold mb-3">10 Target Influencer Types:</h3>
+                <div className="bg-blue-500/10 rounded-lg p-4 border border-blue-500/30 text-sm">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <p>1. Social media management tips</p>
+                    <p>2. Content creation tutorials</p>
+                    <p>3. Instagram growth strategies</p>
+                    <p>4. Freelance social media managers</p>
+                    <p>5. Digital marketing coaches</p>
+                    <p>6. Agency owners (1-5 employees)</p>
+                    <p>7. Content repurposing educators</p>
+                    <p>8. LinkedIn creators</p>
+                    <p>9. "Productivity for creators" niche</p>
+                    <p>10. Small business marketing</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Deal Structure */}
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold mb-3">Partnership Deal:</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-emerald-500/10 rounded-lg p-4 border border-emerald-500/30">
+                    <p className="font-semibold mb-2 text-emerald-400">Upfront</p>
+                    <p className="text-2xl font-bold">$50</p>
+                    <p className="text-xs text-muted-foreground">Per influencer</p>
+                  </div>
+                  <div className="bg-purple-500/10 rounded-lg p-4 border border-purple-500/30">
+                    <p className="font-semibold mb-2 text-purple-400">Recurring</p>
+                    <p className="text-2xl font-bold">20% MRR</p>
+                    <p className="text-xs text-muted-foreground">From referrals</p>
+                  </div>
+                  <div className="bg-blue-500/10 rounded-lg p-4 border border-blue-500/30">
+                    <p className="font-semibold mb-2 text-blue-400">Expected</p>
+                    <p className="text-2xl font-bold">5-15</p>
+                    <p className="text-xs text-muted-foreground">Customers each</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Math */}
+              <div className="mb-6">
+                <h3 className="text-lg font-semibold mb-3">Revenue Math:</h3>
+                <div className="bg-white/5 rounded-lg p-4 text-sm">
+                  <p className="mb-2"><span className="font-semibold text-primary">10 customers per influencer</span> × £7/mo = £70 MRR</p>
+                  <p className="mb-2">Your 80% = <span className="font-semibold text-primary">£56/month</span></p>
+                  <p className="mb-2">Influencer 20% = £14/month</p>
+                  <p className="text-xs text-muted-foreground pt-3 border-t border-white/10">10 influencers × 10 customers = 100 customers = £560 MRR for you</p>
+                </div>
+              </div>
+
+              {/* Outreach */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3">DM Template:</h3>
+                <div className="bg-white/5 rounded-lg p-4 text-sm">
+                  <p className="mb-2">Hey [Name]! Love your content on [topic].</p>
+                  <p className="mb-2">I built T21 - auto-generates social posts for Instagram, TikTok, LinkedIn from one input.</p>
+                  <p className="mb-2 font-semibold">Partnership offer: $50 upfront + 20% monthly recurring from referrals (forever).</p>
+                  <p className="mb-2">If 10 followers sign up (£7/mo), you earn £14/month passive + $50 upfront.</p>
+                  <p>Interested? I can send demo + custom promo code.</p>
+                </div>
+              </div>
+            </Card>
+          </motion.div>
+        )}
+
+        {/* Templates Section - Only for Outreach */}
+        {roadmapType === "outreach" && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.35 }}
+            className="mb-8 space-y-6"
+          >
+            {/* Cold Email Template */}
           <Card className="p-6">
             <h2 className="text-lg font-semibold mb-4">Cold Email Templates</h2>
             <div className="space-y-4">
@@ -578,7 +1173,8 @@ export function RoadmapPage() {
               </div>
             </div>
           </Card>
-        </motion.div>
+          </motion.div>
+        )}
 
         {/* Task Sections */}
         <div className="space-y-6">
@@ -651,34 +1247,58 @@ export function RoadmapPage() {
 
         {/* Budget Breakdown */}
         <motion.div
+          key={`budget-${roadmapType}`}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mt-8"
         >
           <Card className="p-6">
-            <h2 className="text-lg font-semibold mb-4">Budget: $50</h2>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
-              <div className="p-3 bg-white/5 rounded-lg">
-                <p className="text-xl font-bold">$10</p>
-                <p className="text-xs text-muted-foreground">Cold domain</p>
+            <h2 className="text-lg font-semibold mb-4">
+              {roadmapType === "outreach" ? "Budget: $50" : "Budget: $1,800"}
+            </h2>
+            {roadmapType === "outreach" ? (
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
+                <div className="p-3 bg-white/5 rounded-lg">
+                  <p className="text-xl font-bold">$10</p>
+                  <p className="text-xs text-muted-foreground">Cold domain</p>
+                </div>
+                <div className="p-3 bg-white/5 rounded-lg">
+                  <p className="text-xl font-bold">$30</p>
+                  <p className="text-xs text-muted-foreground">Twitter Ads</p>
+                </div>
+                <div className="p-3 bg-white/5 rounded-lg">
+                  <p className="text-xl font-bold">$10</p>
+                  <p className="text-xs text-muted-foreground">TikTok Ads</p>
+                </div>
+                <div className="p-3 bg-white/5 rounded-lg">
+                  <p className="text-xl font-bold">$0</p>
+                  <p className="text-xs text-muted-foreground">Brevo (free)</p>
+                </div>
+                <div className="p-3 bg-white/5 rounded-lg">
+                  <p className="text-xl font-bold">$0</p>
+                  <p className="text-xs text-muted-foreground">Apollo (free)</p>
+                </div>
               </div>
-              <div className="p-3 bg-white/5 rounded-lg">
-                <p className="text-xl font-bold">$30</p>
-                <p className="text-xs text-muted-foreground">Twitter Ads</p>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                <div className="p-3 bg-white/5 rounded-lg">
+                  <p className="text-xl font-bold">$200</p>
+                  <p className="text-xs text-muted-foreground">Week 1 Ads</p>
+                </div>
+                <div className="p-3 bg-white/5 rounded-lg">
+                  <p className="text-xl font-bold">$300</p>
+                  <p className="text-xs text-muted-foreground">Week 2 Ads</p>
+                </div>
+                <div className="p-3 bg-white/5 rounded-lg">
+                  <p className="text-xl font-bold">$500</p>
+                  <p className="text-xs text-muted-foreground">Week 3 Ads</p>
+                </div>
+                <div className="p-3 bg-white/5 rounded-lg">
+                  <p className="text-xl font-bold">$800</p>
+                  <p className="text-xs text-muted-foreground">Week 4 Ads</p>
+                </div>
               </div>
-              <div className="p-3 bg-white/5 rounded-lg">
-                <p className="text-xl font-bold">$10</p>
-                <p className="text-xs text-muted-foreground">TikTok Ads</p>
-              </div>
-              <div className="p-3 bg-white/5 rounded-lg">
-                <p className="text-xl font-bold">$0</p>
-                <p className="text-xs text-muted-foreground">Brevo (free)</p>
-              </div>
-              <div className="p-3 bg-white/5 rounded-lg">
-                <p className="text-xl font-bold">$0</p>
-                <p className="text-xs text-muted-foreground">Apollo (free)</p>
-              </div>
-            </div>
+            )}
           </Card>
         </motion.div>
 
@@ -729,37 +1349,176 @@ export function RoadmapPage() {
 
         {/* Month 2+ Projection */}
         <motion.div
+          key={`projection-${roadmapType}`}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mt-8"
         >
           <Card className="p-6 border-primary/50">
             <h2 className="text-xl font-semibold mb-4">What Happens Next (Month 2+)</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-              <div className="p-4 bg-white/5 rounded-lg">
-                <p className="text-sm text-muted-foreground mb-1">End of Month 1</p>
-                <p className="text-2xl font-bold text-primary">£300+ MRR</p>
-                <p className="text-xs text-muted-foreground">35-60 customers</p>
+            {roadmapType === "outreach" ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                <div className="p-4 bg-white/5 rounded-lg">
+                  <p className="text-sm text-muted-foreground mb-1">End of Month 1</p>
+                  <p className="text-2xl font-bold text-primary">£300+ MRR</p>
+                  <p className="text-xs text-muted-foreground">35-60 customers</p>
+                </div>
+                <div className="p-4 bg-white/5 rounded-lg">
+                  <p className="text-sm text-muted-foreground mb-1">End of Month 2</p>
+                  <p className="text-2xl font-bold text-primary">£550-800 MRR</p>
+                  <p className="text-xs text-muted-foreground">Pipeline converts + new</p>
+                </div>
+                <div className="p-4 bg-white/5 rounded-lg">
+                  <p className="text-sm text-muted-foreground mb-1">End of Month 3</p>
+                  <p className="text-2xl font-bold text-primary">£1,000+ MRR</p>
+                  <p className="text-xs text-muted-foreground">Compounding effect</p>
+                </div>
               </div>
-              <div className="p-4 bg-white/5 rounded-lg">
-                <p className="text-sm text-muted-foreground mb-1">End of Month 2</p>
-                <p className="text-2xl font-bold text-primary">£550-800 MRR</p>
-                <p className="text-xs text-muted-foreground">Pipeline converts + new</p>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                <div className="p-4 bg-white/5 rounded-lg">
+                  <p className="text-sm text-muted-foreground mb-1">End of Month 1</p>
+                  <p className="text-2xl font-bold text-primary">£500+ MRR</p>
+                  <p className="text-xs text-muted-foreground">50-80 customers</p>
+                </div>
+                <div className="p-4 bg-white/5 rounded-lg">
+                  <p className="text-sm text-muted-foreground mb-1">End of Month 2</p>
+                  <p className="text-2xl font-bold text-primary">£900-1,200 MRR</p>
+                  <p className="text-xs text-muted-foreground">Scale ads + retargeting</p>
+                </div>
+                <div className="p-4 bg-white/5 rounded-lg">
+                  <p className="text-sm text-muted-foreground mb-1">End of Month 3</p>
+                  <p className="text-2xl font-bold text-primary">£1,500+ MRR</p>
+                  <p className="text-xs text-muted-foreground">Optimized funnels</p>
+                </div>
               </div>
-              <div className="p-4 bg-white/5 rounded-lg">
-                <p className="text-sm text-muted-foreground mb-1">End of Month 3</p>
-                <p className="text-2xl font-bold text-primary">£1,000+ MRR</p>
-                <p className="text-xs text-muted-foreground">Compounding effect</p>
+            )}
+            <p className="text-center text-muted-foreground text-sm mt-6">
+              {roadmapType === "outreach"
+                ? "The first month is the hardest. The engine you build keeps paying."
+                : "As you optimize your ads, CPA drops and ROAS increases exponentially."
+              }
+            </p>
+          </Card>
+        </motion.div>
+
+        {/* 10 Customer Flippa Plan */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-8"
+        >
+          <Card className="p-6 border-blue-500/50">
+            <h2 className="text-xl font-semibold mb-2">10 Customer Flippa Exit Plan</h2>
+            <p className="text-sm text-muted-foreground mb-6">Minimal viable approach: Get 10 customers, build MRR, sell quickly</p>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+              {/* Budget Required */}
+              <div className="p-4 bg-blue-500/10 rounded-lg border border-blue-500/30">
+                <h3 className="text-sm font-semibold mb-3 text-blue-400">Budget Needed</h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Minimal (outreach only)</span>
+                    <span className="font-semibold">$0-20</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Small ads boost</span>
+                    <span className="font-semibold">$100-200</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Aggressive ads</span>
+                    <span className="font-semibold">$300-500</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Revenue Scenarios */}
+              <div className="p-4 bg-white/5 rounded-lg border border-white/10">
+                <h3 className="text-sm font-semibold mb-3">10 Customers MRR</h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">All on Basic (£7)</span>
+                    <span className="font-semibold text-primary">£70/mo</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Mix (avg £10)</span>
+                    <span className="font-semibold text-primary">£100/mo</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Most Pro (avg £15)</span>
+                    <span className="font-semibold text-primary">£150/mo</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Flippa Value */}
+              <div className="p-4 bg-emerald-500/10 rounded-lg border border-emerald-500/30">
+                <h3 className="text-sm font-semibold mb-3 text-emerald-400">Flippa Sale Price</h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">£70 MRR (£840 ARR)</span>
+                    <span className="font-semibold text-emerald-400">£800-1,700</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">£100 MRR (£1,200 ARR)</span>
+                    <span className="font-semibold text-emerald-400">£1,200-2,400</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">£150 MRR (£1,800 ARR)</span>
+                    <span className="font-semibold text-emerald-400">£1,800-3,600</span>
+                  </div>
+                </div>
               </div>
             </div>
-            <p className="text-center text-muted-foreground text-sm mt-6">
-              The first month is the hardest. The engine you build keeps paying.
-            </p>
+
+            {/* Recommended Path */}
+            <div className="bg-blue-500/10 rounded-lg p-4 border border-blue-500/30 mb-4">
+              <h3 className="text-sm font-semibold mb-3 text-blue-400">Recommended Path to 10 Customers:</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <p className="font-semibold mb-2">Week 1-2: Free Outreach ($0)</p>
+                  <ul className="space-y-1 text-muted-foreground ml-4">
+                    <li>• 500 LinkedIn connections</li>
+                    <li>• 1,000 cold emails (Brevo free)</li>
+                    <li>• Post daily on Twitter/LinkedIn</li>
+                    <li>• Reddit/communities (5-10 posts)</li>
+                  </ul>
+                </div>
+                <div>
+                  <p className="font-semibold mb-2">Week 3-4: Small Ads ($100-200)</p>
+                  <ul className="space-y-1 text-muted-foreground ml-4">
+                    <li>• Facebook ads: $100 (10-20 trials)</li>
+                    <li>• Follow up with ALL leads</li>
+                    <li>• Offer lifetime deals for urgency</li>
+                    <li>• Convert 10 customers → DONE</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {/* Reality Check */}
+            <div className="bg-yellow-500/10 rounded-lg p-4 border border-yellow-500/30">
+              <h3 className="text-sm font-semibold mb-2 text-yellow-400">⚠️ Reality Check:</h3>
+              <ul className="text-sm space-y-1 text-muted-foreground">
+                <li>• 10 customers in 1-2 months is achievable with hustle</li>
+                <li>• Flippa sale price: £800-£3,600 (depends on MRR + age)</li>
+                <li>• Buyers want 3+ months of consistent MRR history</li>
+                <li>• You'll need proof: Stripe dashboard, customer list, churn rate</li>
+                <li>• <span className="text-yellow-400 font-semibold">Best strategy:</span> Get 10 customers fast, run for 3-6 months, then sell (better multiple)</li>
+              </ul>
+            </div>
+
+            <div className="mt-4 text-center">
+              <p className="text-sm text-muted-foreground">
+                <span className="font-semibold text-primary">Quick flip timeline:</span> 2 months to get customers + 3 months history = 5 months total to sale
+              </p>
+            </div>
           </Card>
         </motion.div>
 
         {/* Flippa Valuation */}
         <motion.div
+          key={`flippa-${roadmapType}`}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mt-8"
@@ -768,47 +1527,91 @@ export function RoadmapPage() {
             <h2 className="text-xl font-semibold mb-2">Flippa Exit Value</h2>
             <p className="text-sm text-muted-foreground mb-6">SaaS multiples: 3-5x ARR for established businesses</p>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-              <div className="p-4 bg-white/5 rounded-lg text-center border border-red-500/30">
-                <p className="text-xs text-muted-foreground mb-1">Month 1</p>
-                <p className="text-sm font-medium mb-1">£350 MRR</p>
-                <p className="text-xs text-muted-foreground mb-2">£4,200 ARR</p>
-                <div className="border-t border-white/10 pt-2">
-                  <p className="text-lg font-bold text-red-400">£4k-£8k</p>
-                  <p className="text-xs text-muted-foreground">1-2x (Too early)</p>
+            {roadmapType === "outreach" ? (
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div className="p-4 bg-white/5 rounded-lg text-center border border-red-500/30">
+                  <p className="text-xs text-muted-foreground mb-1">Month 1</p>
+                  <p className="text-sm font-medium mb-1">£350 MRR</p>
+                  <p className="text-xs text-muted-foreground mb-2">£4,200 ARR</p>
+                  <div className="border-t border-white/10 pt-2">
+                    <p className="text-lg font-bold text-red-400">£4k-£8k</p>
+                    <p className="text-xs text-muted-foreground">1-2x (Too early)</p>
+                  </div>
                 </div>
-              </div>
 
-              <div className="p-4 bg-white/5 rounded-lg text-center border border-yellow-500/30">
-                <p className="text-xs text-muted-foreground mb-1">Month 3</p>
-                <p className="text-sm font-medium mb-1">£1,000 MRR</p>
-                <p className="text-xs text-muted-foreground mb-2">£12,000 ARR</p>
-                <div className="border-t border-white/10 pt-2">
-                  <p className="text-lg font-bold text-yellow-400">£24k-£36k</p>
-                  <p className="text-xs text-muted-foreground">2-3x (Growing)</p>
+                <div className="p-4 bg-white/5 rounded-lg text-center border border-yellow-500/30">
+                  <p className="text-xs text-muted-foreground mb-1">Month 3</p>
+                  <p className="text-sm font-medium mb-1">£1,000 MRR</p>
+                  <p className="text-xs text-muted-foreground mb-2">£12,000 ARR</p>
+                  <div className="border-t border-white/10 pt-2">
+                    <p className="text-lg font-bold text-yellow-400">£24k-£36k</p>
+                    <p className="text-xs text-muted-foreground">2-3x (Growing)</p>
+                  </div>
                 </div>
-              </div>
 
-              <div className="p-4 bg-white/5 rounded-lg text-center border border-primary/30">
-                <p className="text-xs text-muted-foreground mb-1">Month 6</p>
-                <p className="text-sm font-medium mb-1">£1,500 MRR</p>
-                <p className="text-xs text-muted-foreground mb-2">£18,000 ARR</p>
-                <div className="border-t border-white/10 pt-2">
-                  <p className="text-lg font-bold text-primary">£54k-£72k</p>
-                  <p className="text-xs text-muted-foreground">3-4x (Proven)</p>
+                <div className="p-4 bg-white/5 rounded-lg text-center border border-primary/30">
+                  <p className="text-xs text-muted-foreground mb-1">Month 6</p>
+                  <p className="text-sm font-medium mb-1">£1,500 MRR</p>
+                  <p className="text-xs text-muted-foreground mb-2">£18,000 ARR</p>
+                  <div className="border-t border-white/10 pt-2">
+                    <p className="text-lg font-bold text-primary">£54k-£72k</p>
+                    <p className="text-xs text-muted-foreground">3-4x (Proven)</p>
+                  </div>
                 </div>
-              </div>
 
-              <div className="p-4 bg-white/5 rounded-lg text-center border border-emerald-500/50">
-                <p className="text-xs text-muted-foreground mb-1">Month 12</p>
-                <p className="text-sm font-medium mb-1">£2,500 MRR</p>
-                <p className="text-xs text-muted-foreground mb-2">£30,000 ARR</p>
-                <div className="border-t border-white/10 pt-2">
-                  <p className="text-lg font-bold text-emerald-400">£90k-£150k</p>
-                  <p className="text-xs text-muted-foreground">3-5x (Strong)</p>
+                <div className="p-4 bg-white/5 rounded-lg text-center border border-emerald-500/50">
+                  <p className="text-xs text-muted-foreground mb-1">Month 12</p>
+                  <p className="text-sm font-medium mb-1">£2,500 MRR</p>
+                  <p className="text-xs text-muted-foreground mb-2">£30,000 ARR</p>
+                  <div className="border-t border-white/10 pt-2">
+                    <p className="text-lg font-bold text-emerald-400">£90k-£150k</p>
+                    <p className="text-xs text-muted-foreground">3-5x (Strong)</p>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div className="p-4 bg-white/5 rounded-lg text-center border border-red-500/30">
+                  <p className="text-xs text-muted-foreground mb-1">Month 1</p>
+                  <p className="text-sm font-medium mb-1">£500 MRR</p>
+                  <p className="text-xs text-muted-foreground mb-2">£6,000 ARR</p>
+                  <div className="border-t border-white/10 pt-2">
+                    <p className="text-lg font-bold text-red-400">£6k-£12k</p>
+                    <p className="text-xs text-muted-foreground">1-2x (Too early)</p>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-white/5 rounded-lg text-center border border-yellow-500/30">
+                  <p className="text-xs text-muted-foreground mb-1">Month 3</p>
+                  <p className="text-sm font-medium mb-1">£1,500 MRR</p>
+                  <p className="text-xs text-muted-foreground mb-2">£18,000 ARR</p>
+                  <div className="border-t border-white/10 pt-2">
+                    <p className="text-lg font-bold text-yellow-400">£36k-£54k</p>
+                    <p className="text-xs text-muted-foreground">2-3x (Growing)</p>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-white/5 rounded-lg text-center border border-primary/30">
+                  <p className="text-xs text-muted-foreground mb-1">Month 6</p>
+                  <p className="text-sm font-medium mb-1">£2,500 MRR</p>
+                  <p className="text-xs text-muted-foreground mb-2">£30,000 ARR</p>
+                  <div className="border-t border-white/10 pt-2">
+                    <p className="text-lg font-bold text-primary">£90k-£120k</p>
+                    <p className="text-xs text-muted-foreground">3-4x (Proven)</p>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-white/5 rounded-lg text-center border border-emerald-500/50">
+                  <p className="text-xs text-muted-foreground mb-1">Month 12</p>
+                  <p className="text-sm font-medium mb-1">£4,000 MRR</p>
+                  <p className="text-xs text-muted-foreground mb-2">£48,000 ARR</p>
+                  <div className="border-t border-white/10 pt-2">
+                    <p className="text-lg font-bold text-emerald-400">£144k-£240k</p>
+                    <p className="text-xs text-muted-foreground">3-5x (Strong)</p>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div className="bg-emerald-500/10 rounded-lg p-4 border border-emerald-500/30">
               <h3 className="text-sm font-semibold mb-3">What Increases Your Multiple:</h3>

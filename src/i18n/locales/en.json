@@ -14,9 +14,15 @@
     "titleHighlight": "Automated Content Platform",
     "subtitle": "Create brands, schedule posts, and automate your social media content. An AI-powered platform for content automation.",
     "cta": "Start Free",
+    "ctaFree": "Start Free - No Credit Card",
+    "freePlanInfo": "2 brands, 20 posts/month free",
+    "viewPricing": "View Pricing",
     "demo": "See How It Works",
     "users": "The first automated content platform",
-    "trustedBy": "Trusted by businesses worldwide"
+    "trustedBy": "Trusted by businesses worldwide",
+    "trustNoCreditCard": "No credit card required",
+    "trustCancel": "Cancel anytime",
+    "trustLocalData": "Your data stays private"
   },
   "problem": {
     "title": "Stop Manual",

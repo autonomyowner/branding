@@ -270,12 +270,48 @@ export function Hero() {
           transition={{ duration: 0.5, delay: 0.3 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
-          <Button size="lg" className="w-full sm:w-auto min-w-[200px]">
-            {t('hero.cta')}
+          <div className="flex flex-col items-center">
+            <Button size="lg" className="w-full sm:w-auto min-w-[200px]" asChild>
+              <a href="/dashboard">
+                {t('hero.ctaFree') || 'Start Free - No Credit Card'}
+              </a>
+            </Button>
+            <span className="text-xs text-muted-foreground mt-2">
+              {t('hero.freePlanInfo') || '2 brands, 20 posts/month free'}
+            </span>
+          </div>
+          <Button variant="outline" size="lg" className="w-full sm:w-auto min-w-[200px]" asChild>
+            <a href="#pricing">
+              {t('hero.viewPricing') || 'View Pricing'}
+            </a>
           </Button>
-          <Button variant="outline" size="lg" className="w-full sm:w-auto min-w-[200px]">
-            {t('hero.demo')}
-          </Button>
+        </motion.div>
+
+        {/* Trust Badges */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mt-10"
+        >
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            <span>{t('hero.trustNoCreditCard')}</span>
+          </div>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            <span>{t('hero.trustCancel')}</span>
+          </div>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            <span>{t('hero.trustLocalData')}</span>
+          </div>
         </motion.div>
 
       </div>

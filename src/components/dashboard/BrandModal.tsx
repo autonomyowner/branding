@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { useData, VOICE_OPTIONS } from '../../context/DataContext'
+import { useSubscription } from '../../context/SubscriptionContext'
 import { Button } from '../ui/button'
 import { Card } from '../ui/card'
 
@@ -16,6 +17,7 @@ const COLORS = ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#ec4899'
 export function BrandModal({ isOpen, onClose, editBrandId }: BrandModalProps) {
   const { t } = useTranslation()
   const { brands, addBrand, updateBrand, selectBrand } = useData()
+  const { canAddBrand, openUpgradeModal } = useSubscription()
 
   const editBrand = editBrandId ? brands.find(b => b.id === editBrandId) : null
 
@@ -42,6 +44,13 @@ export function BrandModal({ isOpen, onClose, editBrandId }: BrandModalProps) {
     const topics = topicsInput.split(',').map(t => t.trim()).filter(Boolean)
     if (topics.length === 0) {
       setError('At least one topic is required')
+      return
+    }
+
+    // Check brand limit for new brands (not edits)
+    if (!editBrandId && !canAddBrand(brands.length)) {
+      handleClose()
+      openUpgradeModal('brand')
       return
     }
 

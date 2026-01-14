@@ -12,7 +12,10 @@ import { VoiceoverModal } from "./VoiceoverModal"
 import { ImageGeneratorModal } from "./ImageGeneratorModal"
 import { BrandModal } from "./BrandModal"
 import { SettingsModal } from "./SettingsModal"
+import { WelcomeModal } from "./WelcomeModal"
+import { Link } from "react-router-dom"
 import { useData } from "../../context/DataContext"
+import { useSubscription } from "../../context/SubscriptionContext"
 import { Logo } from "../ui/Logo"
 import { Button } from "../ui/button"
 
@@ -25,6 +28,10 @@ export function Dashboard() {
   const [isBrandModalOpen, setIsBrandModalOpen] = useState(false)
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
   const { settings } = useData()
+  const { subscription } = useSubscription()
+
+  // Show welcome modal for first-time visitors
+  const [isWelcomeModalOpen, setIsWelcomeModalOpen] = useState(!subscription.hasSeenWelcome)
 
   return (
     <div className="min-h-screen bg-background">
@@ -34,9 +41,9 @@ export function Dashboard() {
           <div className="flex items-center gap-8">
             <Logo />
             <nav className="hidden md:flex items-center gap-6">
-              <a href="/dashboard" className="text-sm text-white font-medium">{t('nav.dashboard')}</a>
-              <a href="/posts" className="text-sm text-muted-foreground hover:text-white transition-colors">{t('nav.posts')}</a>
-              <a href="/calendar" className="text-sm text-muted-foreground hover:text-white transition-colors">{t('nav.calendar')}</a>
+              <Link to="/dashboard" className="text-sm text-white font-medium">{t('nav.dashboard')}</Link>
+              <Link to="/posts" className="text-sm text-muted-foreground hover:text-white transition-colors">{t('nav.posts')}</Link>
+              <Link to="/calendar" className="text-sm text-muted-foreground hover:text-white transition-colors">{t('nav.calendar')}</Link>
               <button
                 onClick={() => setIsGenerateModalOpen(true)}
                 className="text-sm text-muted-foreground hover:text-white transition-colors"
@@ -156,6 +163,10 @@ export function Dashboard() {
       <SettingsModal
         isOpen={isSettingsModalOpen}
         onClose={() => setIsSettingsModalOpen(false)}
+      />
+      <WelcomeModal
+        isOpen={isWelcomeModalOpen}
+        onClose={() => setIsWelcomeModalOpen(false)}
       />
     </div>
   )

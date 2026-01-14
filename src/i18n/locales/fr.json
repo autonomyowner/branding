@@ -1,0 +1,442 @@
+{
+  "nav": {
+    "features": "Fonctionnalités",
+    "pricing": "Tarifs",
+    "faq": "FAQ",
+    "signIn": "Connexion",
+    "getStarted": "Commencer",
+    "dashboard": "Tableau de bord",
+    "posts": "Publications",
+    "calendar": "Calendrier"
+  },
+  "hero": {
+    "title": "La Première",
+    "titleHighlight": "Plateforme de Contenu Automatisée",
+    "subtitle": "Créez des marques, planifiez des publications et automatisez votre contenu sur les réseaux sociaux. Une plateforme alimentée par l'IA pour l'automatisation du contenu.",
+    "cta": "Commencer Gratuit",
+    "ctaFree": "Gratuit - Sans Carte",
+    "freePlanInfo": "2 marques, 20 publications/mois gratuit",
+    "viewPricing": "Voir les Tarifs",
+    "demo": "Voir Comment Ça Marche",
+    "users": "La première plateforme de contenu automatisée",
+    "trustedBy": "Approuvé par des entreprises du monde entier",
+    "trustNoCreditCard": "Aucune carte de crédit requise",
+    "trustCancel": "Annulez à tout moment",
+    "trustLocalData": "Vos données restent privées"
+  },
+  "problem": {
+    "title": "Arrêtez la Création",
+    "titleHighlight": "Manuelle de Contenu",
+    "oldWay": "L'ANCIENNE MÉTHODE",
+    "newWay": "LA NOUVELLE MÉTHODE",
+    "before": {
+      "title": "Avant: Travail Manuel",
+      "point1": "Créer des publications une par une",
+      "point2": "Calendrier de publication incohérent",
+      "point3": "Gérer plusieurs marques séparément",
+      "point4": "Des heures sur les idées de contenu",
+      "point5": "Pas de collaboration d'équipe"
+    },
+    "after": {
+      "title": "Après: Contenu Automatisé",
+      "point1": "Générez des publications automatiquement avec l'IA",
+      "point2": "Planifiez le contenu à l'avance",
+      "point3": "Gérez toutes les marques en un seul endroit",
+      "point4": "L'IA génère des idées instantanément",
+      "point5": "Collaboration d'équipe intégrée"
+    },
+    "flow": {
+      "step1": "Créer Marque",
+      "step2": "Générer",
+      "step3": "Publier"
+    }
+  },
+  "agents": {
+    "title": "Tout Ce Dont Vous Avez Besoin",
+    "titleHighlight": "En Une Seule Plateforme",
+    "subtitle": "Créez des marques, générez du contenu, planifiez des publications et collaborez avec votre équipe - tout automatisé avec l'IA.",
+    "sales": {
+      "category": "Contenu",
+      "title": "Génération de Contenu IA",
+      "description": "Générez automatiquement des publications engageantes pour toutes les plateformes sociales",
+      "feature1": "Instagram, Facebook, TikTok, LinkedIn",
+      "feature2": "Plusieurs styles de contenu",
+      "feature3": "Contenu aligné sur la marque"
+    },
+    "marketing": {
+      "category": "Images",
+      "title": "Génération d'Images IA",
+      "description": "Créez de superbes images IA avec les modèles Flux et SDXL",
+      "feature1": "Modèles Flux et SDXL",
+      "feature2": "Prompts personnalisés",
+      "feature3": "Sorties haute qualité"
+    },
+    "research": {
+      "category": "Voix",
+      "title": "Script + Voix Off",
+      "description": "Créez des scripts et générez des voix off IA professionnelles",
+      "feature1": "Génération de voix naturelle",
+      "feature2": "Plusieurs options de voix",
+      "feature3": "Optimisation du script"
+    },
+    "content": {
+      "category": "Réutiliser",
+      "title": "YouTube vers Publications",
+      "description": "Transformez n'importe quelle vidéo YouTube en plusieurs publications",
+      "feature1": "Extraction automatique de transcription",
+      "feature2": "Génération multi-publications",
+      "feature3": "Réutilisation du contenu"
+    },
+    "data": {
+      "category": "Marques",
+      "title": "Gestion des Marques",
+      "description": "Créez et gérez plusieurs marques avec des voix et styles uniques",
+      "feature1": "Plusieurs profils de marque",
+      "feature2": "Voix de marque personnalisée",
+      "feature3": "Contenu spécifique à la marque"
+    },
+    "support": {
+      "category": "Planification",
+      "title": "Planification Intelligente",
+      "description": "Planifiez votre calendrier de contenu à l'avance",
+      "feature1": "Calendrier de contenu visuel",
+      "feature2": "Planification en masse",
+      "feature3": "Meilleurs moments de publication"
+    }
+  },
+  "howItWorks": {
+    "title": "Comment Ça",
+    "titleHighlight": "Fonctionne",
+    "step1": {
+      "title": "Créer Marque",
+      "description": "Configurez votre marque avec voix, style et sujets"
+    },
+    "step2": {
+      "title": "Générer Contenu",
+      "description": "L'IA crée des publications adaptées à votre marque"
+    },
+    "step3": {
+      "title": "Planifier Publications",
+      "description": "Planifiez votre calendrier de contenu à l'avance"
+    },
+    "step4": {
+      "title": "Automatiser",
+      "description": "Laissez la plateforme gérer la publication automatiquement"
+    }
+  },
+  "pricing": {
+    "title": "Tarifs",
+    "titleHighlight": "Simples",
+    "subtitle": "Commencez gratuitement, évoluez selon vos besoins.",
+    "monthly": "mois",
+    "monthlyLabel": "Mensuel",
+    "yearlyLabel": "Annuel",
+    "savePercentage": "Économisez 20%",
+    "year": "an",
+    "compare": "Comparer les Plans",
+    "starter": {
+      "name": "Gratuit",
+      "price": "€0",
+      "description": "Parfait pour commencer",
+      "cta": "Commencer Gratuit",
+      "feature1": "2 marques",
+      "feature2": "Jusqu'à 20 publications",
+      "feature3": "Planification basique",
+      "feature4": "Support communautaire"
+    },
+    "pro": {
+      "name": "Pro",
+      "price": "€9",
+      "priceYearly": "€79",
+      "saveAmount": "Économisez €29",
+      "description": "Pour les entreprises en croissance",
+      "cta": "Obtenir Pro",
+      "feature1": "5 marques",
+      "feature2": "Jusqu'à 1 000 publications",
+      "feature3": "Planification avancée",
+      "feature4": "Support prioritaire",
+      "feature5": "Collaboration d'équipe"
+    },
+    "enterprise": {
+      "name": "Business",
+      "price": "€39",
+      "priceYearly": "€299",
+      "saveAmount": "Économisez €169",
+      "description": "Pour les agences et grandes équipes",
+      "cta": "Obtenir Business",
+      "feature1": "Marques illimitées",
+      "feature2": "Jusqu'à 90 000 publications",
+      "feature3": "Automatisation complète",
+      "feature4": "Support dédié",
+      "feature5": "Analyses avancées",
+      "feature6": "Accès API"
+    }
+  },
+  "faq": {
+    "title": "Questions",
+    "titleHighlight": "Fréquentes",
+    "q1": {
+      "question": "Qu'est-ce que cette plateforme?",
+      "answer": "C'est une plateforme de contenu automatisée. Elle vous aide à créer des marques, générer du contenu pour les réseaux sociaux avec l'IA, et planifier des publications automatiquement sur toutes les plateformes."
+    },
+    "q2": {
+      "question": "Comment fonctionne la génération de contenu IA?",
+      "answer": "Vous configurez la voix et le style de votre marque, puis notre IA génère des publications engageantes adaptées à votre marque. Vous pouvez générer du contenu pour Instagram, Facebook, TikTok, LinkedIn, et plus."
+    },
+    "q3": {
+      "question": "Ai-je besoin de connaissances techniques?",
+      "answer": "Non! La plateforme est conçue pour être simple. Créez simplement votre marque, cliquez sur générer, et obtenez du contenu professionnel instantanément. Aucune compétence en codage requise."
+    },
+    "q4": {
+      "question": "Quelles plateformes sont supportées?",
+      "answer": "Nous supportons toutes les principales plateformes sociales incluant Instagram, Facebook, TikTok, LinkedIn, Twitter/X, et plus. Vous pouvez gérer tout votre contenu depuis un seul tableau de bord."
+    },
+    "q5": {
+      "question": "Puis-je gérer plusieurs marques?",
+      "answer": "Oui! Selon votre plan, vous pouvez gérer de 2 à un nombre illimité de marques. Chaque marque a sa propre voix, style et contenu. Parfait pour les agences et entreprises avec plusieurs produits."
+    },
+    "q6": {
+      "question": "Combien de publications puis-je créer?",
+      "answer": "Le plan Gratuit inclut 20 publications, le plan Pro inclut 1 000 publications, et le plan Business inclut jusqu'à 90 000 publications par mois. Mettez à niveau à tout moment selon votre croissance."
+    },
+    "q7": {
+      "question": "En quelle devise sont les prix?",
+      "answer": "Tous les prix sont en Euros (€). Nous acceptons les principales méthodes de paiement incluant cartes de crédit et PayPal."
+    },
+    "q8": {
+      "question": "Puis-je annuler à tout moment?",
+      "answer": "Oui! Il n'y a pas de contrats à long terme. Vous pouvez annuler ou changer votre plan à tout moment depuis votre tableau de bord."
+    }
+  },
+  "footer": {
+    "product": {
+      "title": "Produit",
+      "features": "Fonctionnalités",
+      "pricing": "Tarifs",
+      "docs": "Documentation",
+      "changelog": "Journal des modifications"
+    },
+    "company": {
+      "title": "Entreprise",
+      "about": "À propos",
+      "blog": "Blog",
+      "careers": "Carrières",
+      "contact": "Contact"
+    },
+    "legal": {
+      "title": "Légal",
+      "privacy": "Politique de confidentialité",
+      "terms": "Conditions d'utilisation",
+      "security": "Sécurité"
+    },
+    "rights": "Tous droits réservés."
+  },
+  "dashboard": {
+    "welcome": "Bienvenue",
+    "overview": "Aperçu",
+    "stats": {
+      "totalPosts": "Publications Utilisées",
+      "scheduled": "Planifiées",
+      "published": "Publiées",
+      "drafts": "Brouillons"
+    },
+    "recentPosts": "Publications Récentes",
+    "quickActions": "Actions Rapides",
+    "calendarPreview": "Aperçu du Calendrier",
+    "viewAll": "Voir Tout",
+    "viewCalendar": "Voir le Calendrier",
+    "noPosts": "Aucune publication",
+    "createFirst": "Créez votre première publication pour commencer",
+    "generate": "Générer",
+    "brands": "Marques"
+  },
+  "posts": {
+    "title": "Publications",
+    "filter": {
+      "all": "Toutes",
+      "draft": "Brouillons",
+      "scheduled": "Planifiées",
+      "published": "Publiées"
+    },
+    "status": {
+      "draft": "Brouillon",
+      "scheduled": "Planifiée",
+      "published": "Publiée"
+    },
+    "platform": {
+      "instagram": "Instagram",
+      "twitter": "Twitter",
+      "linkedin": "LinkedIn",
+      "tiktok": "TikTok",
+      "facebook": "Facebook"
+    },
+    "noPosts": "Aucune publication trouvée",
+    "createPost": "Créez votre première publication",
+    "scheduledFor": "Planifiée pour",
+    "publishedOn": "Publiée le",
+    "createdOn": "Créée le"
+  },
+  "calendar": {
+    "title": "Calendrier de Contenu",
+    "month": "Mois",
+    "week": "Semaine",
+    "day": "Jour",
+    "today": "Aujourd'hui",
+    "noEvents": "Aucune publication planifiée pour ce jour"
+  },
+  "brandSelector": {
+    "select": "Sélectionner Marque",
+    "manage": "Gérer les Marques"
+  },
+  "brandModal": {
+    "create": "Créer une Nouvelle Marque",
+    "edit": "Modifier la Marque",
+    "name": "Nom de la Marque",
+    "namePlaceholder": "Entrez le nom de la marque",
+    "color": "Couleur de la Marque",
+    "voice": "Voix de la Marque",
+    "voiceOptions": {
+      "professional": "Professionnel",
+      "casual": "Décontracté et Amical",
+      "witty": "Spirituel et Humoristique",
+      "inspirational": "Inspirant",
+      "educational": "Éducatif"
+    },
+    "topics": "Sujets",
+    "topicsPlaceholder": "ex: tech, productivité, design",
+    "description": "Description de la Marque",
+    "descriptionPlaceholder": "Décrivez la personnalité et les valeurs de votre marque",
+    "cancel": "Annuler",
+    "save": "Enregistrer"
+  },
+  "generateModal": {
+    "title": "Générer du Contenu",
+    "selectBrand": "Sélectionnez d'abord une marque",
+    "platform": "Plateforme",
+    "style": "Style de Contenu",
+    "styleOptions": {
+      "viral": "Viral et Engageant",
+      "storytelling": "Storytelling",
+      "educational": "Éducatif",
+      "controversial": "Point de Vue Controversé",
+      "inspirational": "Inspirant"
+    },
+    "topic": "Sujet/Thème",
+    "topicPlaceholder": "De quoi doit parler cette publication?",
+    "generating": "Génération...",
+    "generate": "Générer",
+    "scheduleFor": "Planifier Pour",
+    "scheduleOptional": "(Optionnel)",
+    "saveDraft": "Enregistrer comme Brouillon",
+    "schedule": "Planifier Publication",
+    "scheduleTitle": "Planifier Votre Publication",
+    "back": "Retour",
+    "confirmSchedule": "Confirmer Planification",
+    "apiKeyMissing": "Veuillez ajouter votre clé API OpenRouter dans les paramètres",
+    "error": "Échec de la génération. Veuillez réessayer."
+  },
+  "quickActions": {
+    "generate": "Générer Contenu",
+    "createBrand": "Créer Marque",
+    "voiceover": "Script + Voix Off",
+    "voiceoverDesc": "Créez des scripts et générez des voix off IA",
+    "voiceoverButton": "Créer Voix Off",
+    "videoToPosts": "YouTube vers Publications",
+    "videoToPostsDesc": "Transformez n'importe quelle vidéo YouTube en plusieurs publications",
+    "videoToPostsButton": "Importer Vidéo"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "apiKey": {
+      "title": "Clé API OpenRouter",
+      "label": "Clé API",
+      "placeholder": "sk-or-v1-...",
+      "description": "Votre clé API est stockée localement et jamais envoyée à nos serveurs",
+      "info": "Vous avez besoin d'une clé API OpenRouter pour générer du contenu avec l'IA",
+      "getKey": "Obtenez votre clé API sur OpenRouter",
+      "show": "Afficher",
+      "hide": "Masquer",
+      "connected": "Clé API configurée",
+      "notSet": "Aucune clé API configurée. Ajoutez-en une pour générer du contenu."
+    }
+  },
+  "upgrade": {
+    "brandLimit": {
+      "title": "Limite de marques atteinte!",
+      "description": "Passez à un niveau supérieur pour gérer plus de marques et développer votre entreprise."
+    },
+    "postLimit": {
+      "title": "Toutes vos publications du mois sont utilisées!",
+      "description": "Passez à un niveau supérieur pour créer plus de contenu et engager votre audience."
+    },
+    "imageLimit": {
+      "title": "La génération d'images IA est une fonctionnalité Pro",
+      "description": "Passez à Pro pour créer de superbes images générées par IA pour vos publications."
+    },
+    "voiceoverLimit": {
+      "title": "La voix off est une fonctionnalité Pro",
+      "description": "Passez à Pro pour créer des voix off IA professionnelles pour votre contenu."
+    },
+    "videoLimit": {
+      "title": "La réutilisation vidéo est une fonctionnalité Pro",
+      "description": "Passez à Pro pour transformer des vidéos YouTube en plusieurs publications."
+    },
+    "brandsUsed": "Marques utilisées",
+    "postsUsed": "Publications utilisées",
+    "proIncludes": "Passez à Pro et obtenez:",
+    "benefits": {
+      "posts": "{{count}} publications/mois",
+      "brands": "{{count}} profils de marque",
+      "images": "Génération d'Images IA",
+      "voiceover": "Création de Voix Off IA",
+      "video": "YouTube vers Publications",
+      "support": "Support Prioritaire"
+    },
+    "price": "€9",
+    "pricePerPost": "Moins de €0,01 par publication",
+    "viewPlans": "Voir les Plans",
+    "upgradeToPro": "Passer à Pro"
+  },
+  "welcome": {
+    "title": "Bienvenue sur ContentEngine!",
+    "subtitle": "Votre plateforme d'automatisation de contenu alimentée par l'IA",
+    "feature1": "Générez du contenu IA pour toute plateforme",
+    "feature2": "Gérez plusieurs marques",
+    "feature3": "Planifiez des publications à l'avance",
+    "emailLabel": "Entrez votre email pour sauvegarder votre progression",
+    "emailPlaceholder": "vous@exemple.com",
+    "invalidEmail": "Veuillez entrer un email valide",
+    "freePlan": "Plan Gratuit: 2 marques, 20 publications/mois",
+    "getStarted": "Commencer",
+    "skip": "Passer pour l'instant"
+  },
+  "emailCapture": {
+    "title": "Presque terminé!",
+    "subtitle": "Entrez votre email pour continuer vers le paiement",
+    "planSelected": "Plan sélectionné",
+    "emailLabel": "Adresse email",
+    "emailPlaceholder": "vous@exemple.com",
+    "emailRequired": "L'email est requis",
+    "invalidEmail": "Veuillez entrer un email valide",
+    "marketingConsent": "M'envoyer des conseils et mises à jour sur les nouvelles fonctionnalités",
+    "securityNote": "Nous ne partagerons jamais votre email",
+    "continue": "Continuer vers le Paiement",
+    "skip": "Passer pour l'instant"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "save": "Enregistrer",
+    "saving": "Enregistrement...",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "create": "Créer",
+    "close": "Fermer",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "settings": "Paramètres"
+  }
+}
