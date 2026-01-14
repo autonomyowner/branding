@@ -492,8 +492,59 @@
     "feature3": "Manage multiple brands",
     "emailLabel": "Email address",
     "emailPlaceholder": "Enter your email",
+    "invalidEmail": "Please enter a valid email",
     "freePlan": "Start with 2 brands and 20 posts free",
     "getStarted": "Get Started",
     "skip": "Skip for now"
+  },
+  "emailCapture": {
+    "title": "Almost there!",
+    "subtitle": "Enter your email to continue to payment",
+    "planSelected": "Plan selected",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "you@example.com",
+    "emailRequired": "Email is required",
+    "invalidEmail": "Please enter a valid email",
+    "marketingConsent": "Send me tips and updates on new features",
+    "securityNote": "We'll never share your email",
+    "continue": "Continue to Payment",
+    "skip": "Skip for now"
+  },
+  "upgrade": {
+    "brandLimit": {
+      "title": "Brand limit reached!",
+      "description": "Upgrade to manage more brands and grow your business."
+    },
+    "postLimit": {
+      "title": "All your posts for this month are used!",
+      "description": "Upgrade to create more content and engage your audience."
+    },
+    "imageLimit": {
+      "title": "AI image generation is a Pro feature",
+      "description": "Upgrade to Pro to create stunning AI-generated images for your posts."
+    },
+    "voiceoverLimit": {
+      "title": "Voiceover is a Pro feature",
+      "description": "Upgrade to Pro to create professional AI voiceovers for your content."
+    },
+    "videoLimit": {
+      "title": "Video repurposing is a Pro feature",
+      "description": "Upgrade to Pro to turn YouTube videos into multiple posts."
+    },
+    "brandsUsed": "Brands used",
+    "postsUsed": "Posts used",
+    "proIncludes": "Upgrade to Pro and get:",
+    "benefits": {
+      "posts": "{{count}} posts/month",
+      "brands": "{{count}} brand profiles",
+      "images": "AI Image Generation",
+      "voiceover": "AI Voiceover Creation",
+      "video": "YouTube to Posts",
+      "support": "Priority Support"
+    },
+    "price": "$9",
+    "pricePerPost": "Less than $0.01 per post",
+    "viewPlans": "View Plans",
+    "upgradeToPro": "Upgrade to Pro"
   }
 }
