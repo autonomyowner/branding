@@ -73,11 +73,6 @@ export function Footer() {
           <p className="text-sm text-muted-foreground">
             © 2024 Branding. {t('footer.rights')}
           </p>
-          <div className="flex items-center gap-4">
-            <span className="text-xs text-muted-foreground">
-              Built with AI for the AI era
-            </span>
-          </div>
         </div>
       </div>
     </footer>
