@@ -135,7 +135,7 @@
     "year": "year",
     "starter": {
       "name": "Free",
-      "price": "£0",
+      "price": "$0",
       "description": "Perfect for getting started",
       "cta": "Start Free",
       "feature1": "2 brands",
@@ -145,9 +145,9 @@
     },
     "pro": {
       "name": "Pro",
-      "price": "£9",
-      "priceYearly": "£79",
-      "saveAmount": "Save £29",
+      "price": "$9",
+      "priceYearly": "$79",
+      "saveAmount": "Save $29",
       "description": "For growing businesses",
       "cta": "Get Pro",
       "feature1": "5 brands",
@@ -158,9 +158,9 @@
     },
     "enterprise": {
       "name": "Business",
-      "price": "£39",
-      "priceYearly": "£299",
-      "saveAmount": "Save £169",
+      "price": "$39",
+      "priceYearly": "$299",
+      "saveAmount": "Save $169",
       "description": "For agencies and large teams",
       "cta": "Get Business",
       "feature1": "Unlimited brands",
@@ -200,7 +200,7 @@
     },
     "q7": {
       "question": "What currency are prices in?",
-      "answer": "All prices are in British Pounds (£). We accept major payment methods including credit cards and PayPal."
+      "answer": "All prices are in US Dollars ($). We accept major payment methods including credit cards and PayPal."
     },
     "q8": {
       "question": "Can I cancel anytime?",

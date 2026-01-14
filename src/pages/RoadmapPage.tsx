@@ -102,14 +102,14 @@ const initialOutreachSections: Section[] = [
       { id: "w4-1", text: "Total people reached: 8,000-10,000", completed: false },
       { id: "w4-2", text: "Document what messaging converts best", completed: false },
       { id: "w4-3", text: "A/B test email subject lines", completed: false },
-      { id: "w4-4", text: "Implement referral program (Give £5, Get £5)", completed: false },
-      { id: "w4-5", text: "Add annual billing option (£79/yr)", completed: false },
+      { id: "w4-4", text: "Implement referral program (Give $5, Get $5)", completed: false },
+      { id: "w4-5", text: "Add annual billing option ($79/yr)", completed: false },
       { id: "w4-6", text: "Follow up with ALL trials before they expire", completed: false },
       { id: "w4-7", text: "Re-engage cold leads from Week 1-2", completed: false },
       { id: "w4-8", text: "Plan month 2 with learnings from month 1", completed: false },
       { id: "w4-9", text: "Reinvest 80% of revenue into what works", completed: false },
       { id: "w4-10", text: "Hit 35-60 paying customers", completed: false },
-      { id: "w4-11", text: "Hit £250-420 MRR", completed: false },
+      { id: "w4-11", text: "Hit $250-420 MRR", completed: false },
     ]
   },
   {
@@ -234,7 +234,7 @@ const initialAdsSections: Section[] = [
       { id: "w4a-9", text: "Create organic referral program (share = bonus)", completed: false },
       { id: "w4a-10", text: "Repurpose top content across all platforms", completed: false },
       { id: "w4a-11", text: "Document what worked for Month 2 playbook", completed: false },
-      { id: "w4a-12", text: "Hit 50-80 paying customers & £500-800 MRR", completed: false },
+      { id: "w4a-12", text: "Hit 50-80 paying customers & $500-800 MRR", completed: false },
     ]
   },
   {
@@ -249,7 +249,7 @@ const initialAdsSections: Section[] = [
       { id: "fb-5", text: "Creative: Short video demos (15-30 sec)", completed: false },
       { id: "fb-6", text: "Copy: Problem → Solution → CTA format", completed: false },
       { id: "fb-7", text: "Test 5 ad variations per week", completed: false },
-      { id: "fb-8", text: "Target CPA: Under £10 per trial sign-up", completed: false },
+      { id: "fb-8", text: "Target CPA: Under $10 per trial sign-up", completed: false },
     ]
   },
   {
@@ -326,7 +326,7 @@ const initialQuick10Sections: Section[] = [
       { id: "q3-1", text: "DM 50 Instagram creators (10k-50k followers)", completed: false },
       { id: "q3-2", text: "DM 50 TikTok creators offering free Pro trial", completed: false },
       { id: "q3-3", text: "Send 100 personalized LinkedIn messages", completed: false },
-      { id: "q3-4", text: "Offer lifetime deal: £99 one-time (if desperate)", completed: false },
+      { id: "q3-4", text: "Offer lifetime deal: $99 one-time (if desperate)", completed: false },
       { id: "q3-5", text: "Submit to AppSumo/DealMirror (may take time)", completed: false },
       { id: "q3-6", text: "Post testimonials from first customers everywhere", completed: false },
       { id: "q3-7", text: "Run small $50 Facebook ad to retarget visitors", completed: false },
@@ -378,17 +378,17 @@ const initialQuick10Sections: Section[] = [
 
 // Weekly metrics targets
 const outreachWeeklyTargets = [
-  { week: 1, reached: "1,500-2,000", conversations: "100-150", trials: "20-40", paid: "3-8", revenue: "£21-56" },
-  { week: 2, reached: "3,500-4,500", conversations: "250-350", trials: "50-80", paid: "10-20", revenue: "£70-140" },
-  { week: 3, reached: "6,000-7,000", conversations: "400-550", trials: "80-120", paid: "20-35", revenue: "£140-245" },
-  { week: 4, reached: "8,000-10,000", conversations: "600-800", trials: "120-180", paid: "35-60", revenue: "£245-420" },
+  { week: 1, reached: "1,500-2,000", conversations: "100-150", trials: "20-40", paid: "3-8", revenue: "$21-56" },
+  { week: 2, reached: "3,500-4,500", conversations: "250-350", trials: "50-80", paid: "10-20", revenue: "$70-140" },
+  { week: 3, reached: "6,000-7,000", conversations: "400-550", trials: "80-120", paid: "20-35", revenue: "$140-245" },
+  { week: 4, reached: "8,000-10,000", conversations: "600-800", trials: "120-180", paid: "35-60", revenue: "$245-420" },
 ]
 
 const adsWeeklyTargets = [
-  { week: 1, reached: "2,000-3,000", adSpend: "$200", impressions: "50k-80k", trials: "30-50", paid: "5-12", revenue: "£35-84" },
-  { week: 2, reached: "5,000-8,000", adSpend: "$300", impressions: "120k-180k", trials: "70-100", paid: "15-25", revenue: "£105-175" },
-  { week: 3, reached: "10,000-15,000", adSpend: "$500", impressions: "250k-350k", trials: "120-160", paid: "30-50", revenue: "£210-350" },
-  { week: 4, reached: "18,000-25,000", adSpend: "$800", impressions: "450k-600k", trials: "180-250", paid: "50-80", revenue: "£350-560" },
+  { week: 1, reached: "2,000-3,000", adSpend: "$200", impressions: "50k-80k", trials: "30-50", paid: "5-12", revenue: "$35-84" },
+  { week: 2, reached: "5,000-8,000", adSpend: "$300", impressions: "120k-180k", trials: "70-100", paid: "15-25", revenue: "$105-175" },
+  { week: 3, reached: "10,000-15,000", adSpend: "$500", impressions: "250k-350k", trials: "120-160", paid: "30-50", revenue: "$210-350" },
+  { week: 4, reached: "18,000-25,000", adSpend: "$800", impressions: "450k-600k", trials: "180-250", paid: "50-80", revenue: "$350-560" },
 ]
 
 export function RoadmapPage() {
@@ -503,7 +503,7 @@ export function RoadmapPage() {
           >
             <h3 className="font-semibold mb-1">Roadmap 1: Outreach</h3>
             <p className="text-sm text-muted-foreground">LinkedIn + Cold Email</p>
-            <p className="text-xs text-muted-foreground mt-1">Target: £250-420 MRR</p>
+            <p className="text-xs text-muted-foreground mt-1">Target: $250-420 MRR</p>
           </button>
           <button
             onClick={() => setRoadmapType("ads")}
@@ -515,7 +515,7 @@ export function RoadmapPage() {
           >
             <h3 className="font-semibold mb-1">Roadmap 2: Ads & Social</h3>
             <p className="text-sm text-muted-foreground">Facebook + Instagram</p>
-            <p className="text-xs text-muted-foreground mt-1">Target: £350-560 MRR</p>
+            <p className="text-xs text-muted-foreground mt-1">Target: $350-560 MRR</p>
           </button>
           <button
             onClick={() => setRoadmapType("quick10")}
@@ -555,10 +555,10 @@ export function RoadmapPage() {
           </p>
           <p className="text-xl font-semibold text-primary">
             {roadmapType === "outreach"
-              ? "Expected outcome: £350-700 revenue + £250-420 MRR"
+              ? "Expected outcome: $350-700 revenue + $250-420 MRR"
               : roadmapType === "ads"
-              ? "Expected outcome: £500-900 revenue + £350-560 MRR (paid + organic traffic)"
-              : "Goal: 10 customers = £70-150 MRR → Sell on Flippa for £800-£3,600"
+              ? "Expected outcome: $500-900 revenue + $350-560 MRR (paid + organic traffic)"
+              : "Goal: 10 customers = $70-150 MRR → Sell on Flippa for $800-$3,600"
             }
           </p>
         </motion.div>
@@ -619,7 +619,7 @@ export function RoadmapPage() {
                   <p className="text-sm text-muted-foreground">Total Budget</p>
                 </div>
                 <div className="p-4 bg-white/5 rounded-lg">
-                  <p className="text-3xl font-bold">£70-150</p>
+                  <p className="text-3xl font-bold">$70-150</p>
                   <p className="text-sm text-muted-foreground">MRR Goal</p>
                 </div>
               </div>
@@ -638,7 +638,7 @@ export function RoadmapPage() {
                   <p className="text-sm text-muted-foreground">People Reached</p>
                 </div>
                 <div className="p-4 bg-white/5 rounded-lg">
-                  <p className="text-3xl font-bold">{roadmapType === "outreach" ? "£400" : "£500"}</p>
+                  <p className="text-3xl font-bold">{roadmapType === "outreach" ? "$400" : "$500"}</p>
                   <p className="text-sm text-muted-foreground">Expected MRR</p>
                 </div>
               </div>
@@ -667,7 +667,7 @@ export function RoadmapPage() {
                 </div>
                 <div className="flex justify-between p-2 bg-white/5 rounded">
                   <span className="text-muted-foreground">Flippa value</span>
-                  <span className="font-medium">£800-£3,600</span>
+                  <span className="font-medium">$800-$3,600</span>
                 </div>
               </div>
             ) : roadmapType === "outreach" ? (
@@ -795,7 +795,7 @@ export function RoadmapPage() {
                 <div className="w-20 text-right text-sm text-muted-foreground">5%</div>
                 <div className="flex-1 h-8 bg-white/5 rounded overflow-hidden">
                   <div className="h-full bg-red-500/50 w-[5%] flex items-center justify-end pr-2">
-                    <span className="text-xs">£0-100</span>
+                    <span className="text-xs">$0-100</span>
                   </div>
                 </div>
               </div>
@@ -803,7 +803,7 @@ export function RoadmapPage() {
                 <div className="w-20 text-right text-sm text-muted-foreground">25%</div>
                 <div className="flex-1 h-8 bg-white/5 rounded overflow-hidden">
                   <div className="h-full bg-yellow-500/50 w-[25%] flex items-center justify-end pr-2">
-                    <span className="text-xs">£100-250</span>
+                    <span className="text-xs">$100-250</span>
                   </div>
                 </div>
               </div>
@@ -811,7 +811,7 @@ export function RoadmapPage() {
                 <div className="w-20 text-right text-sm text-muted-foreground">40%</div>
                 <div className="flex-1 h-8 bg-white/5 rounded overflow-hidden">
                   <div className="h-full bg-primary/50 w-[40%] flex items-center justify-end pr-2">
-                    <span className="text-xs font-medium">£250-400 (Expected)</span>
+                    <span className="text-xs font-medium">$250-400 (Expected)</span>
                   </div>
                 </div>
               </div>
@@ -819,7 +819,7 @@ export function RoadmapPage() {
                 <div className="w-20 text-right text-sm text-muted-foreground">20%</div>
                 <div className="flex-1 h-8 bg-white/5 rounded overflow-hidden">
                   <div className="h-full bg-green-500/50 w-[20%] flex items-center justify-end pr-2">
-                    <span className="text-xs">£400-600</span>
+                    <span className="text-xs">$400-600</span>
                   </div>
                 </div>
               </div>
@@ -827,7 +827,7 @@ export function RoadmapPage() {
                 <div className="w-20 text-right text-sm text-muted-foreground">10%</div>
                 <div className="flex-1 h-8 bg-white/5 rounded overflow-hidden">
                   <div className="h-full bg-emerald-500/50 w-[10%] flex items-center justify-end pr-2">
-                    <span className="text-xs">£600+</span>
+                    <span className="text-xs">$600+</span>
                   </div>
                 </div>
               </div>
@@ -850,7 +850,7 @@ export function RoadmapPage() {
                 <div>
                 <div className="flex justify-between mb-1">
                   <span className="text-sm">LinkedIn (35%)</span>
-                  <span className="text-sm text-primary">£140-210</span>
+                  <span className="text-sm text-primary">$140-210</span>
                 </div>
                 <div className="h-2 bg-white/10 rounded-full overflow-hidden">
                   <div className="h-full bg-blue-500 w-[35%]" />
@@ -859,7 +859,7 @@ export function RoadmapPage() {
               <div>
                 <div className="flex justify-between mb-1">
                   <span className="text-sm">Cold Email (35%)</span>
-                  <span className="text-sm text-primary">£105-175</span>
+                  <span className="text-sm text-primary">$105-175</span>
                 </div>
                 <div className="h-2 bg-white/10 rounded-full overflow-hidden">
                   <div className="h-full bg-green-500 w-[35%]" />
@@ -868,7 +868,7 @@ export function RoadmapPage() {
               <div>
                 <div className="flex justify-between mb-1">
                   <span className="text-sm">Reddit/Communities (15%)</span>
-                  <span className="text-sm text-primary">£35-70</span>
+                  <span className="text-sm text-primary">$35-70</span>
                 </div>
                 <div className="h-2 bg-white/10 rounded-full overflow-hidden">
                   <div className="h-full bg-orange-500 w-[15%]" />
@@ -877,7 +877,7 @@ export function RoadmapPage() {
               <div>
                 <div className="flex justify-between mb-1">
                   <span className="text-sm">Content/Inbound (10%)</span>
-                  <span className="text-sm text-primary">£21-56</span>
+                  <span className="text-sm text-primary">$21-56</span>
                 </div>
                 <div className="h-2 bg-white/10 rounded-full overflow-hidden">
                   <div className="h-full bg-purple-500 w-[10%]" />
@@ -886,7 +886,7 @@ export function RoadmapPage() {
               <div>
                 <div className="flex justify-between mb-1">
                   <span className="text-sm">Referrals (5%)</span>
-                  <span className="text-sm text-primary">£14-35</span>
+                  <span className="text-sm text-primary">$14-35</span>
                 </div>
                 <div className="h-2 bg-white/10 rounded-full overflow-hidden">
                   <div className="h-full bg-pink-500 w-[5%]" />
@@ -898,7 +898,7 @@ export function RoadmapPage() {
                 <div>
                   <div className="flex justify-between mb-1">
                     <span className="text-sm">Paid Ads (50%)</span>
-                    <span className="text-sm text-primary">£175-280</span>
+                    <span className="text-sm text-primary">$175-280</span>
                   </div>
                   <div className="h-2 bg-white/10 rounded-full overflow-hidden">
                     <div className="h-full bg-blue-500 w-[50%]" />
@@ -907,7 +907,7 @@ export function RoadmapPage() {
                 <div>
                   <div className="flex justify-between mb-1">
                     <span className="text-sm">Instagram Organic (20%)</span>
-                    <span className="text-sm text-primary">£70-112</span>
+                    <span className="text-sm text-primary">$70-112</span>
                   </div>
                   <div className="h-2 bg-white/10 rounded-full overflow-hidden">
                     <div className="h-full bg-pink-500 w-[20%]" />
@@ -916,7 +916,7 @@ export function RoadmapPage() {
                 <div>
                   <div className="flex justify-between mb-1">
                     <span className="text-sm">TikTok Organic (15%)</span>
-                    <span className="text-sm text-primary">£52-84</span>
+                    <span className="text-sm text-primary">$52-84</span>
                   </div>
                   <div className="h-2 bg-white/10 rounded-full overflow-hidden">
                     <div className="h-full bg-purple-500 w-[15%]" />
@@ -925,7 +925,7 @@ export function RoadmapPage() {
                 <div>
                   <div className="flex justify-between mb-1">
                     <span className="text-sm">YouTube/SEO (10%)</span>
-                    <span className="text-sm text-primary">£35-56</span>
+                    <span className="text-sm text-primary">$35-56</span>
                   </div>
                   <div className="h-2 bg-white/10 rounded-full overflow-hidden">
                     <div className="h-full bg-red-500 w-[10%]" />
@@ -934,7 +934,7 @@ export function RoadmapPage() {
                 <div>
                   <div className="flex justify-between mb-1">
                     <span className="text-sm">Influencers (5%)</span>
-                    <span className="text-sm text-primary">£17-28</span>
+                    <span className="text-sm text-primary">$17-28</span>
                   </div>
                   <div className="h-2 bg-white/10 rounded-full overflow-hidden">
                     <div className="h-full bg-orange-500 w-[5%]" />
@@ -1026,10 +1026,10 @@ export function RoadmapPage() {
               <div className="mb-6">
                 <h3 className="text-lg font-semibold mb-3">Revenue Math:</h3>
                 <div className="bg-white/5 rounded-lg p-4 text-sm">
-                  <p className="mb-2"><span className="font-semibold text-primary">10 customers per influencer</span> × £7/mo = £70 MRR</p>
-                  <p className="mb-2">Your 80% = <span className="font-semibold text-primary">£56/month</span></p>
-                  <p className="mb-2">Influencer 20% = £14/month</p>
-                  <p className="text-xs text-muted-foreground pt-3 border-t border-white/10">10 influencers × 10 customers = 100 customers = £560 MRR for you</p>
+                  <p className="mb-2"><span className="font-semibold text-primary">10 customers per influencer</span> × $7/mo = $70 MRR</p>
+                  <p className="mb-2">Your 80% = <span className="font-semibold text-primary">$56/month</span></p>
+                  <p className="mb-2">Influencer 20% = $14/month</p>
+                  <p className="text-xs text-muted-foreground pt-3 border-t border-white/10">10 influencers × 10 customers = 100 customers = $560 MRR for you</p>
                 </div>
               </div>
 
@@ -1040,7 +1040,7 @@ export function RoadmapPage() {
                   <p className="mb-2">Hey [Name]! Love your content on [topic].</p>
                   <p className="mb-2">I built T21 - auto-generates social posts for Instagram, TikTok, LinkedIn from one input.</p>
                   <p className="mb-2 font-semibold">Partnership offer: $50 upfront + 20% monthly recurring from referrals (forever).</p>
-                  <p className="mb-2">If 10 followers sign up (£7/mo), you earn £14/month passive + $50 upfront.</p>
+                  <p className="mb-2">If 10 followers sign up ($7/mo), you earn $14/month passive + $50 upfront.</p>
                   <p>Interested? I can send demo + custom promo code.</p>
                 </div>
               </div>
@@ -1360,17 +1360,17 @@ export function RoadmapPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
                 <div className="p-4 bg-white/5 rounded-lg">
                   <p className="text-sm text-muted-foreground mb-1">End of Month 1</p>
-                  <p className="text-2xl font-bold text-primary">£300+ MRR</p>
+                  <p className="text-2xl font-bold text-primary">$300+ MRR</p>
                   <p className="text-xs text-muted-foreground">35-60 customers</p>
                 </div>
                 <div className="p-4 bg-white/5 rounded-lg">
                   <p className="text-sm text-muted-foreground mb-1">End of Month 2</p>
-                  <p className="text-2xl font-bold text-primary">£550-800 MRR</p>
+                  <p className="text-2xl font-bold text-primary">$550-800 MRR</p>
                   <p className="text-xs text-muted-foreground">Pipeline converts + new</p>
                 </div>
                 <div className="p-4 bg-white/5 rounded-lg">
                   <p className="text-sm text-muted-foreground mb-1">End of Month 3</p>
-                  <p className="text-2xl font-bold text-primary">£1,000+ MRR</p>
+                  <p className="text-2xl font-bold text-primary">$1,000+ MRR</p>
                   <p className="text-xs text-muted-foreground">Compounding effect</p>
                 </div>
               </div>
@@ -1378,17 +1378,17 @@ export function RoadmapPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
                 <div className="p-4 bg-white/5 rounded-lg">
                   <p className="text-sm text-muted-foreground mb-1">End of Month 1</p>
-                  <p className="text-2xl font-bold text-primary">£500+ MRR</p>
+                  <p className="text-2xl font-bold text-primary">$500+ MRR</p>
                   <p className="text-xs text-muted-foreground">50-80 customers</p>
                 </div>
                 <div className="p-4 bg-white/5 rounded-lg">
                   <p className="text-sm text-muted-foreground mb-1">End of Month 2</p>
-                  <p className="text-2xl font-bold text-primary">£900-1,200 MRR</p>
+                  <p className="text-2xl font-bold text-primary">$900-1,200 MRR</p>
                   <p className="text-xs text-muted-foreground">Scale ads + retargeting</p>
                 </div>
                 <div className="p-4 bg-white/5 rounded-lg">
                   <p className="text-sm text-muted-foreground mb-1">End of Month 3</p>
-                  <p className="text-2xl font-bold text-primary">£1,500+ MRR</p>
+                  <p className="text-2xl font-bold text-primary">$1,500+ MRR</p>
                   <p className="text-xs text-muted-foreground">Optimized funnels</p>
                 </div>
               </div>
@@ -1437,16 +1437,16 @@ export function RoadmapPage() {
                 <h3 className="text-sm font-semibold mb-3">10 Customers MRR</h3>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">All on Basic (£7)</span>
-                    <span className="font-semibold text-primary">£70/mo</span>
+                    <span className="text-muted-foreground">All on Basic ($7)</span>
+                    <span className="font-semibold text-primary">$70/mo</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Mix (avg £10)</span>
-                    <span className="font-semibold text-primary">£100/mo</span>
+                    <span className="text-muted-foreground">Mix (avg $10)</span>
+                    <span className="font-semibold text-primary">$100/mo</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Most Pro (avg £15)</span>
-                    <span className="font-semibold text-primary">£150/mo</span>
+                    <span className="text-muted-foreground">Most Pro (avg $15)</span>
+                    <span className="font-semibold text-primary">$150/mo</span>
                   </div>
                 </div>
               </div>
@@ -1456,16 +1456,16 @@ export function RoadmapPage() {
                 <h3 className="text-sm font-semibold mb-3 text-emerald-400">Flippa Sale Price</h3>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">£70 MRR (£840 ARR)</span>
-                    <span className="font-semibold text-emerald-400">£800-1,700</span>
+                    <span className="text-muted-foreground">$70 MRR ($840 ARR)</span>
+                    <span className="font-semibold text-emerald-400">$800-1,700</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">£100 MRR (£1,200 ARR)</span>
-                    <span className="font-semibold text-emerald-400">£1,200-2,400</span>
+                    <span className="text-muted-foreground">$100 MRR ($1,200 ARR)</span>
+                    <span className="font-semibold text-emerald-400">$1,200-2,400</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">£150 MRR (£1,800 ARR)</span>
-                    <span className="font-semibold text-emerald-400">£1,800-3,600</span>
+                    <span className="text-muted-foreground">$150 MRR ($1,800 ARR)</span>
+                    <span className="font-semibold text-emerald-400">$1,800-3,600</span>
                   </div>
                 </div>
               </div>
@@ -1501,7 +1501,7 @@ export function RoadmapPage() {
               <h3 className="text-sm font-semibold mb-2 text-yellow-400">⚠️ Reality Check:</h3>
               <ul className="text-sm space-y-1 text-muted-foreground">
                 <li>• 10 customers in 1-2 months is achievable with hustle</li>
-                <li>• Flippa sale price: £800-£3,600 (depends on MRR + age)</li>
+                <li>• Flippa sale price: $800-$3,600 (depends on MRR + age)</li>
                 <li>• Buyers want 3+ months of consistent MRR history</li>
                 <li>• You'll need proof: Stripe dashboard, customer list, churn rate</li>
                 <li>• <span className="text-yellow-400 font-semibold">Best strategy:</span> Get 10 customers fast, run for 3-6 months, then sell (better multiple)</li>
@@ -1531,40 +1531,40 @@ export function RoadmapPage() {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                 <div className="p-4 bg-white/5 rounded-lg text-center border border-red-500/30">
                   <p className="text-xs text-muted-foreground mb-1">Month 1</p>
-                  <p className="text-sm font-medium mb-1">£350 MRR</p>
-                  <p className="text-xs text-muted-foreground mb-2">£4,200 ARR</p>
+                  <p className="text-sm font-medium mb-1">$350 MRR</p>
+                  <p className="text-xs text-muted-foreground mb-2">$4,200 ARR</p>
                   <div className="border-t border-white/10 pt-2">
-                    <p className="text-lg font-bold text-red-400">£4k-£8k</p>
+                    <p className="text-lg font-bold text-red-400">$4k-$8k</p>
                     <p className="text-xs text-muted-foreground">1-2x (Too early)</p>
                   </div>
                 </div>
 
                 <div className="p-4 bg-white/5 rounded-lg text-center border border-yellow-500/30">
                   <p className="text-xs text-muted-foreground mb-1">Month 3</p>
-                  <p className="text-sm font-medium mb-1">£1,000 MRR</p>
-                  <p className="text-xs text-muted-foreground mb-2">£12,000 ARR</p>
+                  <p className="text-sm font-medium mb-1">$1,000 MRR</p>
+                  <p className="text-xs text-muted-foreground mb-2">$12,000 ARR</p>
                   <div className="border-t border-white/10 pt-2">
-                    <p className="text-lg font-bold text-yellow-400">£24k-£36k</p>
+                    <p className="text-lg font-bold text-yellow-400">$24k-$36k</p>
                     <p className="text-xs text-muted-foreground">2-3x (Growing)</p>
                   </div>
                 </div>
 
                 <div className="p-4 bg-white/5 rounded-lg text-center border border-primary/30">
                   <p className="text-xs text-muted-foreground mb-1">Month 6</p>
-                  <p className="text-sm font-medium mb-1">£1,500 MRR</p>
-                  <p className="text-xs text-muted-foreground mb-2">£18,000 ARR</p>
+                  <p className="text-sm font-medium mb-1">$1,500 MRR</p>
+                  <p className="text-xs text-muted-foreground mb-2">$18,000 ARR</p>
                   <div className="border-t border-white/10 pt-2">
-                    <p className="text-lg font-bold text-primary">£54k-£72k</p>
+                    <p className="text-lg font-bold text-primary">$54k-$72k</p>
                     <p className="text-xs text-muted-foreground">3-4x (Proven)</p>
                   </div>
                 </div>
 
                 <div className="p-4 bg-white/5 rounded-lg text-center border border-emerald-500/50">
                   <p className="text-xs text-muted-foreground mb-1">Month 12</p>
-                  <p className="text-sm font-medium mb-1">£2,500 MRR</p>
-                  <p className="text-xs text-muted-foreground mb-2">£30,000 ARR</p>
+                  <p className="text-sm font-medium mb-1">$2,500 MRR</p>
+                  <p className="text-xs text-muted-foreground mb-2">$30,000 ARR</p>
                   <div className="border-t border-white/10 pt-2">
-                    <p className="text-lg font-bold text-emerald-400">£90k-£150k</p>
+                    <p className="text-lg font-bold text-emerald-400">$90k-$150k</p>
                     <p className="text-xs text-muted-foreground">3-5x (Strong)</p>
                   </div>
                 </div>
@@ -1573,40 +1573,40 @@ export function RoadmapPage() {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                 <div className="p-4 bg-white/5 rounded-lg text-center border border-red-500/30">
                   <p className="text-xs text-muted-foreground mb-1">Month 1</p>
-                  <p className="text-sm font-medium mb-1">£500 MRR</p>
-                  <p className="text-xs text-muted-foreground mb-2">£6,000 ARR</p>
+                  <p className="text-sm font-medium mb-1">$500 MRR</p>
+                  <p className="text-xs text-muted-foreground mb-2">$6,000 ARR</p>
                   <div className="border-t border-white/10 pt-2">
-                    <p className="text-lg font-bold text-red-400">£6k-£12k</p>
+                    <p className="text-lg font-bold text-red-400">$6k-$12k</p>
                     <p className="text-xs text-muted-foreground">1-2x (Too early)</p>
                   </div>
                 </div>
 
                 <div className="p-4 bg-white/5 rounded-lg text-center border border-yellow-500/30">
                   <p className="text-xs text-muted-foreground mb-1">Month 3</p>
-                  <p className="text-sm font-medium mb-1">£1,500 MRR</p>
-                  <p className="text-xs text-muted-foreground mb-2">£18,000 ARR</p>
+                  <p className="text-sm font-medium mb-1">$1,500 MRR</p>
+                  <p className="text-xs text-muted-foreground mb-2">$18,000 ARR</p>
                   <div className="border-t border-white/10 pt-2">
-                    <p className="text-lg font-bold text-yellow-400">£36k-£54k</p>
+                    <p className="text-lg font-bold text-yellow-400">$36k-$54k</p>
                     <p className="text-xs text-muted-foreground">2-3x (Growing)</p>
                   </div>
                 </div>
 
                 <div className="p-4 bg-white/5 rounded-lg text-center border border-primary/30">
                   <p className="text-xs text-muted-foreground mb-1">Month 6</p>
-                  <p className="text-sm font-medium mb-1">£2,500 MRR</p>
-                  <p className="text-xs text-muted-foreground mb-2">£30,000 ARR</p>
+                  <p className="text-sm font-medium mb-1">$2,500 MRR</p>
+                  <p className="text-xs text-muted-foreground mb-2">$30,000 ARR</p>
                   <div className="border-t border-white/10 pt-2">
-                    <p className="text-lg font-bold text-primary">£90k-£120k</p>
+                    <p className="text-lg font-bold text-primary">$90k-$120k</p>
                     <p className="text-xs text-muted-foreground">3-4x (Proven)</p>
                   </div>
                 </div>
 
                 <div className="p-4 bg-white/5 rounded-lg text-center border border-emerald-500/50">
                   <p className="text-xs text-muted-foreground mb-1">Month 12</p>
-                  <p className="text-sm font-medium mb-1">£4,000 MRR</p>
-                  <p className="text-xs text-muted-foreground mb-2">£48,000 ARR</p>
+                  <p className="text-sm font-medium mb-1">$4,000 MRR</p>
+                  <p className="text-xs text-muted-foreground mb-2">$48,000 ARR</p>
                   <div className="border-t border-white/10 pt-2">
-                    <p className="text-lg font-bold text-emerald-400">£144k-£240k</p>
+                    <p className="text-lg font-bold text-emerald-400">$144k-$240k</p>
                     <p className="text-xs text-muted-foreground">3-5x (Strong)</p>
                   </div>
                 </div>

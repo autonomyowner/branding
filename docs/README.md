@@ -76,7 +76,7 @@
 
 #### Subscription Management
 - Stripe integration with webhooks
-- 3-tier pricing (Free £0, Pro £7, Business £35)
+- 3-tier pricing (Free $0, Pro $7, Business $35)
 - Usage-based limits
 - Automatic tier upgrades/downgrades
 

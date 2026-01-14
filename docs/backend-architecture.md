@@ -1530,17 +1530,17 @@ app.use(helmet());
 
 #### Scenario: 1,000 paying users
 - **Free users**: 500 (0 revenue)
-- **Pro users (£7/mo)**: 400 = £2,800/mo
-- **Business users (£35/mo)**: 100 = £3,500/mo
-- **Total Revenue**: £6,300/mo (~$8,000/mo)
+- **Pro users ($7/mo)**: 400 = $2,800/mo
+- **Business users ($35/mo)**: 100 = $3,500/mo
+- **Total Revenue**: $6,300/mo
 - **Infrastructure Cost**: ~$165/mo
 - **Gross Margin**: **~98%** (excluding AI passthrough costs)
 
 #### Scenario: 10,000 paying users
 - **Free users**: 5,000 (0 revenue)
-- **Pro users**: 4,000 = £28,000/mo
-- **Business users**: 1,000 = £35,000/mo
-- **Total Revenue**: £63,000/mo (~$80,000/mo)
+- **Pro users**: 4,000 = $28,000/mo
+- **Business users**: 1,000 = $35,000/mo
+- **Total Revenue**: $63,000/mo
 - **Infrastructure Cost**: ~$620/mo
 - **Gross Margin**: **~99%**
 

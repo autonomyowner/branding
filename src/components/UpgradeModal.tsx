@@ -189,10 +189,10 @@ export function UpgradeModal({ isOpen, onClose, trigger }: UpgradeModalProps) {
               {/* Price anchor */}
               <div className="text-center mb-6 p-3 bg-primary/10 rounded-lg border border-primary/20">
                 <p className="text-2xl font-bold text-foreground">
-                  {t('upgrade.price') || '£9'}<span className="text-sm font-normal text-muted-foreground">/month</span>
+                  {t('upgrade.price') || '$9'}<span className="text-sm font-normal text-muted-foreground">/month</span>
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  {t('upgrade.pricePerPost') || 'Less than £0.01 per post'}
+                  {t('upgrade.pricePerPost') || 'Less than $0.01 per post'}
                 </p>
               </div>
 
