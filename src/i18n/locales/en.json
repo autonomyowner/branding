@@ -483,5 +483,17 @@
     "search": "Search",
     "filter": "Filter",
     "settings": "Settings"
+  },
+  "welcome": {
+    "title": "Welcome to Branding",
+    "subtitle": "Create and automate your social media content with AI",
+    "feature1": "Generate content for all platforms",
+    "feature2": "Schedule posts in advance",
+    "feature3": "Manage multiple brands",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "Enter your email",
+    "freePlan": "Start with 2 brands and 20 posts free",
+    "getStarted": "Get Started",
+    "skip": "Skip for now"
   }
 }
