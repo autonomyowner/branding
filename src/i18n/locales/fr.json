@@ -103,6 +103,14 @@
       "feature1": "Calendrier de contenu visuel",
       "feature2": "Planification en masse",
       "feature3": "Meilleurs moments de publication"
+    },
+    "telegram": {
+      "category": "Livraison",
+      "title": "Livraison Telegram",
+      "description": "Recevez vos publications programmées directement sur Telegram",
+      "feature1": "Livraison mobile instantanée",
+      "feature2": "Copiez et publiez en secondes",
+      "feature3": "Ne manquez jamais une publication"
     }
   },
   "howItWorks": {

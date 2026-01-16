@@ -52,6 +52,13 @@ export function AgentFeatures() {
       description: t('agents.support.description'),
       category: t('agents.support.category'),
       features: [t('agents.support.feature1'), t('agents.support.feature2'), t('agents.support.feature3')]
+    },
+    {
+      key: "telegram",
+      title: t('agents.telegram.title'),
+      description: t('agents.telegram.description'),
+      category: t('agents.telegram.category'),
+      features: [t('agents.telegram.feature1'), t('agents.telegram.feature2'), t('agents.telegram.feature3')]
     }
   ]
 

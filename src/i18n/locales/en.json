@@ -103,6 +103,14 @@
       "feature1": "Visual content calendar",
       "feature2": "Bulk scheduling",
       "feature3": "Optimal posting times"
+    },
+    "telegram": {
+      "category": "Delivery",
+      "title": "Telegram Delivery",
+      "description": "Get your scheduled posts delivered directly to Telegram when ready",
+      "feature1": "Instant mobile delivery",
+      "feature2": "Copy & post in seconds",
+      "feature3": "Never miss a schedule"
     }
   },
   "howItWorks": {
