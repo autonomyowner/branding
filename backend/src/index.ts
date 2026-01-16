@@ -7,6 +7,8 @@ import { errorHandler } from './middleware/errorHandler.js'
 import apiRoutes from './routes/index.js'
 import clerkWebhook from './routes/webhooks/clerk.js'
 import stripeWebhook from './routes/webhooks/stripe.js'
+import telegramWebhook from './routes/webhooks/telegram.js'
+import { startScheduler } from './workers/scheduler.js'
 
 const app = express()
 
@@ -37,6 +39,9 @@ app.use(cors({
 // IMPORTANT: Must come before express.json()
 app.use('/webhooks/clerk', express.raw({ type: 'application/json' }), clerkWebhook)
 app.use('/webhooks/stripe', express.raw({ type: 'application/json' }), stripeWebhook)
+
+// Telegram webhook (uses JSON body)
+app.use('/webhooks/telegram', express.json(), telegramWebhook)
 
 // JSON body parser for all other routes
 app.use(express.json({ limit: '10mb' }))
@@ -85,6 +90,9 @@ app.listen(PORT, () => {
 │                                         │
 └─────────────────────────────────────────┘
   `)
+
+  // Start the scheduler for Telegram delivery
+  startScheduler()
 })
 
 export default app

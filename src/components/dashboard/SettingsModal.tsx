@@ -1,13 +1,21 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useTranslation } from "react-i18next"
 import { useClerk, useUser } from "@clerk/clerk-react"
 import { Card } from "../ui/card"
 import { Button } from "../ui/button"
 import { useSubscription } from "../../context/SubscriptionContext"
+import { api } from "../../lib/api"
 
 interface SettingsModalProps {
   isOpen: boolean
   onClose: () => void
+}
+
+interface TelegramStatus {
+  configured: boolean
+  connected: boolean
+  enabled: boolean
+  linkedAt: string | null
 }
 
 export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
@@ -16,6 +24,84 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const { user } = useUser()
   const { subscription, currentLimits, openBillingPortal } = useSubscription()
   const [isSigningOut, setIsSigningOut] = useState(false)
+
+  // Telegram state
+  const [telegramStatus, setTelegramStatus] = useState<TelegramStatus | null>(null)
+  const [telegramLoading, setTelegramLoading] = useState(false)
+  const [telegramError, setTelegramError] = useState<string | null>(null)
+
+  // Fetch Telegram status when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      fetchTelegramStatus()
+    }
+  }, [isOpen])
+
+  const fetchTelegramStatus = async () => {
+    try {
+      const status = await api.getTelegramStatus()
+      setTelegramStatus(status)
+      setTelegramError(null)
+    } catch (err) {
+      console.error('Failed to fetch Telegram status:', err)
+    }
+  }
+
+  const handleConnectTelegram = async () => {
+    setTelegramLoading(true)
+    setTelegramError(null)
+    try {
+      const { connectLink } = await api.getTelegramConnectLink()
+      // Open the Telegram connect link in a new window
+      window.open(connectLink, '_blank')
+      // Poll for connection status
+      const pollInterval = setInterval(async () => {
+        try {
+          const status = await api.getTelegramStatus()
+          if (status.connected) {
+            setTelegramStatus(status)
+            clearInterval(pollInterval)
+            setTelegramLoading(false)
+          }
+        } catch {
+          // Ignore polling errors
+        }
+      }, 3000)
+      // Stop polling after 2 minutes
+      setTimeout(() => {
+        clearInterval(pollInterval)
+        setTelegramLoading(false)
+      }, 120000)
+    } catch (err) {
+      setTelegramError('Failed to generate connect link')
+      setTelegramLoading(false)
+    }
+  }
+
+  const handleDisconnectTelegram = async () => {
+    setTelegramLoading(true)
+    try {
+      await api.disconnectTelegram()
+      setTelegramStatus(prev => prev ? { ...prev, connected: false, enabled: false } : null)
+    } catch (err) {
+      setTelegramError('Failed to disconnect')
+    } finally {
+      setTelegramLoading(false)
+    }
+  }
+
+  const handleToggleTelegram = async () => {
+    if (!telegramStatus) return
+    setTelegramLoading(true)
+    try {
+      const { enabled } = await api.toggleTelegram(!telegramStatus.enabled)
+      setTelegramStatus(prev => prev ? { ...prev, enabled } : null)
+    } catch (err) {
+      setTelegramError('Failed to toggle notifications')
+    } finally {
+      setTelegramLoading(false)
+    }
+  }
 
   if (!isOpen) return null
 
@@ -139,6 +225,72 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
               )}
             </div>
           </div>
+
+          {/* Telegram Integration */}
+          {telegramStatus?.configured && (
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Telegram Delivery</h3>
+              <div className="p-4 bg-card/50 rounded-lg border border-white/10 space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  Receive your scheduled posts directly on Telegram when they're ready to publish.
+                </p>
+
+                {telegramError && (
+                  <p className="text-sm text-red-400">{telegramError}</p>
+                )}
+
+                {!telegramStatus.connected ? (
+                  <Button
+                    onClick={handleConnectTelegram}
+                    disabled={telegramLoading}
+                    className="w-full"
+                    variant="outline"
+                  >
+                    {telegramLoading ? 'Connecting...' : 'Connect Telegram'}
+                  </Button>
+                ) : (
+                  <>
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Status</span>
+                      <span className="text-green-400 text-sm">Connected</span>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Notifications</span>
+                      <button
+                        onClick={handleToggleTelegram}
+                        disabled={telegramLoading}
+                        className={`relative w-12 h-6 rounded-full transition-colors ${
+                          telegramStatus.enabled ? 'bg-primary' : 'bg-white/20'
+                        }`}
+                      >
+                        <span
+                          className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform ${
+                            telegramStatus.enabled ? 'left-7' : 'left-1'
+                          }`}
+                        />
+                      </button>
+                    </div>
+
+                    {telegramStatus.linkedAt && (
+                      <p className="text-xs text-muted-foreground">
+                        Connected {new Date(telegramStatus.linkedAt).toLocaleDateString()}
+                      </p>
+                    )}
+
+                    <Button
+                      onClick={handleDisconnectTelegram}
+                      disabled={telegramLoading}
+                      variant="ghost"
+                      className="w-full text-sm text-red-400 hover:bg-red-400/10"
+                    >
+                      Disconnect Telegram
+                    </Button>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Sign Out */}
           <div className="pt-4 border-t border-white/10">

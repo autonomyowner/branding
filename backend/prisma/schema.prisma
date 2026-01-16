@@ -29,6 +29,11 @@ model User {
   postsThisMonth   Int      @default(0)
   usageResetDate   DateTime @default(now())
 
+  // Telegram integration
+  telegramChatId   String?  @unique
+  telegramEnabled  Boolean  @default(false)
+  telegramLinkedAt DateTime?
+
   // Relations
   brands           Brand[]
   posts            Post[]
@@ -38,6 +43,7 @@ model User {
 
   @@index([clerkId])
   @@index([stripeCustomerId])
+  @@index([telegramChatId])
 }
 
 enum Plan {
@@ -87,6 +93,10 @@ model Post {
   // AI metadata
   aiGenerated  Boolean    @default(false)
   aiModel      String?
+
+  // Telegram delivery
+  telegramSent   Boolean   @default(false)
+  telegramSentAt DateTime?
 
   // Relations
   userId       String

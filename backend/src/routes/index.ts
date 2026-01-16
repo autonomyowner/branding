@@ -9,6 +9,7 @@ import imagesRouter from './images.js'
 import subscriptionsRouter from './subscriptions.js'
 import emailsRouter from './emails.js'
 import adminRouter from './admin.js'
+import telegramRouter from './telegram.js'
 
 const router = Router()
 
@@ -22,5 +23,6 @@ router.use('/images', imagesRouter)
 router.use('/subscriptions', subscriptionsRouter)
 router.use('/emails', emailsRouter)
 router.use('/admin', adminRouter)
+router.use('/telegram', telegramRouter)
 
 export default router

@@ -585,6 +585,39 @@ class ApiClient {
       headers: { Authorization: `Bearer ${token}` }
     })
   }
+
+  // Telegram
+  async getTelegramStatus() {
+    return this.request<{
+      configured: boolean
+      connected: boolean
+      enabled: boolean
+      linkedAt: string | null
+    }>('/api/v1/telegram/status')
+  }
+
+  async getTelegramConnectLink() {
+    return this.request<{
+      connectLink: string
+      botUsername: string
+      expiresIn: string
+    }>('/api/v1/telegram/connect', {
+      method: 'POST',
+    })
+  }
+
+  async disconnectTelegram() {
+    return this.request<{ success: boolean }>('/api/v1/telegram/disconnect', {
+      method: 'POST',
+    })
+  }
+
+  async toggleTelegram(enabled: boolean) {
+    return this.request<{ success: boolean; enabled: boolean }>('/api/v1/telegram/toggle', {
+      method: 'PATCH',
+      body: JSON.stringify({ enabled }),
+    })
+  }
 }
 
 export const api = new ApiClient(API_BASE_URL)
