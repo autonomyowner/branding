@@ -4,6 +4,7 @@ import { api } from '../lib/api'
 import { Navbar } from '../components/Navbar'
 import { Card } from '../components/ui/card'
 import { Badge } from '../components/ui/badge'
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts'
 
 type Tab = 'overview' | 'users' | 'emails'
 
@@ -255,6 +256,24 @@ export function AdminPage() {
 
 // Overview Tab
 function OverviewTab({ stats }: { stats: any }) {
+  // Prepare chart data
+  const userDistributionData = [
+    { name: 'Free', value: stats.users.free, color: '#9ca3af' },
+    { name: 'Pro', value: stats.users.pro, color: '#a78bfa' },
+    { name: 'Business', value: stats.users.business, color: '#60a5fa' },
+  ]
+
+  const emailConversionData = [
+    { name: 'With Consent', value: stats.emailCaptures.withConsent, color: '#4ade80' },
+    { name: 'Without Consent', value: stats.emailCaptures.total - stats.emailCaptures.withConsent, color: '#6b7280' },
+  ]
+
+  const activityData = [
+    { name: 'New Users', value: stats.users.recentSignups, color: '#60a5fa' },
+    { name: 'Email Captures', value: stats.emailCaptures.recentCaptures, color: '#a78bfa' },
+    { name: 'Posts', value: stats.content.totalPosts > 100 ? Math.floor(stats.content.totalPosts / 10) : stats.content.totalPosts, color: '#4ade80' },
+  ]
+
   return (
     <div className="space-y-6">
       {/* Stats Grid */}
@@ -276,10 +295,111 @@ function OverviewTab({ stats }: { stats: any }) {
         />
       </div>
 
-      {/* Recent Activity */}
+      {/* Charts Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* User Distribution Chart */}
+        <Card className="p-6">
+          <h3 className="text-lg font-semibold mb-4 text-foreground">User Distribution by Plan</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={userDistributionData}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                outerRadius={80}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                {userDistributionData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: '#1f2937',
+                  border: '1px solid #374151',
+                  borderRadius: '8px',
+                  color: '#f9fafb'
+                }}
+              />
+              <Legend
+                wrapperStyle={{ color: '#9ca3af' }}
+                formatter={(value) => <span style={{ color: '#9ca3af' }}>{value}</span>}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+        </Card>
+
+        {/* Email Conversion Chart */}
+        <Card className="p-6">
+          <h3 className="text-lg font-semibold mb-4 text-foreground">Email Capture Conversion</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={emailConversionData}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                outerRadius={80}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                {emailConversionData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: '#1f2937',
+                  border: '1px solid #374151',
+                  borderRadius: '8px',
+                  color: '#f9fafb'
+                }}
+              />
+              <Legend
+                wrapperStyle={{ color: '#9ca3af' }}
+                formatter={(value) => <span style={{ color: '#9ca3af' }}>{value}</span>}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+        </Card>
+      </div>
+
+      {/* Recent Activity Chart */}
       <Card className="p-6">
-        <h3 className="text-lg font-semibold mb-4">Recent Activity</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <h3 className="text-lg font-semibold mb-4 text-foreground">Recent Activity Overview</h3>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={activityData}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+            <XAxis
+              dataKey="name"
+              stroke="#9ca3af"
+              style={{ fontSize: '14px' }}
+            />
+            <YAxis
+              stroke="#9ca3af"
+              style={{ fontSize: '14px' }}
+            />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: '#1f2937',
+                border: '1px solid #374151',
+                borderRadius: '8px',
+                color: '#f9fafb'
+              }}
+              cursor={{ fill: '#374151' }}
+            />
+            <Bar dataKey="value" radius={[8, 8, 0, 0]}>
+              {activityData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.color} />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
           <div>
             <p className="text-sm text-muted-foreground mb-2">New Signups (30d)</p>
             <p className="text-2xl font-bold text-foreground">{stats.users.recentSignups}</p>
