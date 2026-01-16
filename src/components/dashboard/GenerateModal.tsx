@@ -173,7 +173,7 @@ export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           className={`relative w-full mx-4 ${step === 'schedule' ? 'max-w-4xl' : 'max-w-2xl'}`}
         >
-          <Card className="p-6 bg-card border-border">
+          <Card className="p-4 sm:p-6 bg-card border-border max-h-[90vh] overflow-y-auto">
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold">
@@ -208,7 +208,7 @@ export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
                 {/* Platform Selection */}
                 <div className="mb-4">
                   <label className="block text-sm font-medium mb-2">{t('generateModal.platform')}</label>
-                  <div className="grid grid-cols-5 gap-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
                     {PLATFORMS.map((platform) => (
                       <button
                         key={platform}
@@ -228,7 +228,7 @@ export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
                 {/* Content Style Selection */}
                 <div className="mb-4">
                   <label className="block text-sm font-medium mb-2">{t('generateModal.style')}</label>
-                  <div className="grid grid-cols-5 gap-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
                     {CONTENT_STYLES.map((style) => (
                       <button
                         key={style.value}
