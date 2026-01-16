@@ -1,0 +1,118 @@
+// T21 Backend - Prisma Schema
+// Database: PostgreSQL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// USER & AUTHENTICATION
+// ============================================
+
+model User {
+  id               String   @id @default(cuid())
+  clerkId          String   @unique
+  email            String   @unique
+  name             String?
+  avatarUrl        String?
+
+  // Subscription
+  plan             Plan     @default(FREE)
+  stripeCustomerId String?  @unique
+
+  // Usage tracking (resets monthly)
+  postsThisMonth   Int      @default(0)
+  usageResetDate   DateTime @default(now())
+
+  // Relations
+  brands           Brand[]
+  posts            Post[]
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([clerkId])
+  @@index([stripeCustomerId])
+}
+
+enum Plan {
+  FREE
+  PRO
+  BUSINESS
+}
+
+// ============================================
+// BRANDS
+// ============================================
+
+model Brand {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  color       String   @default("#8b5cf6")
+  initials    String   @default("BR")
+  voice       String   @default("professional")
+  topics      String[]
+
+  // Relations
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  posts       Post[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+}
+
+// ============================================
+// POSTS & CONTENT
+// ============================================
+
+model Post {
+  id           String     @id @default(cuid())
+  content      String
+  platform     Platform
+  imageUrl     String?
+  voiceUrl     String?
+  status       PostStatus @default(DRAFT)
+  scheduledFor DateTime?
+  publishedAt  DateTime?
+
+  // AI metadata
+  aiGenerated  Boolean    @default(false)
+  aiModel      String?
+
+  // Relations
+  userId       String
+  brandId      String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  brand        Brand      @relation(fields: [brandId], references: [id], onDelete: Cascade)
+
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([userId])
+  @@index([brandId])
+  @@index([status])
+  @@index([scheduledFor])
+}
+
+enum Platform {
+  INSTAGRAM
+  TWITTER
+  LINKEDIN
+  TIKTOK
+  FACEBOOK
+}
+
+enum PostStatus {
+  DRAFT
+  SCHEDULED
+  PUBLISHED
+}

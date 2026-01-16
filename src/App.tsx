@@ -1,9 +1,17 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { useEffect, lazy, Suspense } from "react"
 import { useTranslation } from "react-i18next"
+import { ClerkProvider, SignedIn, SignedOut, RedirectToSignIn } from "@clerk/clerk-react"
 import { DataProvider } from "./context/DataContext"
 import { SubscriptionProvider, useSubscription } from "./context/SubscriptionContext"
 import { UpgradeModal } from "./components/UpgradeModal"
+
+// Get Clerk publishable key from environment
+const CLERK_PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
+
+if (!CLERK_PUBLISHABLE_KEY) {
+  console.warn('Missing VITE_CLERK_PUBLISHABLE_KEY - Auth will not work')
+}
 
 // Lazy load route components for better performance
 const LandingPage = lazy(() => import("./pages/LandingPage").then(m => ({ default: m.LandingPage })))
@@ -63,13 +71,36 @@ function AppContent() {
   )
 }
 
-function App() {
+// Protected route wrapper - export for use with protected routes
+export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   return (
-    <DataProvider>
-      <SubscriptionProvider>
-        <AppContent />
-      </SubscriptionProvider>
-    </DataProvider>
+    <>
+      <SignedIn>{children}</SignedIn>
+      <SignedOut><RedirectToSignIn /></SignedOut>
+    </>
+  )
+}
+
+function App() {
+  // If Clerk is not configured, fall back to local-only mode
+  if (!CLERK_PUBLISHABLE_KEY) {
+    return (
+      <DataProvider>
+        <SubscriptionProvider>
+          <AppContent />
+        </SubscriptionProvider>
+      </DataProvider>
+    )
+  }
+
+  return (
+    <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY}>
+      <DataProvider>
+        <SubscriptionProvider>
+          <AppContent />
+        </SubscriptionProvider>
+      </DataProvider>
+    </ClerkProvider>
   )
 }
 
