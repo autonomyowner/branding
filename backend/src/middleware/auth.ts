@@ -1,4 +1,4 @@
-import { clerkMiddleware, requireAuth, getAuth } from '@clerk/express'
+import { clerkMiddleware, requireAuth, getAuth, clerkClient } from '@clerk/express'
 import type { Request, Response, NextFunction } from 'express'
 import { prisma } from '../lib/prisma.js'
 import { UnauthorizedError } from '../lib/errors.js'
@@ -19,7 +19,7 @@ export const clerkAuth = clerkMiddleware()
 // Require authentication middleware
 export const requireAuthentication = requireAuth()
 
-// Load user from database middleware
+// Load user from database middleware - auto-creates user if not exists
 export async function loadUser(req: Request, res: Response, next: NextFunction) {
   try {
     const auth = getAuth(req)
@@ -28,12 +28,35 @@ export async function loadUser(req: Request, res: Response, next: NextFunction) 
       throw new UnauthorizedError('Not authenticated')
     }
 
-    const user = await prisma.user.findUnique({
+    let user = await prisma.user.findUnique({
       where: { clerkId: auth.userId }
     })
 
+    // Auto-create user if not exists (handles case where webhook hasn't fired yet)
     if (!user) {
-      throw new UnauthorizedError('User not found in database')
+      try {
+        // Fetch user details from Clerk
+        const clerkUser = await clerkClient.users.getUser(auth.userId)
+
+        const email = clerkUser.emailAddresses[0]?.emailAddress
+        if (!email) {
+          throw new UnauthorizedError('User has no email address')
+        }
+
+        // Create user in database
+        user = await prisma.user.create({
+          data: {
+            clerkId: auth.userId,
+            email,
+            name: [clerkUser.firstName, clerkUser.lastName].filter(Boolean).join(' ') || null,
+          }
+        })
+
+        console.log(`Auto-created user: ${email}`)
+      } catch (createError) {
+        console.error('Failed to auto-create user:', createError)
+        throw new UnauthorizedError('Failed to create user account')
+      }
     }
 
     // Check and reset monthly usage if needed
