@@ -1,7 +1,7 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import { useEffect, lazy, Suspense } from "react"
 import { useTranslation } from "react-i18next"
-import { ClerkProvider, SignedIn, SignedOut, RedirectToSignIn } from "@clerk/clerk-react"
+import { ClerkProvider, SignedIn, SignedOut, useAuth } from "@clerk/clerk-react"
 import { DataProvider } from "./context/DataContext"
 import { SubscriptionProvider, useSubscription } from "./context/SubscriptionContext"
 import { UpgradeModal } from "./components/UpgradeModal"
@@ -19,6 +19,9 @@ const DashboardPage = lazy(() => import("./pages/DashboardPage").then(m => ({ de
 const PostsPage = lazy(() => import("./pages/PostsPage").then(m => ({ default: m.PostsPage })))
 const CalendarPage = lazy(() => import("./pages/CalendarPage").then(m => ({ default: m.CalendarPage })))
 const RoadmapPage = lazy(() => import("./pages/RoadmapPage").then(m => ({ default: m.RoadmapPage })))
+const SignInPage = lazy(() => import("./pages/SignInPage").then(m => ({ default: m.SignInPage })))
+const SignUpPage = lazy(() => import("./pages/SignUpPage").then(m => ({ default: m.SignUpPage })))
+const SSOCallback = lazy(() => import("./pages/SSOCallback").then(m => ({ default: m.SSOCallback })))
 
 // Global upgrade modal component
 function GlobalUpgradeModal() {
@@ -62,6 +65,11 @@ function AppContent() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/roadmap1" element={<RoadmapPage />} />
 
+            {/* Auth routes */}
+            <Route path="/sign-in" element={<AuthRoute><SignInPage /></AuthRoute>} />
+            <Route path="/sign-up" element={<AuthRoute><SignUpPage /></AuthRoute>} />
+            <Route path="/sso-callback" element={<SSOCallback />} />
+
             {/* Protected routes - require sign in */}
             <Route path="/dashboard" element={
               <ProtectedRoute><DashboardPage /></ProtectedRoute>
@@ -80,14 +88,33 @@ function AppContent() {
   )
 }
 
-// Protected route wrapper - export for use with protected routes
+// Protected route wrapper - redirects to sign-in if not authenticated
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   return (
     <>
       <SignedIn>{children}</SignedIn>
-      <SignedOut><RedirectToSignIn /></SignedOut>
+      <SignedOut><Navigate to="/sign-in" replace /></SignedOut>
     </>
   )
+}
+
+// Auth route wrapper - redirects to dashboard if already signed in
+function AuthRoute({ children }: { children: React.ReactNode }) {
+  const { isSignedIn, isLoaded } = useAuth()
+
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
+  }
+
+  if (isSignedIn) {
+    return <Navigate to="/dashboard" replace />
+  }
+
+  return <>{children}</>
 }
 
 // Fallback content when Clerk is not configured
