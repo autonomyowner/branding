@@ -6,6 +6,7 @@ import { useData, type Post, type Platform } from "../context/DataContext"
 import { Badge } from "../components/ui/badge"
 import { Button } from "../components/ui/button"
 import { Logo } from "../components/ui/Logo"
+import { MobileNav } from "../components/dashboard/MobileNav"
 
 // Optimal posting times based on 2025 research
 const OPTIMAL_TIMES: Record<Platform, { times: string[]; days: string[]; description: string }> = {
@@ -635,6 +636,9 @@ export function CalendarPage() {
           </div>
         </div>
       </main>
+
+      {/* Mobile Navigation */}
+      <MobileNav />
     </div>
   )
 }

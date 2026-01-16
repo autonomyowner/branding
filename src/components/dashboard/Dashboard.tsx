@@ -14,6 +14,7 @@ import { ImageGeneratorModal } from "./ImageGeneratorModal"
 import { BrandModal } from "./BrandModal"
 import { SettingsModal } from "./SettingsModal"
 import { WelcomeModal } from "./WelcomeModal"
+import { MobileNav } from "./MobileNav"
 import { Link } from "react-router-dom"
 import { useData } from "../../context/DataContext"
 import { useSubscription } from "../../context/SubscriptionContext"
@@ -176,6 +177,9 @@ export function Dashboard() {
         isOpen={isWelcomeModalOpen}
         onClose={() => setIsWelcomeModalOpen(false)}
       />
+
+      {/* Mobile Navigation */}
+      <MobileNav />
     </div>
   )
 }

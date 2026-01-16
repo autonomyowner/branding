@@ -7,6 +7,7 @@ import { Card } from "../components/ui/card"
 import { Badge } from "../components/ui/badge"
 import { Button } from "../components/ui/button"
 import { Logo } from "../components/ui/Logo"
+import { MobileNav } from "../components/dashboard/MobileNav"
 
 const platformColors: Record<string, string> = {
   Instagram: "bg-pink-500/10 text-pink-400 border-pink-500/20",
@@ -246,6 +247,9 @@ export function PostsPage() {
           </div>
         )}
       </main>
+
+      {/* Mobile Navigation */}
+      <MobileNav />
     </div>
   )
 }
