@@ -46,11 +46,7 @@ export function useMetaPixel() {
       }
 
       try {
-        if (parameters) {
-          window.fbq('track', eventName, parameters);
-        } else {
-          window.fbq('track', eventName as 'PageView');
-        }
+        window.fbq('track', eventName, parameters);
 
         if (import.meta.env.DEV) {
           console.log('[Meta Pixel] Event tracked:', eventName, parameters);
@@ -96,8 +92,21 @@ export function useMetaPixel() {
    * (Note: PageView is automatically tracked on initial load)
    */
   const trackPageView = useCallback(() => {
-    trackEvent('PageView');
-  }, [trackEvent]);
+    if (!isPixelLoaded()) {
+      console.warn('[Meta Pixel] fbq is not loaded. PageView not tracked.');
+      return;
+    }
+
+    try {
+      window.fbq('track', 'PageView');
+
+      if (import.meta.env.DEV) {
+        console.log('[Meta Pixel] PageView tracked');
+      }
+    } catch (error) {
+      console.error('[Meta Pixel] Error tracking PageView:', error);
+    }
+  }, [isPixelLoaded]);
 
   /**
    * Grant or revoke user consent for pixel tracking

@@ -66,6 +66,7 @@ export interface MetaPixelStandardEvent {
   };
   InitiateCheckout: {
     content_category?: string;
+    content_name?: string;
     content_ids?: string[];
     contents?: Array<{
       id: string;
