@@ -9,24 +9,25 @@ The admin dashboard allows authorized users to view:
 
 ## Setup Instructions
 
-### 1. Set Admin Emails
+### Admin Credentials
 
-Add your admin email(s) to the backend `.env` file:
+The admin dashboard uses simple username and password authentication:
 
-```bash
-# Single admin
-ADMIN_EMAILS=admin@postaify.com
+**Username:** `admin`
+**Password:** `RTILLidie22`
 
-# Multiple admins (comma-separated)
-ADMIN_EMAILS=admin@postaify.com,developer@postaify.com,manager@postaify.com
+These credentials are hardcoded in `backend/src/routes/admin.ts`. To change them, edit the following lines:
+
+```typescript
+const ADMIN_USERNAME = 'admin'
+const ADMIN_PASSWORD = 'RTILLidie22'
 ```
 
-### 2. Access the Dashboard
+### Access the Dashboard
 
-1. Sign in to your account at https://www.postaify.com
-2. Navigate to: https://www.postaify.com/admin
-3. If your email is in `ADMIN_EMAILS`, you'll see the dashboard
-4. If not, you'll see "Access denied. Admin only."
+1. Navigate to: https://www.postaify.com/admin
+2. Enter the admin username and password
+3. You'll see the admin dashboard with three tabs
 
 ## Dashboard Features
 
@@ -76,7 +77,27 @@ View all captured emails with:
 
 ## API Endpoints
 
-All admin endpoints require authentication + admin email verification.
+### POST /api/v1/admin/login
+Login to get admin access token
+
+**Request:**
+```json
+{
+  "username": "admin",
+  "password": "RTILLidie22"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "token": "admin-session-RTILLidie22",
+  "message": "Login successful"
+}
+```
+
+All other admin endpoints require the Authorization header with the admin token.
 
 ### GET /api/v1/admin/stats
 Returns overall statistics
@@ -123,20 +144,26 @@ Returns recent activity across the platform
 
 ## Security
 
-- **Authentication Required**: Must be signed in
-- **Email Verification**: Email must be in `ADMIN_EMAILS` env var
-- **403 Error**: Returned if user is not an admin
-- **No Role in Database**: Admin status is environment-based only
+- **Simple Username/Password**: Admin login uses hardcoded credentials
+- **Token-Based**: Admin token stored in localStorage after login
+- **Authorization Header**: All admin API calls include Bearer token
+- **403 Error**: Returned if token is invalid or missing
+- **No Database Storage**: Credentials are hardcoded in backend route
+
+**Security Note:** For production use, consider implementing:
+- Environment variables for credentials
+- Hashed password storage
+- Session expiration
+- Rate limiting on login attempts
 
 ## Troubleshooting
 
 ### "Access denied. Admin only."
-**Solution:** Add your email to `ADMIN_EMAILS` in backend `.env` file:
-```bash
-ADMIN_EMAILS=your-email@example.com
-```
+**Solution:** Make sure you're using the correct credentials:
+- Username: `admin`
+- Password: `RTILLidie22`
 
-Then restart your backend:
+If you changed the credentials in the code, restart your backend:
 ```bash
 cd backend
 npm run dev
@@ -154,19 +181,22 @@ npm run dev
 2. Route not deployed (check Vercel deployment)
 3. Check browser console for errors
 
-## Adding More Admins
+## Changing Admin Credentials
 
-Simply add their email to the comma-separated list:
+To change the admin username or password:
 
-```bash
-# Before
-ADMIN_EMAILS=admin@postaify.com
-
-# After
-ADMIN_EMAILS=admin@postaify.com,newadmin@postaify.com,manager@postaify.com
-```
-
-No need to restart - the env variable is checked on each request.
+1. Open `backend/src/routes/admin.ts`
+2. Update the credentials:
+   ```typescript
+   const ADMIN_USERNAME = 'your-new-username'
+   const ADMIN_PASSWORD = 'your-new-password'
+   ```
+3. Restart the backend:
+   ```bash
+   cd backend
+   npm run dev
+   ```
+4. Login with the new credentials
 
 ## Future Enhancements
 

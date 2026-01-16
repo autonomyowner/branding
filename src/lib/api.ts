@@ -443,8 +443,41 @@ class ApiClient {
     })
   }
 
-  // Admin
+  // Admin - Login
+  async adminLogin(username: string, password: string) {
+    const response = await this.request<{
+      success: boolean
+      token: string
+      message: string
+    }>('/api/v1/admin/login', {
+      method: 'POST',
+      body: JSON.stringify({ username, password }),
+    })
+
+    // Store admin token in localStorage
+    if (response.token) {
+      localStorage.setItem('admin_token', response.token)
+    }
+
+    return response
+  }
+
+  adminLogout() {
+    localStorage.removeItem('admin_token')
+  }
+
+  isAdminLoggedIn(): boolean {
+    return !!localStorage.getItem('admin_token')
+  }
+
+  private getAdminToken(): string | null {
+    return localStorage.getItem('admin_token')
+  }
+
+  // Admin - Stats
   async getAdminStats() {
+    const token = this.getAdminToken()
+    if (!token) throw new Error('Admin not logged in')
     return this.request<{
       users: {
         total: number
@@ -463,10 +496,14 @@ class ApiClient {
         consentRate: number
         recentCaptures: number
       }
-    }>('/api/v1/admin/stats')
+    }>('/api/v1/admin/stats', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
   }
 
   async getAdminUsers(page = 1, limit = 50) {
+    const token = this.getAdminToken()
+    if (!token) throw new Error('Admin not logged in')
     return this.request<{
       users: Array<{
         id: string
@@ -486,10 +523,14 @@ class ApiClient {
         totalCount: number
         totalPages: number
       }
-    }>(`/api/v1/admin/users?page=${page}&limit=${limit}`)
+    }>(`/api/v1/admin/users?page=${page}&limit=${limit}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
   }
 
   async getAdminEmailCaptures(page = 1, limit = 50) {
+    const token = this.getAdminToken()
+    if (!token) throw new Error('Admin not logged in')
     return this.request<{
       captures: Array<{
         id: string
@@ -506,10 +547,14 @@ class ApiClient {
         totalCount: number
         totalPages: number
       }
-    }>(`/api/v1/admin/email-captures?page=${page}&limit=${limit}`)
+    }>(`/api/v1/admin/email-captures?page=${page}&limit=${limit}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
   }
 
   async getAdminRecentActivity(limit = 20) {
+    const token = this.getAdminToken()
+    if (!token) throw new Error('Admin not logged in')
     return this.request<{
       recentUsers: Array<{
         id: string
@@ -536,7 +581,9 @@ class ApiClient {
         marketingConsent: boolean
         capturedAt: string
       }>
-    }>(`/api/v1/admin/recent-activity?limit=${limit}`)
+    }>(`/api/v1/admin/recent-activity?limit=${limit}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
   }
 }
 

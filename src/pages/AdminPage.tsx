@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { useAuth } from '@clerk/clerk-react'
 import { api } from '../lib/api'
 import { Navbar } from '../components/Navbar'
 import { Card } from '../components/ui/card'
@@ -10,11 +9,17 @@ import { Badge } from '../components/ui/badge'
 type Tab = 'overview' | 'users' | 'emails'
 
 export function AdminPage() {
-  const { isLoaded, isSignedIn } = useAuth()
   const navigate = useNavigate()
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [activeTab, setActiveTab] = useState<Tab>('overview')
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
+
+  // Login state
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [loginError, setLoginError] = useState('')
+  const [isLoggingIn, setIsLoggingIn] = useState(false)
 
   // Overview data
   const [stats, setStats] = useState<any>(null)
@@ -30,14 +35,40 @@ export function AdminPage() {
   const [emailsPagination, setEmailsPagination] = useState<any>(null)
 
   useEffect(() => {
-    if (!isLoaded) return
-    if (!isSignedIn) {
-      navigate('/sign-in')
-      return
-    }
+    // Check if already logged in
+    const loggedIn = api.isAdminLoggedIn()
+    setIsLoggedIn(loggedIn)
 
-    loadData()
-  }, [isLoaded, isSignedIn, activeTab, usersPage, emailsPage])
+    if (loggedIn) {
+      loadData()
+    } else {
+      setIsLoading(false)
+    }
+  }, [activeTab, usersPage, emailsPage])
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoginError('')
+    setIsLoggingIn(true)
+
+    try {
+      await api.adminLogin(username, password)
+      setIsLoggedIn(true)
+      setPassword('')
+      loadData()
+    } catch (err: any) {
+      setLoginError(err.message || 'Invalid username or password')
+    } finally {
+      setIsLoggingIn(false)
+    }
+  }
+
+  const handleLogout = () => {
+    api.adminLogout()
+    setIsLoggedIn(false)
+    setUsername('')
+    setPassword('')
+  }
 
   const loadData = async () => {
     setIsLoading(true)
@@ -67,7 +98,63 @@ export function AdminPage() {
     }
   }
 
-  if (!isLoaded || isLoading) {
+  // Show login form if not logged in
+  if (!isLoggedIn) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="flex items-center justify-center min-h-[80vh]">
+          <Card className="w-full max-w-md p-8">
+            <h1 className="text-2xl font-bold text-foreground mb-6 text-center">Admin Login</h1>
+
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Username
+                </label>
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="w-full px-4 py-2 rounded-lg bg-muted border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="Enter username"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-4 py-2 rounded-lg bg-muted border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="Enter password"
+                  required
+                />
+              </div>
+
+              {loginError && (
+                <div className="text-red-500 text-sm">{loginError}</div>
+              )}
+
+              <button
+                type="submit"
+                disabled={isLoggingIn}
+                className="w-full px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isLoggingIn ? 'Logging in...' : 'Login'}
+              </button>
+            </form>
+          </Card>
+        </div>
+      </div>
+    )
+  }
+
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
@@ -83,12 +170,12 @@ export function AdminPage() {
       <div className="min-h-screen bg-background">
         <Navbar />
         <div className="max-w-4xl mx-auto px-6 py-20 text-center">
-          <div className="text-red-500 text-xl font-semibold mb-4">⚠️ {error}</div>
+          <div className="text-red-500 text-xl font-semibold mb-4">{error}</div>
           <button
-            onClick={() => navigate('/dashboard')}
+            onClick={handleLogout}
             className="text-primary hover:underline"
           >
-            Go back to dashboard
+            Logout and try again
           </button>
         </div>
       </div>
@@ -101,9 +188,17 @@ export function AdminPage() {
 
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Admin Dashboard</h1>
-          <p className="text-muted-foreground">Manage users, view analytics, and monitor email captures</p>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground mb-2">Admin Dashboard</h1>
+            <p className="text-muted-foreground">Manage users, view analytics, and monitor email captures</p>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 text-sm font-medium rounded-lg bg-muted hover:bg-muted/70 transition-colors"
+          >
+            Logout
+          </button>
         </div>
 
         {/* Tabs */}

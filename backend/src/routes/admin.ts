@@ -1,27 +1,48 @@
 import { Router } from 'express'
 import { prisma } from '../lib/prisma.js'
-import { requireAuthentication, loadUser, getAuthenticatedUser } from '../middleware/auth.js'
 
 const router = Router()
 
-// All routes require authentication
-router.use(requireAuthentication, loadUser)
+// Simple admin credentials
+const ADMIN_USERNAME = 'admin'
+const ADMIN_PASSWORD = 'RTILLidie22'
+const ADMIN_TOKEN = 'admin-session-' + ADMIN_PASSWORD
 
-// Simple admin check - you can enhance this with a role-based system
-// For now, checking against specific admin emails
-const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || '').split(',').filter(Boolean)
+// Admin login endpoint (no authentication required)
+router.post('/login', (req, res) => {
+  const { username, password } = req.body
 
+  if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+    return res.json({
+      success: true,
+      token: ADMIN_TOKEN,
+      message: 'Login successful'
+    })
+  }
+
+  return res.status(401).json({
+    error: { message: 'Invalid username or password' }
+  })
+})
+
+// Middleware to check admin token
 const requireAdmin = (req: any, res: any, next: any) => {
-  const user = getAuthenticatedUser(req)
+  const token = req.headers.authorization?.replace('Bearer ', '')
 
-  if (!ADMIN_EMAILS.includes(user.email)) {
+  if (token !== ADMIN_TOKEN) {
     return res.status(403).json({ error: { message: 'Access denied. Admin only.' } })
   }
 
   next()
 }
 
-router.use(requireAdmin)
+// Apply admin middleware to all routes except login
+router.use((req, res, next) => {
+  if (req.path === '/login') {
+    return next()
+  }
+  return requireAdmin(req, res, next)
+})
 
 // GET /api/v1/admin/stats - Get overall statistics
 router.get('/stats', async (req, res, next) => {

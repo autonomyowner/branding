@@ -83,9 +83,7 @@ function AppContent() {
             <Route path="/calendar" element={
               <ProtectedRoute><CalendarPage /></ProtectedRoute>
             } />
-            <Route path="/admin" element={
-              <ProtectedRoute><AdminPage /></ProtectedRoute>
-            } />
+            <Route path="/admin" element={<AdminPage />} />
           </Routes>
         </Suspense>
       </BrowserRouter>
