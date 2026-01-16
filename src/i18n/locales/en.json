@@ -12,6 +12,7 @@
   "hero": {
     "title": "The First",
     "titleHighlight": "Automated Content Platform",
+    "goToDashboard": "Go to Dashboard",
     "subtitle": "Create brands, schedule posts, and automate your social media content. An AI-powered platform for content automation.",
     "cta": "Start Free",
     "ctaFree": "Start Free - No Credit Card",
