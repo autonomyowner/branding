@@ -13,9 +13,10 @@ const app = express()
 // Security middleware
 app.use(helmet())
 
-// CORS - allow frontend origin
+// CORS - allow frontend origin (strip trailing slash if present)
+const frontendOrigin = env.FRONTEND_URL.replace(/\/$/, '')
 app.use(cors({
-  origin: env.FRONTEND_URL,
+  origin: frontendOrigin,
   credentials: true,
 }))
 
