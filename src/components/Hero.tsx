@@ -1,6 +1,8 @@
 import { motion } from "framer-motion"
 import { useTranslation } from "react-i18next"
 import { useState, useEffect } from "react"
+import { useAuth } from "@clerk/clerk-react"
+import { Link } from "react-router-dom"
 import { Button } from "./ui/button"
 import { Badge } from "./ui/badge"
 
@@ -91,6 +93,7 @@ function ConnectionLine({ startX, startY, endX, endY, delay }: {
 
 export function Hero() {
   const { t } = useTranslation()
+  const { isSignedIn } = useAuth()
   const reduceMotion = useReducedMotion()
 
   return (
@@ -270,21 +273,33 @@ export function Hero() {
           transition={{ duration: 0.5, delay: 0.3 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
-          <div className="flex flex-col items-center">
+          {isSignedIn ? (
+            // Signed in - show dashboard button
             <Button size="lg" className="w-full sm:w-auto min-w-[200px]" asChild>
-              <a href="/dashboard">
-                {t('hero.ctaFree') || 'Start Free - No Credit Card'}
-              </a>
+              <Link to="/dashboard">
+                {t('hero.goToDashboard') || 'Go to Dashboard'}
+              </Link>
             </Button>
-            <span className="text-xs text-muted-foreground mt-2">
-              {t('hero.freePlanInfo') || '2 brands, 20 posts/month free'}
-            </span>
-          </div>
-          <Button variant="outline" size="lg" className="w-full sm:w-auto min-w-[200px]" asChild>
-            <a href="#pricing">
-              {t('hero.viewPricing') || 'View Pricing'}
-            </a>
-          </Button>
+          ) : (
+            // Signed out - show sign up flow
+            <>
+              <div className="flex flex-col items-center">
+                <Button size="lg" className="w-full sm:w-auto min-w-[200px]" asChild>
+                  <Link to="/sign-up">
+                    {t('hero.ctaFree') || 'Start Free - No Credit Card'}
+                  </Link>
+                </Button>
+                <span className="text-xs text-muted-foreground mt-2">
+                  {t('hero.freePlanInfo') || '2 brands, 20 posts/month free'}
+                </span>
+              </div>
+              <Button variant="outline" size="lg" className="w-full sm:w-auto min-w-[200px]" asChild>
+                <a href="#pricing">
+                  {t('hero.viewPricing') || 'View Pricing'}
+                </a>
+              </Button>
+            </>
+          )}
         </motion.div>
 
         {/* Trust Badges */}

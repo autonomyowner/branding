@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { useTranslation } from "react-i18next"
+import { useAuth, useUser } from "@clerk/clerk-react"
 import { Button } from "./ui/button"
 import { Logo } from "./ui/Logo"
 import { LanguageSwitcher } from "./LanguageSwitcher"
@@ -9,6 +10,8 @@ import { cn } from "../lib/utils"
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const { t } = useTranslation()
+  const { isSignedIn, isLoaded } = useAuth()
+  const { user } = useUser()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -42,19 +45,46 @@ export function Navbar() {
           </a>
         </div>
 
-        {/* CTA */}
+        {/* CTA - Auth aware */}
         <div className="flex items-center gap-4">
           <LanguageSwitcher />
-          <Link to="/dashboard">
-            <Button variant="ghost" size="sm" className="hidden sm:inline-flex">
-              {t('nav.signIn')}
-            </Button>
-          </Link>
-          <Link to="/dashboard">
-            <Button size="sm">
-              {t('nav.getStarted')}
-            </Button>
-          </Link>
+
+          {!isLoaded ? (
+            // Loading state
+            <div className="w-20 h-8 bg-muted/20 rounded animate-pulse" />
+          ) : isSignedIn ? (
+            // Signed in state
+            <div className="flex items-center gap-3">
+              <Link to="/dashboard">
+                <Button size="sm">
+                  {t('nav.dashboard') || 'Dashboard'}
+                </Button>
+              </Link>
+              {user?.imageUrl && (
+                <Link to="/dashboard" className="hidden sm:block">
+                  <img
+                    src={user.imageUrl}
+                    alt={user.firstName || 'User'}
+                    className="w-8 h-8 rounded-full border border-border hover:border-primary transition-colors"
+                  />
+                </Link>
+              )}
+            </div>
+          ) : (
+            // Signed out state
+            <>
+              <Link to="/sign-in">
+                <Button variant="ghost" size="sm" className="hidden sm:inline-flex">
+                  {t('nav.signIn')}
+                </Button>
+              </Link>
+              <Link to="/sign-up">
+                <Button size="sm">
+                  {t('nav.getStarted')}
+                </Button>
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </nav>

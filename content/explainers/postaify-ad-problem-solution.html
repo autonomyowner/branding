@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>POSTAIFY - Stop Wasting Hours</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    .container {
+      width: 1080px;
+      height: 1920px;
+      transform: scale(0.5);
+      transform-origin: center;
+      background: linear-gradient(180deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Floating orbs for ambient effect */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0;
+      animation: blob-float 20s ease-in-out infinite;
+    }
+
+    .orb-1 {
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, hsl(262, 83%, 58%) 0%, transparent 70%);
+      top: 10%;
+      left: 20%;
+      animation-delay: 0s;
+    }
+
+    .orb-2 {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, hsl(200, 83%, 58%) 0%, transparent 70%);
+      bottom: 20%;
+      right: 10%;
+      animation-delay: 7s;
+    }
+
+    .orb-3 {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, hsl(142, 70%, 45%) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation-delay: 14s;
+    }
+
+    @keyframes blob-float {
+      0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.15; }
+      33% { transform: translate(30px, -40px) scale(1.1); opacity: 0.25; }
+      66% { transform: translate(-20px, 20px) scale(0.9); opacity: 0.2; }
+    }
+
+    /* Phase sections */
+    .section {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 120px 100px;
+      opacity: 0;
+      transform: scale(0.9);
+    }
+
+    .section.visible {
+      animation: fadeInScale 0.8s ease forwards;
+    }
+
+    .section.exit {
+      animation: fadeOutScale 0.6s ease forwards;
+    }
+
+    @keyframes fadeInScale {
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes fadeOutScale {
+      to { opacity: 0; transform: scale(0.95); }
+    }
+
+    /* Typography styles */
+    .headline {
+      font-size: 120px;
+      font-weight: 900;
+      text-align: center;
+      line-height: 1.1;
+      margin-bottom: 40px;
+    }
+
+    .subheadline {
+      font-size: 72px;
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.2;
+      margin-bottom: 30px;
+    }
+
+    .body-text {
+      font-size: 56px;
+      font-weight: 400;
+      text-align: center;
+      line-height: 1.4;
+      color: #b4b4b4;
+    }
+
+    .gradient-purple {
+      background: linear-gradient(135deg, hsl(262, 83%, 58%) 0%, hsl(200, 83%, 68%) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .gradient-green {
+      background: linear-gradient(135deg, hsl(142, 70%, 45%) 0%, hsl(180, 70%, 55%) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .text-red {
+      color: hsl(0, 70%, 50%);
+    }
+
+    /* Animated elements */
+    .checkmark {
+      width: 200px;
+      height: 200px;
+      margin: 60px auto;
+      position: relative;
+    }
+
+    .checkmark-circle {
+      stroke: hsl(142, 70%, 45%);
+      stroke-width: 8;
+      fill: none;
+      animation: drawCircle 0.8s ease forwards;
+      stroke-dasharray: 630;
+      stroke-dashoffset: 630;
+    }
+
+    .checkmark-check {
+      stroke: hsl(142, 70%, 45%);
+      stroke-width: 10;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      animation: drawCheck 0.6s 0.8s ease forwards;
+      stroke-dasharray: 200;
+      stroke-dashoffset: 200;
+    }
+
+    @keyframes drawCircle {
+      to { stroke-dashoffset: 0; }
+    }
+
+    @keyframes drawCheck {
+      to { stroke-dashoffset: 0; }
+    }
+
+    /* Counter animation */
+    .stat-box {
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 30px;
+      padding: 60px 80px;
+      margin: 40px 0;
+      backdrop-filter: blur(10px);
+    }
+
+    .stat-number {
+      font-size: 140px;
+      font-weight: 900;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .stat-label {
+      font-size: 48px;
+      text-align: center;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+    }
+
+    /* CTA button */
+    .cta-button {
+      background: linear-gradient(135deg, hsl(262, 83%, 58%) 0%, hsl(200, 83%, 68%) 100%);
+      color: white;
+      font-size: 64px;
+      font-weight: 700;
+      padding: 50px 100px;
+      border-radius: 30px;
+      border: none;
+      cursor: pointer;
+      animation: pulse 2s ease-in-out infinite;
+      box-shadow: 0 20px 60px rgba(157, 78, 221, 0.4);
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 20px 60px rgba(157, 78, 221, 0.4); }
+      50% { transform: scale(1.05); box-shadow: 0 30px 80px rgba(157, 78, 221, 0.6); }
+    }
+
+    /* Typing effect */
+    .typed-text {
+      border-right: 4px solid hsl(262, 83%, 58%);
+      padding-right: 10px;
+      animation: blink 0.7s step-end infinite;
+    }
+
+    @keyframes blink {
+      50% { border-color: transparent; }
+    }
+
+    /* Progress bar */
+    .progress-container {
+      width: 100%;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      overflow: hidden;
+      margin: 60px 0;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, hsl(142, 70%, 45%) 0%, hsl(180, 70%, 55%) 100%);
+      width: 0;
+      transition: width 2s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    .progress-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    /* Brand logo text */
+    .brand {
+      font-size: 80px;
+      font-weight: 900;
+      letter-spacing: -2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Ambient background orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <!-- Section 1: Hook (0-3s) -->
+    <div class="section section-1">
+      <h1 class="headline text-red">
+        <span class="typed-text" id="hook-text"></span>
+      </h1>
+    </div>
+
+    <!-- Section 2: Problem (3-8s) -->
+    <div class="section section-2">
+      <h2 class="subheadline" style="color: white;">You're spending</h2>
+      <div class="stat-box">
+        <div class="stat-number text-red" id="hours-counter">0</div>
+        <div class="stat-label">Hours per week</div>
+      </div>
+      <p class="body-text">Creating social media posts manually</p>
+    </div>
+
+    <!-- Section 3: Solution (8-13s) -->
+    <div class="section section-3">
+      <h2 class="subheadline gradient-purple">What if it took</h2>
+      <div class="stat-box">
+        <div class="stat-number gradient-green">5 min</div>
+        <div class="stat-label" style="color: hsl(142, 70%, 45%);">Total time</div>
+      </div>
+      <svg class="checkmark" viewBox="0 0 100 100">
+        <circle class="checkmark-circle" cx="50" cy="50" r="45"/>
+        <path class="checkmark-check" d="M25,50 L40,65 L75,30"/>
+      </svg>
+    </div>
+
+    <!-- Section 4: Product intro (13-18s) -->
+    <div class="section section-4">
+      <h2 class="subheadline" style="color: white; margin-bottom: 60px;">Meet</h2>
+      <h1 class="headline brand gradient-purple">POSTAIFY</h1>
+      <p class="body-text">AI agents that create & schedule<br/>all your content automatically</p>
+      <div class="progress-container">
+        <div class="progress-bar" id="auto-progress"></div>
+      </div>
+    </div>
+
+    <!-- Section 5: CTA (18-22s) -->
+    <div class="section section-5">
+      <h2 class="subheadline gradient-purple" style="margin-bottom: 80px;">Start free today</h2>
+      <button class="cta-button">Get Started</button>
+      <p class="body-text" style="margin-top: 60px; font-size: 44px;">
+        No credit card • 2 brands free • 20 posts/month
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // Timeline controller
+    const TIMELINE = {
+      hook: { start: 0, end: 3000 },
+      problem: { start: 3000, end: 8000 },
+      solution: { start: 8000, end: 13000 },
+      product: { start: 13000, end: 18000 },
+      cta: { start: 18000, end: 23000 }
+    };
+
+    let currentTime = 0;
+    let currentPhase = null;
+
+    // Typing effect for hook
+    function typeText(element, text, speed = 80) {
+      let i = 0;
+      const interval = setInterval(() => {
+        element.textContent = text.slice(0, i);
+        i++;
+        if (i > text.length) {
+          clearInterval(interval);
+          element.classList.remove('typed-text');
+        }
+      }, speed);
+    }
+
+    // Counter animation
+    function animateCounter(element, target, duration = 2000) {
+      let start = 0;
+      const increment = target / (duration / 16);
+      const timer = setInterval(() => {
+        start += increment;
+        if (start >= target) {
+          element.textContent = Math.round(target) + '+';
+          clearInterval(timer);
+        } else {
+          element.textContent = Math.round(start);
+        }
+      }, 16);
+    }
+
+    // Phase manager
+    function updatePhase() {
+      currentTime += 100;
+
+      let newPhase = null;
+      if (currentTime < TIMELINE.hook.end) newPhase = 'hook';
+      else if (currentTime < TIMELINE.problem.end) newPhase = 'problem';
+      else if (currentTime < TIMELINE.solution.end) newPhase = 'solution';
+      else if (currentTime < TIMELINE.product.end) newPhase = 'product';
+      else if (currentTime < TIMELINE.cta.end) newPhase = 'cta';
+      else {
+        // Loop back
+        currentTime = 0;
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('visible', 'exit'));
+        setTimeout(updatePhase, 100);
+        return;
+      }
+
+      if (newPhase !== currentPhase) {
+        // Exit old phase
+        if (currentPhase) {
+          const oldSection = document.querySelector(`.section-${getSectionNumber(currentPhase)}`);
+          oldSection.classList.remove('visible');
+          oldSection.classList.add('exit');
+        }
+
+        // Enter new phase
+        currentPhase = newPhase;
+        const newSection = document.querySelector(`.section-${getSectionNumber(newPhase)}`);
+        setTimeout(() => {
+          newSection.classList.remove('exit');
+          newSection.classList.add('visible');
+
+          // Trigger phase-specific animations
+          if (newPhase === 'hook') {
+            const hookText = document.getElementById('hook-text');
+            hookText.textContent = '';
+            hookText.classList.add('typed-text');
+            setTimeout(() => typeText(hookText, 'Stop wasting hours'), 200);
+          }
+          else if (newPhase === 'problem') {
+            setTimeout(() => animateCounter(document.getElementById('hours-counter'), 8), 300);
+          }
+          else if (newPhase === 'product') {
+            setTimeout(() => {
+              document.getElementById('auto-progress').style.width = '100%';
+            }, 500);
+          }
+        }, 100);
+      }
+    }
+
+    function getSectionNumber(phase) {
+      const map = { hook: '1', problem: '2', solution: '3', product: '4', cta: '5' };
+      return map[phase];
+    }
+
+    // Start animation
+    setInterval(updatePhase, 100);
+  </script>
+</body>
+</html>
+
+<!--
+VOICEOVER SCRIPT:
+
+[0:00-0:03] HOOK: "Stop wasting hours on social media posts"
+[0:03-0:08] PROBLEM: "You're spending 8+ hours every week creating content manually. Stuck in a cycle of writing, designing, scheduling... over and over."
+[0:08-0:13] SOLUTION: "What if it took just 5 minutes total? Imagine that."
+[0:13-0:18] PRODUCT: "Meet POSTAIFY. AI agents that create and schedule all your content automatically. While you focus on growing your business."
+[0:18-0:23] CTA: "Start free today. No credit card needed. 2 brands and 20 posts per month, completely free."
+
+RECOMMENDED VOICE: "Adam" (authoritative, confident) or "Rachel" (friendly, professional)
+-->
