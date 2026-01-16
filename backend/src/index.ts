@@ -13,10 +13,23 @@ const app = express()
 // Security middleware
 app.use(helmet())
 
-// CORS - allow frontend origin (strip trailing slash if present)
+// CORS - allow frontend origin (both www and non-www variants)
 const frontendOrigin = env.FRONTEND_URL.replace(/\/$/, '')
+const allowedOrigins = [
+  frontendOrigin,
+  frontendOrigin.replace('https://', 'https://www.'),
+  frontendOrigin.replace('https://www.', 'https://'),
+].filter((v, i, a) => a.indexOf(v) === i) // Remove duplicates
+
 app.use(cors({
-  origin: frontendOrigin,
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, curl, etc.)
+    if (!origin) return callback(null, true)
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true)
+    }
+    return callback(new Error('Not allowed by CORS'))
+  },
   credentials: true,
 }))
 
