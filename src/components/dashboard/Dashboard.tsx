@@ -114,7 +114,7 @@ export function Dashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="mt-8"
+          className="mt-8 mb-4 md:mb-0"
         >
           <QuickActions
             onGenerateContent={() => setIsGenerateModalOpen(true)}
@@ -146,6 +146,9 @@ export function Dashboard() {
             <ContentCalendarPreview onSchedulePost={() => setIsGenerateModalOpen(true)} />
           </motion.div>
         </div>
+
+        {/* Spacer for mobile bottom navigation */}
+        <div className="h-40 md:hidden" />
       </main>
 
       {/* Modals */}
@@ -178,8 +181,17 @@ export function Dashboard() {
         onClose={() => setIsWelcomeModalOpen(false)}
       />
 
-      {/* Mobile Navigation */}
-      <MobileNav />
+      {/* Mobile Navigation - hide when any modal is open */}
+      <MobileNav
+        hideNav={
+          isGenerateModalOpen ||
+          isVideoModalOpen ||
+          isVoiceoverModalOpen ||
+          isImageGeneratorModalOpen ||
+          isBrandModalOpen ||
+          isSettingsModalOpen
+        }
+      />
     </div>
   )
 }

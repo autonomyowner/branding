@@ -242,7 +242,7 @@ export function CalendarPage() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-6 py-10 relative">
+      <main className="max-w-7xl mx-auto px-6 py-10 pb-32 md:pb-10 mb-20 md:mb-0 relative">
         {/* Page Title */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

@@ -1,15 +1,22 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { GenerateModal } from './GenerateModal'
 import { BrandModal } from './BrandModal'
 
-export function MobileNav() {
+interface MobileNavProps {
+  hideNav?: boolean
+}
+
+export function MobileNav({ hideNav = false }: MobileNavProps) {
   const { t } = useTranslation()
   const location = useLocation()
   const [isGenerateModalOpen, setIsGenerateModalOpen] = useState(false)
   const [isBrandModalOpen, setIsBrandModalOpen] = useState(false)
+
+  // Hide nav when any modal is open (internal or external)
+  const shouldHideNav = hideNav || isGenerateModalOpen || isBrandModalOpen
 
   const isActive = (path: string) => location.pathname === path
 
@@ -70,50 +77,56 @@ export function MobileNav() {
   return (
     <>
       {/* Floating Bottom Navigation - Mobile Only */}
-      <motion.nav
-        initial={{ y: 100 }}
-        animate={{ y: 0 }}
-        className="fixed bottom-4 left-4 right-4 md:hidden z-50"
-      >
-        <div className="bg-card/95 backdrop-blur-xl border border-border rounded-2xl shadow-2xl shadow-black/20 px-2 py-2">
-          <div className="flex items-center justify-around">
-            {navItems.map((item, index) => {
-              if (item.type === 'link') {
-                const active = isActive(item.path)
-                return (
-                  <Link
-                    key={index}
-                    to={item.path}
-                    className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all ${
-                      active
-                        ? 'text-primary bg-primary/10'
-                        : 'text-muted-foreground hover:text-white hover:bg-white/5'
-                    }`}
-                  >
-                    {item.icon}
-                    <span className="text-[10px] font-medium">{item.label}</span>
-                  </Link>
-                )
-              }
+      <AnimatePresence>
+        {!shouldHideNav && (
+          <motion.nav
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 100, opacity: 0 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            className="fixed bottom-4 left-4 right-4 md:hidden z-50"
+          >
+            <div className="bg-card/95 backdrop-blur-xl border border-border rounded-2xl shadow-2xl shadow-black/20 px-2 py-2">
+              <div className="flex items-center justify-around">
+                {navItems.map((item, index) => {
+                  if (item.type === 'link') {
+                    const active = isActive(item.path)
+                    return (
+                      <Link
+                        key={index}
+                        to={item.path}
+                        className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all ${
+                          active
+                            ? 'text-primary bg-primary/10'
+                            : 'text-muted-foreground hover:text-white hover:bg-white/5'
+                        }`}
+                      >
+                        {item.icon}
+                        <span className="text-[10px] font-medium">{item.label}</span>
+                      </Link>
+                    )
+                  }
 
-              return (
-                <button
-                  key={index}
-                  onClick={item.action}
-                  className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all ${
-                    item.highlight
-                      ? 'text-primary hover:bg-primary/10'
-                      : 'text-muted-foreground hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  {item.icon}
-                  <span className="text-[10px] font-medium">{item.label}</span>
-                </button>
-              )
-            })}
-          </div>
-        </div>
-      </motion.nav>
+                  return (
+                    <button
+                      key={index}
+                      onClick={item.action}
+                      className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all ${
+                        item.highlight
+                          ? 'text-primary hover:bg-primary/10'
+                          : 'text-muted-foreground hover:text-white hover:bg-white/5'
+                      }`}
+                    >
+                      {item.icon}
+                      <span className="text-[10px] font-medium">{item.label}</span>
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          </motion.nav>
+        )}
+      </AnimatePresence>
 
       {/* Modals */}
       <GenerateModal
