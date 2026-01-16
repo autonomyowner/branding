@@ -251,6 +251,27 @@ class ApiClient {
     })
   }
 
+  async videoToPosts(data: {
+    brandId: string
+    platform: 'Instagram' | 'Twitter' | 'LinkedIn' | 'TikTok' | 'Facebook'
+    transcript: string
+    videoUrl?: string
+    numberOfPosts?: number
+    style?: string
+  }) {
+    return this.request<{
+      posts: string[]
+      count: number
+      platform: string
+    }>('/api/v1/ai/video-to-posts', {
+      method: 'POST',
+      body: JSON.stringify({
+        ...data,
+        videoTitle: data.videoUrl || 'Video content'
+      }),
+    })
+  }
+
   async getAIModels() {
     return this.request<Array<{ value: string; label: string }>>('/api/v1/ai/models')
   }

@@ -84,6 +84,9 @@ interface SubscriptionContextType {
   // Welcome modal
   markWelcomeSeen: () => void
 
+  // Email capture (for welcome/checkout flows)
+  captureEmail: (email: string) => void
+
   // Plan management
   upgradePlan: (plan: 'PRO' | 'BUSINESS') => Promise<void>
   openBillingPortal: () => Promise<void>
@@ -234,6 +237,11 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
     setSubscription(prev => ({ ...prev, hasSeenWelcome: true }))
   }, [])
 
+  // Capture email (store locally for later use)
+  const captureEmail = useCallback((email: string) => {
+    localStorage.setItem('t21-captured-email', email)
+  }, [])
+
   // Upgrade plan via Stripe checkout
   const upgradePlan = useCallback(async (plan: 'PRO' | 'BUSINESS') => {
     try {
@@ -281,6 +289,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
       openUpgradeModal,
       closeUpgradeModal,
       markWelcomeSeen,
+      captureEmail,
       upgradePlan,
       openBillingPortal,
       refreshSubscription,

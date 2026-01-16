@@ -28,7 +28,7 @@ export function Dashboard() {
   const [isImageGeneratorModalOpen, setIsImageGeneratorModalOpen] = useState(false)
   const [isBrandModalOpen, setIsBrandModalOpen] = useState(false)
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
-  const { user, isLoading } = useData()
+  const { user } = useData()
   const { subscription } = useSubscription()
 
   // Show welcome modal for first-time visitors

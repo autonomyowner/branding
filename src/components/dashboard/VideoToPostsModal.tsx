@@ -47,7 +47,7 @@ export function VideoToPostsModal({ isOpen, onClose }: VideoToPostsModalProps) {
   const [editedContent, setEditedContent] = useState('')
   const [schedulingIndex, setSchedulingIndex] = useState<number | null>(null)
 
-  const [isLoading, setIsLoading] = useState(false)
+  const [, setIsLoading] = useState(false)
   const [error, setError] = useState('')
 
   // Voiceover modal state

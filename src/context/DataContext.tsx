@@ -53,6 +53,13 @@ export const VOICE_OPTIONS = [
   { value: 'educational', label: 'Educational' },
 ] as const
 
+interface Stats {
+  postsScheduled: number
+  postsDraft: number
+  postsPublished: number
+  totalPosts: number
+}
+
 interface DataContextType {
   // User
   user: UserProfile | null
@@ -72,6 +79,9 @@ interface DataContextType {
   addPost: (post: Omit<Post, 'id' | 'createdAt'>) => Promise<Post>
   updatePost: (id: string, updates: Partial<Post>) => Promise<void>
   deletePost: (id: string) => Promise<void>
+
+  // Stats
+  getStats: () => Stats
 
   // Refresh data
   refreshData: () => Promise<void>
@@ -240,6 +250,15 @@ export function DataProvider({ children }: { children: ReactNode }) {
     setPosts(prev => prev.filter(p => p.id !== id))
   }, [])
 
+  const getStats = useCallback((): Stats => {
+    return {
+      postsScheduled: posts.filter(p => p.status === 'scheduled').length,
+      postsDraft: posts.filter(p => p.status === 'draft').length,
+      postsPublished: posts.filter(p => p.status === 'published').length,
+      totalPosts: posts.length
+    }
+  }, [posts])
+
   return (
     <DataContext.Provider value={{
       user,
@@ -255,6 +274,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
       addPost,
       updatePost,
       deletePost,
+      getStats,
       refreshData
     }}>
       {children}

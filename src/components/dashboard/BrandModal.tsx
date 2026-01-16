@@ -35,7 +35,7 @@ export function BrandModal({ isOpen, onClose, editBrandId }: BrandModalProps) {
     .toUpperCase()
     .slice(0, 2) || 'BR'
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!name.trim()) {
       setError('Brand name is required')
       return
@@ -63,14 +63,17 @@ export function BrandModal({ isOpen, onClose, editBrandId }: BrandModalProps) {
       topics
     }
 
-    if (editBrandId) {
-      updateBrand(editBrandId, brandData)
-    } else {
-      const newBrand = addBrand(brandData)
-      selectBrand(newBrand.id)
+    try {
+      if (editBrandId) {
+        await updateBrand(editBrandId, brandData)
+      } else {
+        const newBrand = await addBrand(brandData)
+        selectBrand(newBrand.id)
+      }
+      handleClose()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save brand')
     }
-
-    handleClose()
   }
 
   const handleClose = () => {
