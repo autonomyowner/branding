@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { api } from '../lib/api'
 import { Navbar } from '../components/Navbar'
@@ -9,7 +8,6 @@ import { Badge } from '../components/ui/badge'
 type Tab = 'overview' | 'users' | 'emails'
 
 export function AdminPage() {
-  const navigate = useNavigate()
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [activeTab, setActiveTab] = useState<Tab>('overview')
   const [isLoading, setIsLoading] = useState(true)
