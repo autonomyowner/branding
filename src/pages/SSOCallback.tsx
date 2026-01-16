@@ -11,14 +11,14 @@ export function SSOCallback() {
     const handleCallback = async () => {
       try {
         // Try to handle sign-in callback
-        if (signIn?.status === 'complete') {
+        if (signIn?.status === 'complete' && setActiveSignIn) {
           await setActiveSignIn({ session: signIn.createdSessionId })
           navigate('/dashboard')
           return
         }
 
         // Try to handle sign-up callback
-        if (signUp?.status === 'complete') {
+        if (signUp?.status === 'complete' && setActiveSignUp) {
           await setActiveSignUp({ session: signUp.createdSessionId })
           navigate('/dashboard')
           return
@@ -27,11 +27,11 @@ export function SSOCallback() {
         // If neither is complete, wait a bit and check again
         // This handles the OAuth flow delay
         const checkInterval = setInterval(async () => {
-          if (signIn?.status === 'complete') {
+          if (signIn?.status === 'complete' && setActiveSignIn) {
             clearInterval(checkInterval)
             await setActiveSignIn({ session: signIn.createdSessionId })
             navigate('/dashboard')
-          } else if (signUp?.status === 'complete') {
+          } else if (signUp?.status === 'complete' && setActiveSignUp) {
             clearInterval(checkInterval)
             await setActiveSignUp({ session: signUp.createdSessionId })
             navigate('/dashboard')
