@@ -1,8 +1,12 @@
-import { clerkMiddleware, requireAuth, getAuth, clerkClient } from '@clerk/express'
+import { clerkMiddleware, requireAuth, getAuth, createClerkClient } from '@clerk/express'
 import type { Request, Response, NextFunction } from 'express'
 import { prisma } from '../lib/prisma.js'
 import { UnauthorizedError } from '../lib/errors.js'
+import { env } from '../config/env.js'
 import type { User } from '@prisma/client'
+
+// Initialize Clerk client with secret key
+const clerkClient = createClerkClient({ secretKey: env.CLERK_SECRET_KEY })
 
 // Extend Express Request to include user
 declare global {
