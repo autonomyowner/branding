@@ -4,6 +4,7 @@ import { api } from '../lib/api'
 import { Navbar } from '../components/Navbar'
 import { Card } from '../components/ui/card'
 import { Badge } from '../components/ui/badge'
+import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
 type Tab = 'overview' | 'users' | 'emails'
 
@@ -186,25 +187,28 @@ export function AdminPage() {
 
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Header */}
-        <div className="mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">Admin Dashboard</h1>
-            <p className="text-muted-foreground">Manage users, view analytics, and monitor email captures</p>
+        <div className="mb-10">
+          <div className="flex items-start justify-between mb-6">
+            <div>
+              <h1 className="text-4xl font-bold text-foreground mb-3">Admin Dashboard</h1>
+              <p className="text-lg text-muted-foreground">Platform analytics, user management, and email tracking</p>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="px-6 py-2.5 text-sm font-medium rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20 transition-colors"
+            >
+              Logout
+            </button>
           </div>
-          <button
-            onClick={handleLogout}
-            className="px-4 py-2 text-sm font-medium rounded-lg bg-muted hover:bg-muted/70 transition-colors"
-          >
-            Logout
-          </button>
+          <div className="h-px bg-gradient-to-r from-primary/50 via-primary to-primary/50"></div>
         </div>
 
         {/* Tabs */}
         <div className="flex gap-2 mb-6 border-b border-border">
           {[
-            { id: 'overview', label: 'Overview', icon: '📊' },
-            { id: 'users', label: 'Users', icon: '👥' },
-            { id: 'emails', label: 'Email Captures', icon: '📧' },
+            { id: 'overview', label: 'Overview' },
+            { id: 'users', label: 'Users' },
+            { id: 'emails', label: 'Email Captures' },
           ].map(tab => (
             <button
               key={tab.id}
@@ -213,13 +217,12 @@ export function AdminPage() {
                 if (tab.id === 'users') setUsersPage(1)
                 if (tab.id === 'emails') setEmailsPage(1)
               }}
-              className={`px-4 py-2 font-medium transition-colors relative ${
+              className={`px-6 py-3 font-medium transition-colors relative ${
                 activeTab === tab.id
                   ? 'text-primary'
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
-              <span className="mr-2">{tab.icon}</span>
               {tab.label}
               {activeTab === tab.id && (
                 <motion.div
@@ -256,46 +259,151 @@ export function AdminPage() {
 
 // Overview Tab
 function OverviewTab({ stats }: { stats: any }) {
+  // Prepare data for charts
+  const planDistributionData = [
+    { name: 'Free', value: stats.users.free, color: '#9ca3af' },
+    { name: 'Pro', value: stats.users.pro, color: '#a855f7' },
+    { name: 'Business', value: stats.users.business, color: '#3b82f6' },
+  ]
+
+  const contentData = [
+    { name: 'Posts', value: stats.content.totalPosts },
+    { name: 'Brands', value: stats.content.totalBrands },
+  ]
+
+  const emailConsentData = [
+    { name: 'With Consent', value: stats.emailCaptures.withConsent, color: '#22c55e' },
+    { name: 'Without Consent', value: stats.emailCaptures.total - stats.emailCaptures.withConsent, color: '#64748b' },
+  ]
+
+  const growthData = [
+    { name: 'New Users (30d)', value: stats.users.recentSignups },
+    { name: 'Email Captures (7d)', value: stats.emailCaptures.recentCaptures },
+  ]
+
   return (
     <div className="space-y-6">
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard title="Total Users" value={stats.users.total} icon="👥" />
-        <StatCard title="Pro Users" value={stats.users.pro} icon="⭐" color="text-purple-400" />
-        <StatCard title="Business Users" value={stats.users.business} icon="🏢" color="text-blue-400" />
-        <StatCard title="Free Users" value={stats.users.free} icon="🆓" color="text-gray-400" />
+        <StatCard title="Total Users" value={stats.users.total} color="text-blue-400" />
+        <StatCard title="Pro Users" value={stats.users.pro} color="text-purple-400" />
+        <StatCard title="Business Users" value={stats.users.business} color="text-indigo-400" />
+        <StatCard title="Email Captures" value={stats.emailCaptures.total} color="text-green-400" />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard title="Total Posts" value={stats.content.totalPosts} icon="📝" />
-        <StatCard title="Total Brands" value={stats.content.totalBrands} icon="🎨" />
-        <StatCard title="Email Captures" value={stats.emailCaptures.total} icon="📧" />
-        <StatCard
-          title="Consent Rate"
-          value={`${stats.emailCaptures.consentRate}%`}
-          icon="✅"
-          color="text-green-400"
-        />
+        <StatCard title="Total Posts" value={stats.content.totalPosts} color="text-cyan-400" />
+        <StatCard title="Total Brands" value={stats.content.totalBrands} color="text-pink-400" />
+        <StatCard title="Free Users" value={stats.users.free} color="text-gray-400" />
+        <StatCard title="Consent Rate" value={`${stats.emailCaptures.consentRate}%`} color="text-emerald-400" />
       </div>
 
-      {/* Recent Activity */}
-      <Card className="p-6">
-        <h3 className="text-lg font-semibold mb-4">Recent Activity</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <p className="text-sm text-muted-foreground mb-2">New Signups (30d)</p>
-            <p className="text-2xl font-bold text-foreground">{stats.users.recentSignups}</p>
-          </div>
-          <div>
-            <p className="text-sm text-muted-foreground mb-2">Email Captures (7d)</p>
-            <p className="text-2xl font-bold text-foreground">{stats.emailCaptures.recentCaptures}</p>
-          </div>
-          <div>
-            <p className="text-sm text-muted-foreground mb-2">With Consent</p>
-            <p className="text-2xl font-bold text-foreground">{stats.emailCaptures.withConsent}</p>
-          </div>
-        </div>
-      </Card>
+      {/* Charts Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* User Plan Distribution */}
+        <Card className="p-6">
+          <h3 className="text-lg font-semibold mb-4 text-foreground">User Plan Distribution</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={planDistributionData}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                label={({ name, value }) => `${name}: ${value}`}
+                outerRadius={100}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                {planDistributionData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: '#1f2937',
+                  border: '1px solid #374151',
+                  borderRadius: '8px',
+                  color: '#f3f4f6'
+                }}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+        </Card>
+
+        {/* Content Statistics */}
+        <Card className="p-6">
+          <h3 className="text-lg font-semibold mb-4 text-foreground">Content Statistics</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={contentData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+              <XAxis dataKey="name" stroke="#9ca3af" />
+              <YAxis stroke="#9ca3af" />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: '#1f2937',
+                  border: '1px solid #374151',
+                  borderRadius: '8px',
+                  color: '#f3f4f6'
+                }}
+              />
+              <Bar dataKey="value" fill="#3b82f6" radius={[8, 8, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </Card>
+
+        {/* Email Consent Distribution */}
+        <Card className="p-6">
+          <h3 className="text-lg font-semibold mb-4 text-foreground">Email Marketing Consent</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={emailConsentData}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                label={({ name, value }) => `${name}: ${value}`}
+                outerRadius={100}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                {emailConsentData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: '#1f2937',
+                  border: '1px solid #374151',
+                  borderRadius: '8px',
+                  color: '#f3f4f6'
+                }}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+        </Card>
+
+        {/* Recent Growth */}
+        <Card className="p-6">
+          <h3 className="text-lg font-semibold mb-4 text-foreground">Recent Growth</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={growthData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+              <XAxis dataKey="name" stroke="#9ca3af" />
+              <YAxis stroke="#9ca3af" />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: '#1f2937',
+                  border: '1px solid #374151',
+                  borderRadius: '8px',
+                  color: '#f3f4f6'
+                }}
+              />
+              <Bar dataKey="value" fill="#22c55e" radius={[8, 8, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </Card>
+      </div>
     </div>
   )
 }
@@ -377,9 +485,9 @@ function EmailsTab({ captures, pagination, onPageChange }: any) {
                   </td>
                   <td className="p-4 text-center">
                     {capture.marketingConsent ? (
-                      <span className="text-green-400">✅ Yes</span>
+                      <Badge className="bg-green-500/20 text-green-300 border-green-500/30">Yes</Badge>
                     ) : (
-                      <span className="text-muted-foreground">❌ No</span>
+                      <Badge variant="secondary">No</Badge>
                     )}
                   </td>
                   <td className="p-4 text-sm text-muted-foreground">{capture.source || '-'}</td>
@@ -405,15 +513,12 @@ function EmailsTab({ captures, pagination, onPageChange }: any) {
 }
 
 // Helper Components
-function StatCard({ title, value, icon, color = 'text-primary' }: any) {
+function StatCard({ title, value, color = 'text-primary' }: any) {
   return (
     <Card className="p-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm text-muted-foreground mb-1">{title}</p>
-          <p className={`text-3xl font-bold ${color}`}>{value}</p>
-        </div>
-        <div className="text-4xl">{icon}</div>
+      <div>
+        <p className="text-sm text-muted-foreground mb-2">{title}</p>
+        <p className={`text-4xl font-bold ${color}`}>{value}</p>
       </div>
     </Card>
   )
