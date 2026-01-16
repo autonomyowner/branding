@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, memo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { useData, PLATFORMS, type Platform } from '../../context/DataContext'
@@ -27,7 +27,7 @@ interface GenerateModalProps {
   initialImageUrl?: string
 }
 
-export function GenerateModal({ isOpen, onClose, initialImageUrl }: GenerateModalProps) {
+function GenerateModalComponent({ isOpen, onClose, initialImageUrl }: GenerateModalProps) {
   const { t } = useTranslation()
   const { brands, selectedBrandId, addPost } = useData()
   const { canCreatePost, incrementPostCount, openUpgradeModal, getUsagePercentage, getRemainingCount } = useSubscription()
@@ -197,11 +197,11 @@ export function GenerateModal({ isOpen, onClose, initialImageUrl }: GenerateModa
     }
   }
 
-  const handleBackToResult = () => {
+  const handleBackToResult = useCallback(() => {
     setStep('result')
-  }
+  }, [])
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setStep('configure')
     setGeneratedContent('')
     setTopic('')
@@ -209,12 +209,12 @@ export function GenerateModal({ isOpen, onClose, initialImageUrl }: GenerateModa
     setScheduledDateTime(null)
     setAttachedImageUrl(undefined)
     onClose()
-  }
+  }, [onClose])
 
-  const handleRegenerate = () => {
+  const handleRegenerate = useCallback(() => {
     setStep('configure')
     setGeneratedContent('')
-  }
+  }, [])
 
   if (!isOpen) return null
 
@@ -536,3 +536,5 @@ export function GenerateModal({ isOpen, onClose, initialImageUrl }: GenerateModa
     </AnimatePresence>
   )
 }
+
+export const GenerateModal = memo(GenerateModalComponent)

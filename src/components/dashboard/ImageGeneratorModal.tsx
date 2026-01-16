@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useMemo, memo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useSubscription } from '../../context/SubscriptionContext'
 import { api } from '../../lib/api'
@@ -18,7 +18,7 @@ const IMAGE_STYLES = [
   { value: 'cinematic', label: 'Cinematic' },
   { value: 'anime', label: 'Anime' },
   { value: '3d-model', label: '3D Model' },
-]
+] as const
 
 const ASPECT_RATIOS = [
   { value: '1:1', label: '1:1', description: 'Square - Instagram posts' },
@@ -26,9 +26,9 @@ const ASPECT_RATIOS = [
   { value: '9:16', label: '9:16', description: 'Portrait - Stories/Reels' },
   { value: '4:3', label: '4:3', description: 'Classic landscape' },
   { value: '3:4', label: '3:4', description: 'Classic portrait' },
-]
+] as const
 
-export function ImageGeneratorModal({ isOpen, onClose, onCreatePost }: ImageGeneratorModalProps) {
+function ImageGeneratorModalComponent({ isOpen, onClose, onCreatePost }: ImageGeneratorModalProps) {
   const { canUseFeature, openUpgradeModal } = useSubscription()
 
   const [prompt, setPrompt] = useState('')
@@ -86,7 +86,7 @@ export function ImageGeneratorModal({ isOpen, onClose, onCreatePost }: ImageGene
     }
   }
 
-  const handleDownload = async () => {
+  const handleDownload = useCallback(async () => {
     if (!generatedImageUrl) return
 
     const link = document.createElement('a')
@@ -94,22 +94,27 @@ export function ImageGeneratorModal({ isOpen, onClose, onCreatePost }: ImageGene
     link.download = `image-${Date.now()}.png`
     link.target = '_blank'
     link.click()
-  }
+  }, [generatedImageUrl])
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setStep('configure')
     setPrompt('')
     setGeneratedImageUrl('')
     setError('')
     onClose()
-  }
+  }, [onClose])
 
-  const handleRegenerate = () => {
+  const handleRegenerate = useCallback(() => {
     setStep('configure')
     setGeneratedImageUrl('')
-  }
+  }, [])
 
-  const currentModel = availableModels.find(m => m.id === selectedModel)
+  const currentModel = useMemo(() => availableModels.find(m => m.id === selectedModel), [availableModels, selectedModel])
+
+  const currentAspectRatioDescription = useMemo(() =>
+    ASPECT_RATIOS.find(r => r.value === selectedAspectRatio)?.description,
+    [selectedAspectRatio]
+  )
 
   if (!isOpen) return null
 
@@ -264,7 +269,7 @@ export function ImageGeneratorModal({ isOpen, onClose, onCreatePost }: ImageGene
                     ))}
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">
-                    {ASPECT_RATIOS.find(r => r.value === selectedAspectRatio)?.description}
+                    {currentAspectRatioDescription}
                   </p>
                 </div>
 
@@ -345,3 +350,5 @@ export function ImageGeneratorModal({ isOpen, onClose, onCreatePost }: ImageGene
     </AnimatePresence>
   )
 }
+
+export const ImageGeneratorModal = memo(ImageGeneratorModalComponent)

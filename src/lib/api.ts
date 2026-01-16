@@ -9,6 +9,57 @@ const MAX_RETRIES = 3
 const INITIAL_RETRY_DELAY = 1000 // 1 second
 const MAX_RETRY_DELAY = 10000 // 10 seconds
 
+// Cache configuration
+const CACHE_DURATIONS: Record<string, number> = {
+  '/api/v1/ai/models': 3600000,      // 1 hour
+  '/api/v1/images/models': 3600000,  // 1 hour
+  '/api/v1/voice/voices': 3600000,   // 1 hour
+  '/api/v1/brands': 300000,          // 5 minutes
+  '/api/v1/users/me': 60000,         // 1 minute
+}
+
+interface CacheEntry<T> {
+  data: T
+  timestamp: number
+  ttl: number
+}
+
+const requestCache = new Map<string, CacheEntry<unknown>>()
+
+function getCacheKey(endpoint: string, token: string | null): string {
+  return `${endpoint}:${token || 'anonymous'}`
+}
+
+function getCachedData<T>(key: string): T | null {
+  const entry = requestCache.get(key)
+  if (!entry) return null
+
+  const now = Date.now()
+  if (now - entry.timestamp > entry.ttl) {
+    requestCache.delete(key)
+    return null
+  }
+
+  return entry.data as T
+}
+
+function setCacheData<T>(key: string, data: T, ttl: number): void {
+  requestCache.set(key, { data, timestamp: Date.now(), ttl })
+}
+
+// Clear cache for specific endpoint (call after mutations)
+export function invalidateCache(endpoint?: string): void {
+  if (endpoint) {
+    for (const key of requestCache.keys()) {
+      if (key.startsWith(endpoint)) {
+        requestCache.delete(key)
+      }
+    }
+  } else {
+    requestCache.clear()
+  }
+}
+
 interface ApiError {
   message: string
   code: string
@@ -52,6 +103,8 @@ class ApiClient {
     retryCount = 0
   ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`
+    const method = options.method || 'GET'
+    const isGetRequest = method === 'GET'
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
@@ -59,10 +112,23 @@ class ApiClient {
     }
 
     // Add auth token if available
+    let currentToken: string | null = null
     if (this.getToken) {
-      const token = await this.getToken()
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`
+      currentToken = await this.getToken()
+      if (currentToken) {
+        headers['Authorization'] = `Bearer ${currentToken}`
+      }
+    }
+
+    // Check cache for GET requests
+    if (isGetRequest) {
+      const cacheTtl = Object.entries(CACHE_DURATIONS).find(([path]) => endpoint.startsWith(path))?.[1]
+      if (cacheTtl) {
+        const cacheKey = getCacheKey(endpoint, currentToken)
+        const cachedData = getCachedData<T>(cacheKey)
+        if (cachedData) {
+          return cachedData
+        }
       }
     }
 
@@ -103,7 +169,18 @@ class ApiClient {
       return {} as T
     }
 
-    return response.json()
+    const data = await response.json() as T
+
+    // Cache successful GET responses
+    if (isGetRequest) {
+      const cacheTtl = Object.entries(CACHE_DURATIONS).find(([path]) => endpoint.startsWith(path))?.[1]
+      if (cacheTtl) {
+        const cacheKey = getCacheKey(endpoint, currentToken)
+        setCacheData(cacheKey, data, cacheTtl)
+      }
+    }
+
+    return data
   }
 
   // Users
@@ -131,10 +208,12 @@ class ApiClient {
   }
 
   async updateMe(data: { name?: string }) {
-    return this.request('/api/v1/users/me', {
+    const result = await this.request('/api/v1/users/me', {
       method: 'PATCH',
       body: JSON.stringify(data),
     })
+    invalidateCache('/api/v1/users/me')
+    return result
   }
 
   // Brands
@@ -161,10 +240,12 @@ class ApiClient {
     voice?: string
     topics?: string[]
   }) {
-    return this.request('/api/v1/brands', {
+    const result = await this.request('/api/v1/brands', {
       method: 'POST',
       body: JSON.stringify(data),
     })
+    invalidateCache('/api/v1/brands')
+    return result
   }
 
   async updateBrand(id: string, data: Partial<{
@@ -175,16 +256,20 @@ class ApiClient {
     voice: string
     topics: string[]
   }>) {
-    return this.request(`/api/v1/brands/${id}`, {
+    const result = await this.request(`/api/v1/brands/${id}`, {
       method: 'PATCH',
       body: JSON.stringify(data),
     })
+    invalidateCache('/api/v1/brands')
+    return result
   }
 
   async deleteBrand(id: string) {
-    return this.request(`/api/v1/brands/${id}`, {
+    const result = await this.request(`/api/v1/brands/${id}`, {
       method: 'DELETE',
     })
+    invalidateCache('/api/v1/brands')
+    return result
   }
 
   // Posts

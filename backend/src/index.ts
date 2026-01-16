@@ -1,6 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
+import compression from 'compression'
 import { env } from './config/env.js'
 import { clerkAuth } from './middleware/auth.js'
 import { errorHandler } from './middleware/errorHandler.js'
@@ -14,6 +15,17 @@ const app = express()
 
 // Security middleware
 app.use(helmet())
+
+// Compression middleware - reduces response size by ~60-70%
+app.use(compression({
+  level: 6, // Balanced compression level
+  threshold: 1024, // Only compress responses > 1KB
+  filter: (req, res) => {
+    // Don't compress if client doesn't accept it
+    if (req.headers['x-no-compression']) return false
+    return compression.filter(req, res)
+  }
+}))
 
 // CORS - allow frontend origin (both www and non-www variants)
 const frontendOrigin = env.FRONTEND_URL.replace(/\/$/, '')
@@ -53,6 +65,35 @@ app.get('/health', (req, res) => {
     timestamp: new Date().toISOString(),
     env: env.NODE_ENV,
   })
+})
+
+// Cache-Control middleware for API responses
+app.use('/api/v1', (req, res, next) => {
+  // Set default no-cache for mutations
+  if (['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method)) {
+    res.setHeader('Cache-Control', 'no-store')
+    return next()
+  }
+
+  // Cache static data endpoints
+  const cacheDurations: Record<string, number> = {
+    '/api/v1/ai/models': 3600,      // 1 hour - AI models rarely change
+    '/api/v1/images/models': 3600,  // 1 hour - Image models rarely change
+    '/api/v1/voice/voices': 3600,   // 1 hour - Voices rarely change
+    '/api/v1/brands': 300,          // 5 minutes - Brands change occasionally
+    '/api/v1/users/me': 60,         // 1 minute - User data changes more often
+  }
+
+  const matchedPath = Object.keys(cacheDurations).find(path => req.path.startsWith(path.replace('/api/v1', '')))
+  if (matchedPath) {
+    const maxAge = cacheDurations[matchedPath]
+    res.setHeader('Cache-Control', `private, max-age=${maxAge}, stale-while-revalidate=${maxAge * 2}`)
+  } else {
+    // Default: short cache for GET requests
+    res.setHeader('Cache-Control', 'private, max-age=30, stale-while-revalidate=60')
+  }
+
+  next()
 })
 
 // Clerk authentication middleware (adds auth object to request)

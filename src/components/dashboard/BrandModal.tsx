@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback, memo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { useData, VOICE_OPTIONS } from '../../context/DataContext'
@@ -12,9 +12,9 @@ interface BrandModalProps {
   editBrandId?: string | null
 }
 
-const COLORS = ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#06b6d4', '#84cc16']
+const COLORS = ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#06b6d4', '#84cc16'] as const
 
-export function BrandModal({ isOpen, onClose, editBrandId }: BrandModalProps) {
+function BrandModalComponent({ isOpen, onClose, editBrandId }: BrandModalProps) {
   const { t } = useTranslation()
   const { brands, addBrand, updateBrand, selectBrand } = useData()
   const { canAddBrand, openUpgradeModal } = useSubscription()
@@ -76,7 +76,7 @@ export function BrandModal({ isOpen, onClose, editBrandId }: BrandModalProps) {
     }
   }
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setName('')
     setColor(COLORS[0])
     setVoice('professional')
@@ -84,7 +84,7 @@ export function BrandModal({ isOpen, onClose, editBrandId }: BrandModalProps) {
     setTopicsInput('')
     setError('')
     onClose()
-  }
+  }, [onClose])
 
   if (!isOpen) return null
 
@@ -226,3 +226,5 @@ export function BrandModal({ isOpen, onClose, editBrandId }: BrandModalProps) {
     </AnimatePresence>
   )
 }
+
+export const BrandModal = memo(BrandModalComponent)
