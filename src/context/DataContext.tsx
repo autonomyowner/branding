@@ -1,7 +1,8 @@
-import { createContext, useContext, type ReactNode, useCallback } from 'react'
-import { useLocalStorage } from '../hooks/useLocalStorage'
+import { createContext, useContext, type ReactNode, useCallback, useState, useEffect } from 'react'
+import { useAuth } from '@clerk/clerk-react'
+import { api } from '../lib/api'
 
-// Types inlined to avoid import issues
+// Types
 export interface Brand {
   id: string
   name: string
@@ -11,6 +12,7 @@ export interface Brand {
   topics: string[]
   description: string
   createdAt: number
+  postCount?: number
 }
 
 export interface Post {
@@ -19,34 +21,25 @@ export interface Post {
   platform: 'Instagram' | 'Twitter' | 'LinkedIn' | 'TikTok' | 'Facebook'
   content: string
   imageUrl?: string
+  voiceUrl?: string
   status: 'draft' | 'scheduled' | 'published'
   scheduledFor?: string
   createdAt: number
   publishedAt?: number
+  brand?: {
+    id: string
+    name: string
+    color: string
+    initials: string
+  }
 }
 
-export interface UserSettings {
-  name: string
-  openRouterApiKey: string
-  youtubeApiKey: string
-  elevenLabsApiKey: string
-  replicateApiKey: string
-  selectedModel: string
-  selectedImageModel: string
-  creditsUsed: number
-  lastCreditReset: number
-}
-
-const DEFAULT_SETTINGS: UserSettings = {
-  name: 'User',
-  openRouterApiKey: '',
-  youtubeApiKey: '',
-  elevenLabsApiKey: '',
-  replicateApiKey: '',
-  selectedModel: 'anthropic/claude-3-haiku',
-  selectedImageModel: 'fal-ai/flux/schnell',
-  creditsUsed: 0,
-  lastCreditReset: Date.now()
+export interface UserProfile {
+  id: string
+  email: string
+  name: string | null
+  avatarUrl: string | null
+  plan: 'FREE' | 'PRO' | 'BUSINESS'
 }
 
 export const PLATFORMS = ['Instagram', 'Twitter', 'LinkedIn', 'TikTok', 'Facebook'] as const
@@ -61,121 +54,197 @@ export const VOICE_OPTIONS = [
 ] as const
 
 interface DataContextType {
+  // User
+  user: UserProfile | null
+  isLoading: boolean
+  error: string | null
+
   // Brands
   brands: Brand[]
   selectedBrandId: string | null
-  addBrand: (brand: Omit<Brand, 'id' | 'createdAt'>) => Brand
-  updateBrand: (id: string, updates: Partial<Brand>) => void
-  deleteBrand: (id: string) => void
+  addBrand: (brand: Omit<Brand, 'id' | 'createdAt'>) => Promise<Brand>
+  updateBrand: (id: string, updates: Partial<Brand>) => Promise<void>
+  deleteBrand: (id: string) => Promise<void>
   selectBrand: (id: string | null) => void
 
   // Posts
   posts: Post[]
-  addPost: (post: Omit<Post, 'id' | 'createdAt'>) => Post
-  updatePost: (id: string, updates: Partial<Post>) => void
-  deletePost: (id: string) => void
+  addPost: (post: Omit<Post, 'id' | 'createdAt'>) => Promise<Post>
+  updatePost: (id: string, updates: Partial<Post>) => Promise<void>
+  deletePost: (id: string) => Promise<void>
 
-  // Settings
-  settings: UserSettings
-  updateSettings: (updates: Partial<UserSettings>) => void
-
-  // Stats helpers
-  getStats: () => {
-    postsGenerated: number
-    postsScheduled: number
-    brandsActive: number
-    creditsRemaining: number
-  }
+  // Refresh data
+  refreshData: () => Promise<void>
 }
 
 const DataContext = createContext<DataContextType | null>(null)
 
-const INITIAL_BRANDS: Brand[] = [
-  {
-    id: '1',
-    name: 'My Brand',
-    color: '#8b5cf6',
-    initials: 'MB',
-    voice: 'professional',
-    topics: ['business', 'productivity'],
-    description: 'A professional brand focused on business insights and productivity tips.',
-    createdAt: Date.now()
-  }
-]
-
 export function DataProvider({ children }: { children: ReactNode }) {
-  const [brands, setBrands] = useLocalStorage<Brand[]>('contentengine-brands', INITIAL_BRANDS)
-  const [selectedBrandId, setSelectedBrandId] = useLocalStorage<string | null>('contentengine-selected-brand', INITIAL_BRANDS[0]?.id || null)
-  const [posts, setPosts] = useLocalStorage<Post[]>('contentengine-posts', [])
-  const [settings, setSettings] = useLocalStorage<UserSettings>('contentengine-settings', DEFAULT_SETTINGS)
+  const { getToken, isSignedIn, isLoaded } = useAuth()
 
-  const generateId = () => Math.random().toString(36).substring(2, 15)
+  const [user, setUser] = useState<UserProfile | null>(null)
+  const [brands, setBrands] = useState<Brand[]>([])
+  const [posts, setPosts] = useState<Post[]>([])
+  const [selectedBrandId, setSelectedBrandId] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  const addBrand = useCallback((brandData: Omit<Brand, 'id' | 'createdAt'>): Brand => {
+  // Set up API token getter
+  useEffect(() => {
+    api.setTokenGetter(async () => {
+      try {
+        return await getToken()
+      } catch {
+        return null
+      }
+    })
+  }, [getToken])
+
+  // Load data when signed in
+  const refreshData = useCallback(async () => {
+    if (!isSignedIn) {
+      setUser(null)
+      setBrands([])
+      setPosts([])
+      setIsLoading(false)
+      return
+    }
+
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      // Fetch user, brands, and posts in parallel
+      const [userData, brandsData, postsData] = await Promise.all([
+        api.getMe(),
+        api.getBrands(),
+        api.getPosts({ limit: 100 })
+      ])
+
+      setUser({
+        id: userData.id,
+        email: userData.email,
+        name: userData.name,
+        avatarUrl: userData.avatarUrl,
+        plan: userData.plan
+      })
+
+      setBrands(brandsData.map(b => ({
+        id: b.id,
+        name: b.name,
+        color: b.color,
+        initials: b.initials,
+        voice: b.voice,
+        topics: b.topics,
+        description: b.description || '',
+        createdAt: new Date(b.createdAt).getTime(),
+        postCount: b.postCount
+      })))
+
+      setPosts(postsData.posts.map(p => ({
+        id: p.id,
+        brandId: p.brand.id,
+        platform: p.platform as Platform,
+        content: p.content,
+        imageUrl: p.imageUrl || undefined,
+        voiceUrl: p.voiceUrl || undefined,
+        status: p.status as 'draft' | 'scheduled' | 'published',
+        scheduledFor: p.scheduledFor || undefined,
+        createdAt: new Date(p.createdAt).getTime(),
+        publishedAt: p.publishedAt ? new Date(p.publishedAt).getTime() : undefined,
+        brand: p.brand
+      })))
+
+      // Select first brand if none selected
+      if (!selectedBrandId && brandsData.length > 0) {
+        setSelectedBrandId(brandsData[0].id)
+      }
+    } catch (err) {
+      console.error('Failed to load data:', err)
+      setError(err instanceof Error ? err.message : 'Failed to load data')
+    } finally {
+      setIsLoading(false)
+    }
+  }, [isSignedIn, selectedBrandId])
+
+  // Load data on mount and when auth changes
+  useEffect(() => {
+    if (isLoaded) {
+      refreshData()
+    }
+  }, [isLoaded, isSignedIn, refreshData])
+
+  const addBrand = useCallback(async (brandData: Omit<Brand, 'id' | 'createdAt'>): Promise<Brand> => {
+    const result = await api.createBrand({
+      name: brandData.name,
+      description: brandData.description,
+      color: brandData.color,
+      initials: brandData.initials,
+      voice: brandData.voice,
+      topics: brandData.topics
+    }) as { id: string; createdAt: string }
+
     const newBrand: Brand = {
       ...brandData,
-      id: generateId(),
-      createdAt: Date.now()
+      id: result.id,
+      createdAt: new Date(result.createdAt).getTime()
     }
     setBrands(prev => [...prev, newBrand])
     return newBrand
-  }, [setBrands])
+  }, [])
 
-  const updateBrand = useCallback((id: string, updates: Partial<Brand>) => {
+  const updateBrand = useCallback(async (id: string, updates: Partial<Brand>) => {
+    await api.updateBrand(id, updates)
     setBrands(prev => prev.map(b => b.id === id ? { ...b, ...updates } : b))
-  }, [setBrands])
+  }, [])
 
-  const deleteBrand = useCallback((id: string) => {
+  const deleteBrand = useCallback(async (id: string) => {
+    await api.deleteBrand(id)
     setBrands(prev => prev.filter(b => b.id !== id))
     if (selectedBrandId === id) {
       setSelectedBrandId(brands.find(b => b.id !== id)?.id || null)
     }
-  }, [setBrands, selectedBrandId, brands, setSelectedBrandId])
+  }, [selectedBrandId, brands])
 
   const selectBrand = useCallback((id: string | null) => {
     setSelectedBrandId(id)
-  }, [setSelectedBrandId])
+  }, [])
 
-  const addPost = useCallback((postData: Omit<Post, 'id' | 'createdAt'>): Post => {
+  const addPost = useCallback(async (postData: Omit<Post, 'id' | 'createdAt'>): Promise<Post> => {
+    const result = await api.createPost({
+      content: postData.content,
+      platform: postData.platform,
+      brandId: postData.brandId,
+      imageUrl: postData.imageUrl,
+      voiceUrl: postData.voiceUrl,
+      status: postData.status,
+      scheduledFor: postData.scheduledFor
+    }) as { id: string; createdAt: string }
+
     const newPost: Post = {
       ...postData,
-      id: generateId(),
-      createdAt: Date.now()
+      id: result.id,
+      createdAt: new Date(result.createdAt).getTime()
     }
     setPosts(prev => [newPost, ...prev])
-
-    // Increment credits used
-    setSettings(prev => ({
-      ...prev,
-      creditsUsed: prev.creditsUsed + 1
-    }))
-
     return newPost
-  }, [setPosts, setSettings])
+  }, [])
 
-  const updatePost = useCallback((id: string, updates: Partial<Post>) => {
+  const updatePost = useCallback(async (id: string, updates: Partial<Post>) => {
+    await api.updatePost(id, updates)
     setPosts(prev => prev.map(p => p.id === id ? { ...p, ...updates } : p))
-  }, [setPosts])
+  }, [])
 
-  const deletePost = useCallback((id: string) => {
+  const deletePost = useCallback(async (id: string) => {
+    await api.deletePost(id)
     setPosts(prev => prev.filter(p => p.id !== id))
-  }, [setPosts])
-
-  const updateSettings = useCallback((updates: Partial<UserSettings>) => {
-    setSettings(prev => ({ ...prev, ...updates }))
-  }, [setSettings])
-
-  const getStats = useCallback(() => {
-    return {
-      postsGenerated: posts.length,
-      postsScheduled: posts.filter(p => p.status === 'scheduled').length,
-      brandsActive: brands.length,
-      creditsRemaining: Math.max(0, 1000 - settings.creditsUsed) // 1000 credits per month for MVP
-    }
-  }, [posts, brands, settings])
+  }, [])
 
   return (
     <DataContext.Provider value={{
+      user,
+      isLoading,
+      error,
       brands,
       selectedBrandId,
       addBrand,
@@ -186,9 +255,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
       addPost,
       updatePost,
       deletePost,
-      settings,
-      updateSettings,
-      getStats
+      refreshData
     }}>
       {children}
     </DataContext.Provider>

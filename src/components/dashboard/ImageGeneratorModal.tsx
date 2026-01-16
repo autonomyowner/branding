@@ -1,14 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useData } from '../../context/DataContext'
-import {
-  generateImage,
-  downloadImage,
-  AVAILABLE_MODELS,
-  IMAGE_STYLES,
-  ASPECT_RATIOS,
-  type GenerationOptions
-} from '../../services/replicate'
+import { useSubscription } from '../../context/SubscriptionContext'
+import { api } from '../../lib/api'
 import { Button } from '../ui/button'
 import { Card } from '../ui/card'
 
@@ -17,20 +10,54 @@ interface ImageGeneratorModalProps {
   onClose: () => void
 }
 
+const IMAGE_STYLES = [
+  { value: 'none', label: 'No style' },
+  { value: 'photographic', label: 'Photographic' },
+  { value: 'digital-art', label: 'Digital Art' },
+  { value: 'cinematic', label: 'Cinematic' },
+  { value: 'anime', label: 'Anime' },
+  { value: '3d-model', label: '3D Model' },
+]
+
+const ASPECT_RATIOS = [
+  { value: '1:1', label: '1:1', description: 'Square - Instagram posts' },
+  { value: '16:9', label: '16:9', description: 'Landscape - YouTube thumbnails' },
+  { value: '9:16', label: '9:16', description: 'Portrait - Stories/Reels' },
+  { value: '4:3', label: '4:3', description: 'Classic landscape' },
+  { value: '3:4', label: '3:4', description: 'Classic portrait' },
+]
+
 export function ImageGeneratorModal({ isOpen, onClose }: ImageGeneratorModalProps) {
-  const { settings, updateSettings } = useData()
+  const { canUseFeature, openUpgradeModal } = useSubscription()
+
   const [prompt, setPrompt] = useState('')
-  const [selectedModel, setSelectedModel] = useState(settings.selectedImageModel || 'fal-ai/flux/schnell')
+  const [selectedModel, setSelectedModel] = useState('fal-ai/flux/schnell')
   const [selectedStyle, setSelectedStyle] = useState('none')
-  const [selectedAspectRatio, setSelectedAspectRatio] = useState<GenerationOptions['aspectRatio']>('1:1')
+  const [selectedAspectRatio, setSelectedAspectRatio] = useState<'1:1' | '16:9' | '9:16' | '4:3' | '3:4'>('1:1')
   const [generatedImageUrl, setGeneratedImageUrl] = useState('')
   const [isGenerating, setIsGenerating] = useState(false)
   const [error, setError] = useState('')
   const [step, setStep] = useState<'configure' | 'result'>('configure')
+  const [availableModels, setAvailableModels] = useState<Array<{ id: string; name: string; speed: string }>>([])
+
+  const hasAccess = canUseFeature('image')
+
+  // Load available models
+  useEffect(() => {
+    if (isOpen && hasAccess) {
+      api.getImageModels().then(models => {
+        setAvailableModels(models)
+        if (models.length > 0 && !models.find(m => m.id === selectedModel)) {
+          setSelectedModel(models[0].id)
+        }
+      }).catch(console.error)
+    }
+  }, [isOpen, hasAccess])
 
   const handleGenerate = async () => {
-    if (!settings.replicateApiKey) {
-      setError('Please add your fal.ai API key in Settings first.')
+    if (!hasAccess) {
+      handleClose()
+      openUpgradeModal('image')
       return
     }
 
@@ -43,18 +70,14 @@ export function ImageGeneratorModal({ isOpen, onClose }: ImageGeneratorModalProp
     setError('')
 
     try {
-      const imageUrl = await generateImage(settings.replicateApiKey, prompt, {
+      const result = await api.generateImage({
+        prompt,
         model: selectedModel,
         aspectRatio: selectedAspectRatio,
-        style: selectedStyle
+        style: selectedStyle !== 'none' ? selectedStyle : undefined
       })
-      setGeneratedImageUrl(imageUrl)
+      setGeneratedImageUrl(result.url)
       setStep('result')
-
-      // Save model preference
-      if (selectedModel !== settings.selectedImageModel) {
-        updateSettings({ selectedImageModel: selectedModel })
-      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to generate image. Please try again.')
     } finally {
@@ -65,9 +88,11 @@ export function ImageGeneratorModal({ isOpen, onClose }: ImageGeneratorModalProp
   const handleDownload = async () => {
     if (!generatedImageUrl) return
 
-    const timestamp = new Date().toISOString().split('T')[0]
-    const modelName = AVAILABLE_MODELS.find(m => m.id === selectedModel)?.name || 'image'
-    await downloadImage(generatedImageUrl, `${modelName}-${timestamp}.png`)
+    const link = document.createElement('a')
+    link.href = generatedImageUrl
+    link.download = `image-${Date.now()}.png`
+    link.target = '_blank'
+    link.click()
   }
 
   const handleClose = () => {
@@ -83,9 +108,47 @@ export function ImageGeneratorModal({ isOpen, onClose }: ImageGeneratorModalProp
     setGeneratedImageUrl('')
   }
 
-  const currentModel = AVAILABLE_MODELS.find(m => m.id === selectedModel)
+  const currentModel = availableModels.find(m => m.id === selectedModel)
 
   if (!isOpen) return null
+
+  // Show upgrade prompt if no access
+  if (!hasAccess) {
+    return (
+      <AnimatePresence>
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={handleClose}
+          />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="relative w-full mx-4 max-w-md"
+          >
+            <Card className="p-6 text-center">
+              <h2 className="text-xl font-bold mb-4">Upgrade Required</h2>
+              <p className="text-muted-foreground mb-6">
+                Image generation is available on Pro and Business plans.
+              </p>
+              <div className="flex gap-3">
+                <Button variant="outline" onClick={handleClose} className="flex-1">
+                  Cancel
+                </Button>
+                <Button onClick={() => { handleClose(); openUpgradeModal('image'); }} className="flex-1">
+                  Upgrade Now
+                </Button>
+              </div>
+            </Card>
+          </motion.div>
+        </div>
+      </AnimatePresence>
+    )
+  }
 
   return (
     <AnimatePresence>
@@ -122,22 +185,6 @@ export function ImageGeneratorModal({ isOpen, onClose }: ImageGeneratorModalProp
               </button>
             </div>
 
-            {/* API Key Warning */}
-            {!settings.replicateApiKey && (
-              <div className="mb-6 p-4 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
-                <p className="text-sm text-yellow-400 mb-2">fal.ai API key required for image generation.</p>
-                <input
-                  type="password"
-                  placeholder="Enter your fal.ai API key"
-                  className="w-full px-3 py-2 rounded-md bg-background border border-border text-sm"
-                  onChange={(e) => updateSettings({ replicateApiKey: e.target.value })}
-                />
-                <p className="text-xs text-muted-foreground mt-2">
-                  Get your key at <a href="https://fal.ai/dashboard/keys" target="_blank" className="text-primary hover:underline">fal.ai/dashboard/keys</a>
-                </p>
-              </div>
-            )}
-
             {step === 'configure' && (
               <>
                 {/* Prompt Input */}
@@ -159,7 +206,7 @@ export function ImageGeneratorModal({ isOpen, onClose }: ImageGeneratorModalProp
                 <div className="mb-4">
                   <label className="block text-sm font-medium mb-2">Model</label>
                   <div className="grid grid-cols-3 gap-2">
-                    {AVAILABLE_MODELS.map((model) => (
+                    {availableModels.map((model) => (
                       <button
                         key={model.id}
                         onClick={() => setSelectedModel(model.id)}
@@ -173,16 +220,11 @@ export function ImageGeneratorModal({ isOpen, onClose }: ImageGeneratorModalProp
                         <span className={`block text-xs mt-1 ${
                           selectedModel === model.id ? 'text-primary-foreground/70' : 'text-muted-foreground'
                         }`}>
-                          {model.description}
+                          {model.speed}
                         </span>
                       </button>
                     ))}
                   </div>
-                  {currentModel && (
-                    <p className="text-xs text-muted-foreground mt-2">
-                      ~${currentModel.costPerImage.toFixed(3)}/image • {currentModel.speed} speed
-                    </p>
-                  )}
                 </div>
 
                 {/* Style Selection */}
@@ -208,7 +250,7 @@ export function ImageGeneratorModal({ isOpen, onClose }: ImageGeneratorModalProp
                     {ASPECT_RATIOS.map((ratio) => (
                       <button
                         key={ratio.value}
-                        onClick={() => setSelectedAspectRatio(ratio.value as GenerationOptions['aspectRatio'])}
+                        onClick={() => setSelectedAspectRatio(ratio.value as '1:1' | '16:9' | '9:16' | '4:3' | '3:4')}
                         className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                           selectedAspectRatio === ratio.value
                             ? 'bg-primary text-primary-foreground'
@@ -235,7 +277,7 @@ export function ImageGeneratorModal({ isOpen, onClose }: ImageGeneratorModalProp
                 {/* Generate Button */}
                 <Button
                   onClick={handleGenerate}
-                  disabled={isGenerating || !settings.replicateApiKey || !prompt.trim()}
+                  disabled={isGenerating || !prompt.trim()}
                   className="w-full"
                 >
                   {isGenerating ? (

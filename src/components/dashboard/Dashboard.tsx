@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { motion } from "framer-motion"
 import { useTranslation } from "react-i18next"
+import { UserButton, SignedIn, SignedOut, SignInButton } from "@clerk/clerk-react"
 import { StatsCards } from "./StatsCards"
 import { RecentPosts } from "./RecentPosts"
 import { QuickActions } from "./QuickActions"
@@ -27,11 +28,13 @@ export function Dashboard() {
   const [isImageGeneratorModalOpen, setIsImageGeneratorModalOpen] = useState(false)
   const [isBrandModalOpen, setIsBrandModalOpen] = useState(false)
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
-  const { settings } = useData()
+  const { user, isLoading } = useData()
   const { subscription } = useSubscription()
 
   // Show welcome modal for first-time visitors
   const [isWelcomeModalOpen, setIsWelcomeModalOpen] = useState(!subscription.hasSeenWelcome)
+
+  const userName = user?.name || user?.email?.split('@')[0] || 'User'
 
   return (
     <div className="min-h-screen bg-background">
@@ -72,9 +75,14 @@ export function Dashboard() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
             </Button>
-            <div className="w-8 h-8 rounded-full bg-primary/20 border border-primary/50 flex items-center justify-center text-sm font-medium">
-              {settings.name.slice(0, 2).toUpperCase()}
-            </div>
+            <SignedIn>
+              <UserButton afterSignOutUrl="/" />
+            </SignedIn>
+            <SignedOut>
+              <SignInButton mode="modal">
+                <Button variant="outline" size="sm">Sign In</Button>
+              </SignInButton>
+            </SignedOut>
           </div>
         </div>
       </header>
@@ -87,7 +95,7 @@ export function Dashboard() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <h1 className="text-2xl font-bold mb-2">{t('dashboard.welcome')}, {settings.name}</h1>
+          <h1 className="text-2xl font-bold mb-2">{t('dashboard.welcome')}, {userName}</h1>
           <p className="text-muted-foreground">{t('dashboard.overview')}</p>
         </motion.div>
 

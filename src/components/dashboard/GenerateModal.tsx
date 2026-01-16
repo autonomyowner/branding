@@ -1,12 +1,23 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { useData, PLATFORMS, type Platform } from '../../context/DataContext'
 import { useSubscription } from '../../context/SubscriptionContext'
-import { generateContent, AVAILABLE_MODELS, CONTENT_STYLES, type ContentStyle } from '../../services/openrouter'
+import { api } from '../../lib/api'
 import { Button } from '../ui/button'
 import { Card } from '../ui/card'
 import { DateTimePicker } from '../ui/calendar'
+
+// Content styles available
+const CONTENT_STYLES = [
+  { value: 'viral', label: 'Viral', description: 'Optimized for maximum engagement and shares' },
+  { value: 'storytelling', label: 'Story', description: 'Narrative-driven content that connects' },
+  { value: 'educational', label: 'Educational', description: 'Informative and valuable content' },
+  { value: 'controversial', label: 'Controversial', description: 'Bold takes that spark discussion' },
+  { value: 'inspirational', label: 'Inspirational', description: 'Motivating and uplifting messages' },
+] as const
+
+type ContentStyle = typeof CONTENT_STYLES[number]['value']
 
 interface GenerateModalProps {
   isOpen: boolean
@@ -15,7 +26,7 @@ interface GenerateModalProps {
 
 export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
   const { t } = useTranslation()
-  const { brands, selectedBrandId, settings, addPost, updateSettings } = useData()
+  const { brands, selectedBrandId, addPost } = useData()
   const { canCreatePost, incrementPostCount, openUpgradeModal, getUsagePercentage, getRemainingCount } = useSubscription()
   const [selectedPlatform, setSelectedPlatform] = useState<Platform>('Instagram')
   const [selectedStyle, setSelectedStyle] = useState<ContentStyle>('viral')
@@ -25,19 +36,28 @@ export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
   const [error, setError] = useState('')
   const [step, setStep] = useState<'configure' | 'result' | 'schedule'>('configure')
   const [scheduledDateTime, setScheduledDateTime] = useState<Date | null>(null)
+  const [availableModels, setAvailableModels] = useState<Array<{ value: string; label: string }>>([])
+  const [selectedModel, setSelectedModel] = useState('anthropic/claude-3-haiku')
 
   const selectedBrand = brands.find(b => b.id === selectedBrandId) || brands[0]
+
+  // Load available models from backend
+  useEffect(() => {
+    if (isOpen) {
+      api.getAIModels().then(models => {
+        setAvailableModels(models)
+        if (models.length > 0 && !models.find(m => m.value === selectedModel)) {
+          setSelectedModel(models[0].value)
+        }
+      }).catch(console.error)
+    }
+  }, [isOpen])
 
   const handleGenerate = async () => {
     // Check post limit before generating
     if (!canCreatePost()) {
       handleClose()
       openUpgradeModal('post')
-      return
-    }
-
-    if (!settings.openRouterApiKey) {
-      setError(t('generateModal.apiKeyMissing'))
       return
     }
 
@@ -50,15 +70,14 @@ export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
     setError('')
 
     try {
-      const content = await generateContent({
-        brand: selectedBrand,
+      const result = await api.generateContent({
+        brandId: selectedBrand.id,
         platform: selectedPlatform,
         topic: topic || undefined,
-        apiKey: settings.openRouterApiKey,
-        model: settings.selectedModel,
-        style: selectedStyle
+        style: selectedStyle,
+        model: selectedModel
       })
-      setGeneratedContent(content)
+      setGeneratedContent(result.content)
       setStep('result')
     } catch (err) {
       setError(err instanceof Error ? err.message : t('generateModal.error'))
@@ -67,20 +86,23 @@ export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
     }
   }
 
-  const handleSaveAsDraft = () => {
+  const handleSaveAsDraft = async () => {
     if (!selectedBrand || !generatedContent) return
 
-    addPost({
-      brandId: selectedBrand.id,
-      platform: selectedPlatform,
-      content: generatedContent,
-      status: 'draft'
-    })
+    try {
+      await addPost({
+        brandId: selectedBrand.id,
+        platform: selectedPlatform,
+        content: generatedContent,
+        status: 'draft'
+      })
 
-    // Increment post count for subscription tracking
-    incrementPostCount()
-
-    handleClose()
+      // Increment post count for subscription tracking
+      incrementPostCount()
+      handleClose()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save post')
+    }
   }
 
   const handleOpenScheduler = () => {
@@ -92,21 +114,24 @@ export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
     setStep('schedule')
   }
 
-  const handleConfirmSchedule = () => {
+  const handleConfirmSchedule = async () => {
     if (!selectedBrand || !generatedContent || !scheduledDateTime) return
 
-    addPost({
-      brandId: selectedBrand.id,
-      platform: selectedPlatform,
-      content: generatedContent,
-      status: 'scheduled',
-      scheduledFor: scheduledDateTime.toISOString()
-    })
+    try {
+      await addPost({
+        brandId: selectedBrand.id,
+        platform: selectedPlatform,
+        content: generatedContent,
+        status: 'scheduled',
+        scheduledFor: scheduledDateTime.toISOString()
+      })
 
-    // Increment post count for subscription tracking
-    incrementPostCount()
-
-    handleClose()
+      // Increment post count for subscription tracking
+      incrementPostCount()
+      handleClose()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to schedule post')
+    }
   }
 
   const handleBackToResult = () => {
@@ -163,22 +188,6 @@ export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
                 </svg>
               </button>
             </div>
-
-            {/* API Key Warning */}
-            {!settings.openRouterApiKey && (
-              <div className="mb-6 p-4 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
-                <p className="text-sm text-yellow-400 mb-2">{t('generateModal.apiKeyMissing')}</p>
-                <input
-                  type="password"
-                  placeholder="Enter your OpenRouter API key"
-                  className="w-full px-3 py-2 rounded-md bg-background border border-border text-sm"
-                  onChange={(e) => updateSettings({ openRouterApiKey: e.target.value })}
-                />
-                <p className="text-xs text-muted-foreground mt-2">
-                  Get your key at <a href="https://openrouter.ai/keys" target="_blank" className="text-primary hover:underline">openrouter.ai/keys</a>
-                </p>
-              </div>
-            )}
 
             {step === 'configure' && (
               <>
@@ -259,11 +268,11 @@ export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
                 <div className="mb-6">
                   <label className="block text-sm font-medium mb-2">AI Model</label>
                   <select
-                    value={settings.selectedModel}
-                    onChange={(e) => updateSettings({ selectedModel: e.target.value })}
+                    value={selectedModel}
+                    onChange={(e) => setSelectedModel(e.target.value)}
                     className="w-full px-3 py-2 rounded-lg bg-background border border-border text-sm focus:outline-none focus:border-primary"
                   >
-                    {AVAILABLE_MODELS.map((model) => (
+                    {availableModels.map((model) => (
                       <option key={model.value} value={model.value}>
                         {model.label}
                       </option>
@@ -305,7 +314,7 @@ export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
                 {/* Generate Button */}
                 <Button
                   onClick={handleGenerate}
-                  disabled={isGenerating || !settings.openRouterApiKey}
+                  disabled={isGenerating || !selectedBrand}
                   className="w-full"
                 >
                   {isGenerating ? (

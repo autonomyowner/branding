@@ -1,5 +1,6 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from 'react'
-import { useLocalStorage } from '../hooks/useLocalStorage'
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react'
+import { useAuth } from '@clerk/clerk-react'
+import { api } from '../lib/api'
 
 // Plan types
 export type PlanType = 'free' | 'pro' | 'business'
@@ -15,7 +16,7 @@ export interface PlanLimits {
   supportLevel: string
 }
 
-// Plan limits configuration
+// Plan limits configuration (fallback if backend unavailable)
 export const PLAN_LIMITS: Record<PlanType, PlanLimits> = {
   free: {
     maxBrands: 2,
@@ -36,7 +37,7 @@ export const PLAN_LIMITS: Record<PlanType, PlanLimits> = {
     supportLevel: 'priority'
   },
   business: {
-    maxBrands: 999, // Effectively unlimited
+    maxBrands: 999,
     maxPostsPerMonth: 90000,
     hasImageGeneration: true,
     hasVoiceover: true,
@@ -52,8 +53,9 @@ export type LimitType = 'brand' | 'post' | 'image' | 'voiceover' | 'video_repurp
 interface SubscriptionState {
   plan: PlanType
   postsThisMonth: number
-  monthStartDate: number
-  email: string | null
+  postsLimit: number
+  brandsCount: number
+  brandsLimit: number
   hasSeenWelcome: boolean
 }
 
@@ -61,6 +63,7 @@ interface SubscriptionContextType {
   // Current subscription state
   subscription: SubscriptionState
   currentLimits: PlanLimits
+  isLoading: boolean
 
   // Limit checking functions
   canAddBrand: (currentBrandCount: number) => boolean
@@ -78,56 +81,102 @@ interface SubscriptionContextType {
   openUpgradeModal: (trigger: LimitType) => void
   closeUpgradeModal: () => void
 
-  // Email capture
-  capturedEmails: string[]
-  captureEmail: (email: string) => void
-
   // Welcome modal
   markWelcomeSeen: () => void
 
-  // Plan management (for future Stripe integration)
-  upgradePlan: (newPlan: PlanType) => void
+  // Plan management
+  upgradePlan: (plan: 'PRO' | 'BUSINESS') => Promise<void>
+  openBillingPortal: () => Promise<void>
 
-  // Monthly reset check
+  // Refresh
+  refreshSubscription: () => Promise<void>
   checkAndResetMonthly: () => void
 }
 
 const DEFAULT_SUBSCRIPTION: SubscriptionState = {
   plan: 'free',
   postsThisMonth: 0,
-  monthStartDate: Date.now(),
-  email: null,
+  postsLimit: 20,
+  brandsCount: 0,
+  brandsLimit: 2,
   hasSeenWelcome: false
 }
 
 const SubscriptionContext = createContext<SubscriptionContextType | null>(null)
 
 export function SubscriptionProvider({ children }: { children: ReactNode }) {
-  const [subscription, setSubscription] = useLocalStorage<SubscriptionState>(
-    'contentengine-subscription',
-    DEFAULT_SUBSCRIPTION
-  )
-  const [capturedEmails, setCapturedEmails] = useLocalStorage<string[]>(
-    'contentengine-captured-emails',
-    []
-  )
+  const { isSignedIn, isLoaded, getToken } = useAuth()
+  const [subscription, setSubscription] = useState<SubscriptionState>(DEFAULT_SUBSCRIPTION)
+  const [isLoading, setIsLoading] = useState(true)
 
   // Upgrade modal state
   const [showUpgradeModal, setShowUpgradeModal] = useState(false)
   const [upgradeModalTrigger, setUpgradeModalTrigger] = useState<LimitType | null>(null)
+
+  // Welcome seen state (local storage)
+  const [hasSeenWelcome, setHasSeenWelcome] = useState(() => {
+    return localStorage.getItem('t21-welcome-seen') === 'true'
+  })
+
+  // Set up API token
+  useEffect(() => {
+    api.setTokenGetter(async () => {
+      try {
+        return await getToken()
+      } catch {
+        return null
+      }
+    })
+  }, [getToken])
+
+  // Fetch subscription data from backend
+  const refreshSubscription = useCallback(async () => {
+    if (!isSignedIn) {
+      setSubscription({ ...DEFAULT_SUBSCRIPTION, hasSeenWelcome })
+      setIsLoading(false)
+      return
+    }
+
+    try {
+      const userData = await api.getMe()
+      const planKey = userData.plan.toLowerCase() as PlanType
+
+      setSubscription({
+        plan: planKey,
+        postsThisMonth: userData.usage.postsThisMonth,
+        postsLimit: userData.usage.postsLimit,
+        brandsCount: userData.usage.brands,
+        brandsLimit: userData.usage.brandsLimit,
+        hasSeenWelcome
+      })
+    } catch (err) {
+      console.error('Failed to fetch subscription:', err)
+      // Fall back to defaults
+      setSubscription({ ...DEFAULT_SUBSCRIPTION, hasSeenWelcome })
+    } finally {
+      setIsLoading(false)
+    }
+  }, [isSignedIn, hasSeenWelcome])
+
+  // Load subscription on mount
+  useEffect(() => {
+    if (isLoaded) {
+      refreshSubscription()
+    }
+  }, [isLoaded, isSignedIn, refreshSubscription])
 
   // Get current plan limits
   const currentLimits = PLAN_LIMITS[subscription.plan]
 
   // Check if user can add a brand
   const canAddBrand = useCallback((currentBrandCount: number): boolean => {
-    return currentBrandCount < currentLimits.maxBrands
-  }, [currentLimits.maxBrands])
+    return currentBrandCount < subscription.brandsLimit
+  }, [subscription.brandsLimit])
 
   // Check if user can create a post
   const canCreatePost = useCallback((): boolean => {
-    return subscription.postsThisMonth < currentLimits.maxPostsPerMonth
-  }, [subscription.postsThisMonth, currentLimits.maxPostsPerMonth])
+    return subscription.postsThisMonth < subscription.postsLimit
+  }, [subscription.postsThisMonth, subscription.postsLimit])
 
   // Check if user can use a premium feature
   const canUseFeature = useCallback((feature: 'image' | 'voiceover' | 'video_repurpose'): boolean => {
@@ -143,28 +192,29 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
     }
   }, [currentLimits])
 
-  // Increment post count
+  // Increment post count (optimistic update)
   const incrementPostCount = useCallback(() => {
     setSubscription(prev => ({
       ...prev,
       postsThisMonth: prev.postsThisMonth + 1
     }))
-  }, [setSubscription])
+  }, [])
 
   // Get usage percentage for progress bars
   const getUsagePercentage = useCallback((type: 'brands' | 'posts', currentCount: number): number => {
-    const max = type === 'brands' ? currentLimits.maxBrands : currentLimits.maxPostsPerMonth
-    const count = type === 'posts' ? subscription.postsThisMonth : currentCount
-    return Math.min(100, (count / max) * 100)
-  }, [currentLimits, subscription.postsThisMonth])
+    if (type === 'brands') {
+      return Math.min(100, (currentCount / subscription.brandsLimit) * 100)
+    }
+    return Math.min(100, (subscription.postsThisMonth / subscription.postsLimit) * 100)
+  }, [subscription])
 
   // Get remaining count
   const getRemainingCount = useCallback((type: 'brands' | 'posts', currentCount: number): number => {
     if (type === 'brands') {
-      return Math.max(0, currentLimits.maxBrands - currentCount)
+      return Math.max(0, subscription.brandsLimit - currentCount)
     }
-    return Math.max(0, currentLimits.maxPostsPerMonth - subscription.postsThisMonth)
-  }, [currentLimits, subscription.postsThisMonth])
+    return Math.max(0, subscription.postsLimit - subscription.postsThisMonth)
+  }, [subscription])
 
   // Upgrade modal controls
   const openUpgradeModal = useCallback((trigger: LimitType) => {
@@ -177,45 +227,49 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
     setUpgradeModalTrigger(null)
   }, [])
 
-  // Email capture
-  const captureEmail = useCallback((email: string) => {
-    if (email && !capturedEmails.includes(email)) {
-      setCapturedEmails(prev => [...prev, email])
-      setSubscription(prev => ({ ...prev, email }))
-    }
-  }, [capturedEmails, setCapturedEmails, setSubscription])
-
   // Mark welcome as seen
   const markWelcomeSeen = useCallback(() => {
+    setHasSeenWelcome(true)
+    localStorage.setItem('t21-welcome-seen', 'true')
     setSubscription(prev => ({ ...prev, hasSeenWelcome: true }))
-  }, [setSubscription])
+  }, [])
 
-  // Upgrade plan (for future Stripe integration)
-  const upgradePlan = useCallback((newPlan: PlanType) => {
-    setSubscription(prev => ({ ...prev, plan: newPlan }))
-  }, [setSubscription])
-
-  // Check and reset monthly counts
-  const checkAndResetMonthly = useCallback(() => {
-    const now = Date.now()
-    const monthStart = new Date(subscription.monthStartDate)
-    const currentMonth = new Date(now)
-
-    // Reset if we're in a new month
-    if (monthStart.getMonth() !== currentMonth.getMonth() ||
-        monthStart.getFullYear() !== currentMonth.getFullYear()) {
-      setSubscription(prev => ({
-        ...prev,
-        postsThisMonth: 0,
-        monthStartDate: now
-      }))
+  // Upgrade plan via Stripe checkout
+  const upgradePlan = useCallback(async (plan: 'PRO' | 'BUSINESS') => {
+    try {
+      const { url } = await api.createCheckout({
+        plan,
+        successUrl: `${window.location.origin}/dashboard?success=true`,
+        cancelUrl: `${window.location.origin}/dashboard?cancelled=true`
+      })
+      window.location.href = url
+    } catch (err) {
+      console.error('Failed to create checkout:', err)
+      throw err
     }
-  }, [subscription.monthStartDate, setSubscription])
+  }, [])
+
+  // Open billing portal
+  const openBillingPortal = useCallback(async () => {
+    try {
+      const { url } = await api.createPortal(`${window.location.origin}/dashboard`)
+      window.location.href = url
+    } catch (err) {
+      console.error('Failed to open billing portal:', err)
+      throw err
+    }
+  }, [])
+
+  // Check and reset monthly (handled by backend, just refresh)
+  const checkAndResetMonthly = useCallback(() => {
+    refreshSubscription()
+  }, [refreshSubscription])
 
   return (
     <SubscriptionContext.Provider value={{
-      subscription,
+      subscription: { ...subscription, hasSeenWelcome },
       currentLimits,
+      isLoading,
       canAddBrand,
       canCreatePost,
       canUseFeature,
@@ -226,10 +280,10 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
       upgradeModalTrigger,
       openUpgradeModal,
       closeUpgradeModal,
-      capturedEmails,
-      captureEmail,
       markWelcomeSeen,
       upgradePlan,
+      openBillingPortal,
+      refreshSubscription,
       checkAndResetMonthly
     }}>
       {children}

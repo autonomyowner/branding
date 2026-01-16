@@ -1,9 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
-import { useData } from '../../context/DataContext'
-import { generateVoiceoverScript, VOICEOVER_STYLES } from '../../services/openrouter'
-import { getVoices, generateSpeech, downloadAudio, createAudioUrl, revokeAudioUrl, type Voice } from '../../services/elevenlabs'
+import { useSubscription } from '../../context/SubscriptionContext'
+import { api } from '../../lib/api'
 import { Button } from '../ui/button'
 import { Card } from '../ui/card'
 
@@ -13,16 +12,36 @@ interface VoiceoverModalProps {
   initialText?: string
 }
 
-type VoiceoverStyle = 'conversational' | 'professional' | 'energetic' | 'calm'
+interface Voice {
+  id: string
+  name: string
+  previewUrl: string
+  category: string
+  labels: {
+    accent?: string
+    age?: string
+    gender?: string
+    description?: string
+    use_case?: string
+  }
+}
+
+const VOICEOVER_STYLES = [
+  { value: 'conversational', label: 'Conversational', description: 'Natural, casual tone' },
+  { value: 'professional', label: 'Professional', description: 'Clear, authoritative' },
+  { value: 'energetic', label: 'Energetic', description: 'Upbeat and dynamic' },
+  { value: 'calm', label: 'Calm', description: 'Soothing and relaxed' },
+] as const
+
+type VoiceoverStyle = typeof VOICEOVER_STYLES[number]['value']
 
 export function VoiceoverModal({ isOpen, onClose, initialText = '' }: VoiceoverModalProps) {
   const { t } = useTranslation()
-  const { settings, updateSettings } = useData()
+  const { canUseFeature, openUpgradeModal } = useSubscription()
 
   // Script state
   const [script, setScript] = useState(initialText)
-  const [scriptStyle, setScriptStyle] = useState<VoiceoverStyle>('conversational')
-  const [isOptimizing, setIsOptimizing] = useState(false)
+  const [voiceStyle, setVoiceStyle] = useState<VoiceoverStyle>('conversational')
 
   // Voice state
   const [voices, setVoices] = useState<Voice[]>([])
@@ -31,7 +50,6 @@ export function VoiceoverModal({ isOpen, onClose, initialText = '' }: VoiceoverM
 
   // Audio state
   const [audioUrl, setAudioUrl] = useState<string | null>(null)
-  const [audioBlob, setAudioBlob] = useState<Blob | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
   const audioRef = useRef<HTMLAudioElement | null>(null)
@@ -42,6 +60,9 @@ export function VoiceoverModal({ isOpen, onClose, initialText = '' }: VoiceoverM
   // Error state
   const [error, setError] = useState('')
 
+  // Check if user can use voiceover
+  const hasAccess = canUseFeature('voiceover')
+
   // Update script when initialText changes
   useEffect(() => {
     if (initialText) {
@@ -49,33 +70,22 @@ export function VoiceoverModal({ isOpen, onClose, initialText = '' }: VoiceoverM
     }
   }, [initialText])
 
-  // Load voices when modal opens and API key is set
+  // Load voices when modal opens
   useEffect(() => {
-    if (isOpen && settings.elevenLabsApiKey && voices.length === 0) {
+    if (isOpen && hasAccess && voices.length === 0) {
       loadVoices()
     }
-  }, [isOpen, settings.elevenLabsApiKey])
-
-  // Cleanup audio URLs on unmount
-  useEffect(() => {
-    return () => {
-      if (audioUrl) {
-        revokeAudioUrl(audioUrl)
-      }
-    }
-  }, [audioUrl])
+  }, [isOpen, hasAccess])
 
   const loadVoices = async () => {
-    if (!settings.elevenLabsApiKey) return
-
     setIsLoadingVoices(true)
     setError('')
 
     try {
-      const fetchedVoices = await getVoices(settings.elevenLabsApiKey)
+      const fetchedVoices = await api.getVoices()
       setVoices(fetchedVoices)
       if (fetchedVoices.length > 0 && !selectedVoiceId) {
-        setSelectedVoiceId(fetchedVoices[0].voice_id)
+        setSelectedVoiceId(fetchedVoices[0].id)
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : t('voiceover.errorLoadingVoices'))
@@ -84,38 +94,15 @@ export function VoiceoverModal({ isOpen, onClose, initialText = '' }: VoiceoverM
     }
   }
 
-  const handleOptimizeScript = async () => {
-    if (!script.trim() || !settings.openRouterApiKey) {
-      setError(t('voiceover.scriptRequired'))
+  const handleGenerateVoiceover = async () => {
+    if (!hasAccess) {
+      handleClose()
+      openUpgradeModal('voiceover')
       return
     }
 
-    setIsOptimizing(true)
-    setError('')
-
-    try {
-      const optimized = await generateVoiceoverScript({
-        text: script,
-        apiKey: settings.openRouterApiKey,
-        model: settings.selectedModel,
-        style: scriptStyle
-      })
-      setScript(optimized)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : t('voiceover.errorOptimizing'))
-    } finally {
-      setIsOptimizing(false)
-    }
-  }
-
-  const handleGenerateVoiceover = async () => {
     if (!script.trim()) {
       setError(t('voiceover.scriptRequired'))
-      return
-    }
-
-    if (!settings.elevenLabsApiKey) {
-      setError(t('voiceover.apiKeyMissing'))
       return
     }
 
@@ -124,21 +111,17 @@ export function VoiceoverModal({ isOpen, onClose, initialText = '' }: VoiceoverM
       return
     }
 
-    // Clean up previous audio
-    if (audioUrl) {
-      revokeAudioUrl(audioUrl)
-      setAudioUrl(null)
-    }
-    setAudioBlob(null)
-
+    setAudioUrl(null)
     setIsGenerating(true)
     setError('')
 
     try {
-      const blob = await generateSpeech(settings.elevenLabsApiKey, script, selectedVoiceId)
-      const url = createAudioUrl(blob)
-      setAudioBlob(blob)
-      setAudioUrl(url)
+      const result = await api.generateVoiceover({
+        text: script,
+        voiceId: selectedVoiceId,
+        style: voiceStyle
+      })
+      setAudioUrl(result.url)
     } catch (err) {
       setError(err instanceof Error ? err.message : t('voiceover.errorGenerating'))
     } finally {
@@ -157,9 +140,11 @@ export function VoiceoverModal({ isOpen, onClose, initialText = '' }: VoiceoverM
   }
 
   const handleDownload = () => {
-    if (!audioBlob) return
-    const filename = `voiceover-${Date.now()}.mp3`
-    downloadAudio(audioBlob, filename)
+    if (!audioUrl) return
+    const link = document.createElement('a')
+    link.href = audioUrl
+    link.download = `voiceover-${Date.now()}.mp3`
+    link.click()
   }
 
   const handlePreviewVoice = (voice: Voice) => {
@@ -167,8 +152,8 @@ export function VoiceoverModal({ isOpen, onClose, initialText = '' }: VoiceoverM
       previewAudio.pause()
     }
 
-    if (voice.preview_url) {
-      const audio = new Audio(voice.preview_url)
+    if (voice.previewUrl) {
+      const audio = new Audio(voice.previewUrl)
       audio.play()
       setPreviewAudio(audio)
     }
@@ -183,15 +168,9 @@ export function VoiceoverModal({ isOpen, onClose, initialText = '' }: VoiceoverM
       previewAudio.pause()
     }
 
-    // Clean up audio URL
-    if (audioUrl) {
-      revokeAudioUrl(audioUrl)
-    }
-
     // Reset state
     setScript(initialText)
     setAudioUrl(null)
-    setAudioBlob(null)
     setIsPlaying(false)
     setError('')
 
@@ -203,6 +182,44 @@ export function VoiceoverModal({ isOpen, onClose, initialText = '' }: VoiceoverM
   const isOverLimit = characterCount > maxCharacters
 
   if (!isOpen) return null
+
+  // Show upgrade prompt if no access
+  if (!hasAccess) {
+    return (
+      <AnimatePresence>
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={handleClose}
+          />
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="relative w-full mx-4 max-w-md"
+          >
+            <Card className="p-6 text-center">
+              <h2 className="text-xl font-bold mb-4">Upgrade Required</h2>
+              <p className="text-muted-foreground mb-6">
+                Voiceover generation is available on Pro and Business plans.
+              </p>
+              <div className="flex gap-3">
+                <Button variant="outline" onClick={handleClose} className="flex-1">
+                  Cancel
+                </Button>
+                <Button onClick={() => { handleClose(); openUpgradeModal('voiceover'); }} className="flex-1">
+                  Upgrade Now
+                </Button>
+              </div>
+            </Card>
+          </motion.div>
+        </div>
+      </AnimatePresence>
+    )
+  }
 
   return (
     <AnimatePresence>
@@ -238,25 +255,6 @@ export function VoiceoverModal({ isOpen, onClose, initialText = '' }: VoiceoverM
             </div>
 
             <div className="overflow-y-auto flex-1 pr-2 -mr-2">
-              {/* ElevenLabs API Key Warning */}
-              {!settings.elevenLabsApiKey && (
-                <div className="mb-6 p-4 rounded-lg bg-purple-500/10 border border-purple-500/20">
-                  <p className="text-sm text-purple-400 mb-2">{t('voiceover.apiKeyMissing')}</p>
-                  <input
-                    type="password"
-                    placeholder={t('voiceover.apiKeyPlaceholder')}
-                    className="w-full px-3 py-2 rounded-md bg-background border border-border text-sm"
-                    onChange={(e) => updateSettings({ elevenLabsApiKey: e.target.value })}
-                  />
-                  <p className="text-xs text-muted-foreground mt-2">
-                    {t('voiceover.getApiKey')}{' '}
-                    <a href="https://elevenlabs.io/app/settings/api-keys" target="_blank" className="text-primary hover:underline">
-                      elevenlabs.io
-                    </a>
-                  </p>
-                </div>
-              )}
-
               {/* Script Section */}
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-2">
@@ -278,66 +276,39 @@ export function VoiceoverModal({ isOpen, onClose, initialText = '' }: VoiceoverM
                 )}
               </div>
 
-              {/* Optimize Script Section */}
-              {settings.openRouterApiKey && (
-                <div className="mb-6 p-4 rounded-lg bg-background border border-border">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-sm font-medium">{t('voiceover.optimizeForVoice')}</span>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleOptimizeScript}
-                      disabled={isOptimizing || !script.trim()}
+              {/* Voice Style */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium mb-2">Voice Style</label>
+                <div className="flex gap-2 flex-wrap">
+                  {VOICEOVER_STYLES.map((style) => (
+                    <button
+                      key={style.value}
+                      onClick={() => setVoiceStyle(style.value)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                        voiceStyle === style.value
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-white/5 hover:bg-white/10'
+                      }`}
+                      title={style.description}
                     >
-                      {isOptimizing ? (
-                        <span className="flex items-center gap-2">
-                          <svg className="animate-spin h-3 w-3" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                          </svg>
-                          {t('voiceover.optimizing')}
-                        </span>
-                      ) : (
-                        t('voiceover.optimize')
-                      )}
-                    </Button>
-                  </div>
-                  <div className="flex gap-2 flex-wrap">
-                    {VOICEOVER_STYLES.map((style) => (
-                      <button
-                        key={style.value}
-                        onClick={() => setScriptStyle(style.value as VoiceoverStyle)}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                          scriptStyle === style.value
-                            ? 'bg-primary text-primary-foreground'
-                            : 'bg-white/5 hover:bg-white/10'
-                        }`}
-                        title={style.description}
-                      >
-                        {t(`voiceover.style.${style.value}`)}
-                      </button>
-                    ))}
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    {t('voiceover.optimizeDescription')}
-                  </p>
+                      {style.label}
+                    </button>
+                  ))}
                 </div>
-              )}
+              </div>
 
               {/* Voice Selection */}
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-2">
                   <label className="block text-sm font-medium">{t('voiceover.selectVoice')}</label>
-                  {settings.elevenLabsApiKey && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={loadVoices}
-                      disabled={isLoadingVoices}
-                    >
-                      {isLoadingVoices ? t('voiceover.loading') : t('voiceover.refreshVoices')}
-                    </Button>
-                  )}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={loadVoices}
+                    disabled={isLoadingVoices}
+                  >
+                    {isLoadingVoices ? t('voiceover.loading') : t('voiceover.refreshVoices')}
+                  </Button>
                 </div>
 
                 {isLoadingVoices ? (
@@ -351,10 +322,10 @@ export function VoiceoverModal({ isOpen, onClose, initialText = '' }: VoiceoverM
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-[200px] overflow-y-auto">
                     {voices.map((voice) => (
                       <button
-                        key={voice.voice_id}
-                        onClick={() => setSelectedVoiceId(voice.voice_id)}
+                        key={voice.id}
+                        onClick={() => setSelectedVoiceId(voice.id)}
                         className={`p-3 rounded-lg text-left transition-colors ${
-                          selectedVoiceId === voice.voice_id
+                          selectedVoiceId === voice.id
                             ? 'bg-primary text-primary-foreground'
                             : 'bg-background border border-border hover:border-white/20'
                         }`}
@@ -366,7 +337,7 @@ export function VoiceoverModal({ isOpen, onClose, initialText = '' }: VoiceoverM
                             {voice.labels.accent && ` - ${voice.labels.accent}`}
                           </div>
                         )}
-                        {voice.preview_url && (
+                        {voice.previewUrl && (
                           <button
                             onClick={(e) => {
                               e.stopPropagation()
@@ -380,16 +351,12 @@ export function VoiceoverModal({ isOpen, onClose, initialText = '' }: VoiceoverM
                       </button>
                     ))}
                   </div>
-                ) : settings.elevenLabsApiKey ? (
+                ) : (
                   <div className="text-center py-8 text-muted-foreground">
                     <p className="text-sm">{t('voiceover.noVoices')}</p>
                     <Button variant="outline" size="sm" onClick={loadVoices} className="mt-2">
                       {t('voiceover.loadVoices')}
                     </Button>
-                  </div>
-                ) : (
-                  <div className="text-center py-8 text-muted-foreground">
-                    <p className="text-sm">{t('voiceover.enterApiKeyFirst')}</p>
                   </div>
                 )}
               </div>
@@ -446,7 +413,7 @@ export function VoiceoverModal({ isOpen, onClose, initialText = '' }: VoiceoverM
               </Button>
               <Button
                 onClick={handleGenerateVoiceover}
-                disabled={isGenerating || !script.trim() || !selectedVoiceId || !settings.elevenLabsApiKey || isOverLimit}
+                disabled={isGenerating || !script.trim() || !selectedVoiceId || isOverLimit}
                 className="flex-1"
               >
                 {isGenerating ? (
