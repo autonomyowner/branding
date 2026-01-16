@@ -29,22 +29,20 @@ export function Footer() {
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <a href="/" className="text-2xl font-bold tracking-tight mb-4 block">
-              <span className="text-white">Brand</span>
-              <span className="text-primary">ing</span>
+              <span className="text-white">Postaify</span>
             </a>
             <p className="text-sm text-muted-foreground mb-4">
               Automate your content with AI-powered tools.
             </p>
             <div className="flex gap-4">
-              {["Twitter", "GitHub", "LinkedIn"].map((social) => (
-                <a
-                  key={social}
-                  href="#"
-                  className="text-muted-foreground hover:text-white transition-colors text-sm"
-                >
-                  {social}
-                </a>
-              ))}
+              <a
+                href="https://www.facebook.com/Postaify/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-white transition-colors text-sm"
+              >
+                Facebook
+              </a>
             </div>
           </div>
 
@@ -71,7 +69,7 @@ export function Footer() {
         {/* Bottom */}
         <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground">
-            © 2024 Branding. {t('footer.rights')}
+            © 2024 Postaify. {t('footer.rights')}
           </p>
         </div>
       </div>
