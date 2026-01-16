@@ -23,6 +23,7 @@ const RoadmapPage = lazy(() => import("./pages/RoadmapPage").then(m => ({ defaul
 const SignInPage = lazy(() => import("./pages/SignInPage").then(m => ({ default: m.SignInPage })))
 const SignUpPage = lazy(() => import("./pages/SignUpPage").then(m => ({ default: m.SignUpPage })))
 const SSOCallback = lazy(() => import("./pages/SSOCallback").then(m => ({ default: m.SSOCallback })))
+const AdminPage = lazy(() => import("./pages/AdminPage").then(m => ({ default: m.AdminPage })))
 
 // Global upgrade modal component
 function GlobalUpgradeModal() {
@@ -81,6 +82,9 @@ function AppContent() {
             } />
             <Route path="/calendar" element={
               <ProtectedRoute><CalendarPage /></ProtectedRoute>
+            } />
+            <Route path="/admin" element={
+              <ProtectedRoute><AdminPage /></ProtectedRoute>
             } />
           </Routes>
         </Suspense>

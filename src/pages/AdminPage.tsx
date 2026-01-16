@@ -1,0 +1,367 @@
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import { useAuth } from '@clerk/clerk-react'
+import { api } from '../lib/api'
+import { Navbar } from '../components/Navbar'
+import { Card } from '../components/ui/card'
+import { Badge } from '../components/ui/badge'
+
+type Tab = 'overview' | 'users' | 'emails'
+
+export function AdminPage() {
+  const { isLoaded, isSignedIn } = useAuth()
+  const navigate = useNavigate()
+  const [activeTab, setActiveTab] = useState<Tab>('overview')
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  // Overview data
+  const [stats, setStats] = useState<any>(null)
+
+  // Users data
+  const [users, setUsers] = useState<any[]>([])
+  const [usersPage, setUsersPage] = useState(1)
+  const [usersPagination, setUsersPagination] = useState<any>(null)
+
+  // Email captures data
+  const [emailCaptures, setEmailCaptures] = useState<any[]>([])
+  const [emailsPage, setEmailsPage] = useState(1)
+  const [emailsPagination, setEmailsPagination] = useState<any>(null)
+
+  useEffect(() => {
+    if (!isLoaded) return
+    if (!isSignedIn) {
+      navigate('/sign-in')
+      return
+    }
+
+    loadData()
+  }, [isLoaded, isSignedIn, activeTab, usersPage, emailsPage])
+
+  const loadData = async () => {
+    setIsLoading(true)
+    setError('')
+
+    try {
+      if (activeTab === 'overview') {
+        const data = await api.getAdminStats()
+        setStats(data)
+      } else if (activeTab === 'users') {
+        const data = await api.getAdminUsers(usersPage, 50)
+        setUsers(data.users)
+        setUsersPagination(data.pagination)
+      } else if (activeTab === 'emails') {
+        const data = await api.getAdminEmailCaptures(emailsPage, 50)
+        setEmailCaptures(data.captures)
+        setEmailsPagination(data.pagination)
+      }
+    } catch (err: any) {
+      if (err.message.includes('Access denied')) {
+        setError('Access denied. You must be an admin to view this page.')
+      } else {
+        setError(err.message || 'Failed to load data')
+      }
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  if (!isLoaded || isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="flex items-center justify-center min-h-[80vh]">
+          <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="max-w-4xl mx-auto px-6 py-20 text-center">
+          <div className="text-red-500 text-xl font-semibold mb-4">⚠️ {error}</div>
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="text-primary hover:underline"
+          >
+            Go back to dashboard
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Navbar />
+
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-foreground mb-2">Admin Dashboard</h1>
+          <p className="text-muted-foreground">Manage users, view analytics, and monitor email captures</p>
+        </div>
+
+        {/* Tabs */}
+        <div className="flex gap-2 mb-6 border-b border-border">
+          {[
+            { id: 'overview', label: 'Overview', icon: '📊' },
+            { id: 'users', label: 'Users', icon: '👥' },
+            { id: 'emails', label: 'Email Captures', icon: '📧' },
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => {
+                setActiveTab(tab.id as Tab)
+                if (tab.id === 'users') setUsersPage(1)
+                if (tab.id === 'emails') setEmailsPage(1)
+              }}
+              className={`px-4 py-2 font-medium transition-colors relative ${
+                activeTab === tab.id
+                  ? 'text-primary'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              <span className="mr-2">{tab.icon}</span>
+              {tab.label}
+              {activeTab === tab.id && (
+                <motion.div
+                  layoutId="activeTab"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
+                />
+              )}
+            </button>
+          ))}
+        </div>
+
+        {/* Content */}
+        <div>
+          {activeTab === 'overview' && stats && <OverviewTab stats={stats} />}
+          {activeTab === 'users' && (
+            <UsersTab
+              users={users}
+              pagination={usersPagination}
+              onPageChange={setUsersPage}
+            />
+          )}
+          {activeTab === 'emails' && (
+            <EmailsTab
+              captures={emailCaptures}
+              pagination={emailsPagination}
+              onPageChange={setEmailsPage}
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Overview Tab
+function OverviewTab({ stats }: { stats: any }) {
+  return (
+    <div className="space-y-6">
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard title="Total Users" value={stats.users.total} icon="👥" />
+        <StatCard title="Pro Users" value={stats.users.pro} icon="⭐" color="text-purple-400" />
+        <StatCard title="Business Users" value={stats.users.business} icon="🏢" color="text-blue-400" />
+        <StatCard title="Free Users" value={stats.users.free} icon="🆓" color="text-gray-400" />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard title="Total Posts" value={stats.content.totalPosts} icon="📝" />
+        <StatCard title="Total Brands" value={stats.content.totalBrands} icon="🎨" />
+        <StatCard title="Email Captures" value={stats.emailCaptures.total} icon="📧" />
+        <StatCard
+          title="Consent Rate"
+          value={`${stats.emailCaptures.consentRate}%`}
+          icon="✅"
+          color="text-green-400"
+        />
+      </div>
+
+      {/* Recent Activity */}
+      <Card className="p-6">
+        <h3 className="text-lg font-semibold mb-4">Recent Activity</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <p className="text-sm text-muted-foreground mb-2">New Signups (30d)</p>
+            <p className="text-2xl font-bold text-foreground">{stats.users.recentSignups}</p>
+          </div>
+          <div>
+            <p className="text-sm text-muted-foreground mb-2">Email Captures (7d)</p>
+            <p className="text-2xl font-bold text-foreground">{stats.emailCaptures.recentCaptures}</p>
+          </div>
+          <div>
+            <p className="text-sm text-muted-foreground mb-2">With Consent</p>
+            <p className="text-2xl font-bold text-foreground">{stats.emailCaptures.withConsent}</p>
+          </div>
+        </div>
+      </Card>
+    </div>
+  )
+}
+
+// Users Tab
+function UsersTab({ users, pagination, onPageChange }: any) {
+  return (
+    <div className="space-y-4">
+      <Card className="overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-muted/50">
+              <tr>
+                <th className="text-left p-4 text-sm font-medium text-muted-foreground">Email</th>
+                <th className="text-left p-4 text-sm font-medium text-muted-foreground">Name</th>
+                <th className="text-center p-4 text-sm font-medium text-muted-foreground">Plan</th>
+                <th className="text-center p-4 text-sm font-medium text-muted-foreground">Brands</th>
+                <th className="text-center p-4 text-sm font-medium text-muted-foreground">Posts</th>
+                <th className="text-center p-4 text-sm font-medium text-muted-foreground">This Month</th>
+                <th className="text-left p-4 text-sm font-medium text-muted-foreground">Joined</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((user: any) => (
+                <tr key={user.id} className="border-t border-border hover:bg-muted/30 transition-colors">
+                  <td className="p-4 text-sm text-foreground">{user.email}</td>
+                  <td className="p-4 text-sm text-muted-foreground">{user.name || '-'}</td>
+                  <td className="p-4 text-center">
+                    <PlanBadge plan={user.plan} />
+                  </td>
+                  <td className="p-4 text-center text-sm text-foreground">{user.brandsCount}</td>
+                  <td className="p-4 text-center text-sm text-foreground">{user.postsCount}</td>
+                  <td className="p-4 text-center text-sm text-foreground">{user.postsThisMonth}</td>
+                  <td className="p-4 text-sm text-muted-foreground">
+                    {new Date(user.createdAt).toLocaleDateString()}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+
+      {pagination && (
+        <Pagination
+          page={pagination.page}
+          totalPages={pagination.totalPages}
+          onPageChange={onPageChange}
+        />
+      )}
+    </div>
+  )
+}
+
+// Emails Tab
+function EmailsTab({ captures, pagination, onPageChange }: any) {
+  return (
+    <div className="space-y-4">
+      <Card className="overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-muted/50">
+              <tr>
+                <th className="text-left p-4 text-sm font-medium text-muted-foreground">Email</th>
+                <th className="text-center p-4 text-sm font-medium text-muted-foreground">Plan Interest</th>
+                <th className="text-center p-4 text-sm font-medium text-muted-foreground">Marketing</th>
+                <th className="text-left p-4 text-sm font-medium text-muted-foreground">Source</th>
+                <th className="text-left p-4 text-sm font-medium text-muted-foreground">Captured</th>
+              </tr>
+            </thead>
+            <tbody>
+              {captures.map((capture: any) => (
+                <tr key={capture.id} className="border-t border-border hover:bg-muted/30 transition-colors">
+                  <td className="p-4 text-sm text-foreground">{capture.email}</td>
+                  <td className="p-4 text-center">
+                    {capture.planInterest && (
+                      <Badge variant="secondary">{capture.planInterest}</Badge>
+                    )}
+                  </td>
+                  <td className="p-4 text-center">
+                    {capture.marketingConsent ? (
+                      <span className="text-green-400">✅ Yes</span>
+                    ) : (
+                      <span className="text-muted-foreground">❌ No</span>
+                    )}
+                  </td>
+                  <td className="p-4 text-sm text-muted-foreground">{capture.source || '-'}</td>
+                  <td className="p-4 text-sm text-muted-foreground">
+                    {new Date(capture.capturedAt).toLocaleString()}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+
+      {pagination && (
+        <Pagination
+          page={pagination.page}
+          totalPages={pagination.totalPages}
+          onPageChange={onPageChange}
+        />
+      )}
+    </div>
+  )
+}
+
+// Helper Components
+function StatCard({ title, value, icon, color = 'text-primary' }: any) {
+  return (
+    <Card className="p-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm text-muted-foreground mb-1">{title}</p>
+          <p className={`text-3xl font-bold ${color}`}>{value}</p>
+        </div>
+        <div className="text-4xl">{icon}</div>
+      </div>
+    </Card>
+  )
+}
+
+function PlanBadge({ plan }: { plan: string }) {
+  const colors = {
+    FREE: 'bg-gray-500/20 text-gray-300 border-gray-500/30',
+    PRO: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+    BUSINESS: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+  }
+
+  return (
+    <Badge className={colors[plan as keyof typeof colors] || colors.FREE}>
+      {plan}
+    </Badge>
+  )
+}
+
+function Pagination({ page, totalPages, onPageChange }: any) {
+  return (
+    <div className="flex items-center justify-between">
+      <p className="text-sm text-muted-foreground">
+        Page {page} of {totalPages}
+      </p>
+      <div className="flex gap-2">
+        <button
+          onClick={() => onPageChange(page - 1)}
+          disabled={page === 1}
+          className="px-4 py-2 text-sm font-medium rounded-lg bg-muted hover:bg-muted/70 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          Previous
+        </button>
+        <button
+          onClick={() => onPageChange(page + 1)}
+          disabled={page === totalPages}
+          className="px-4 py-2 text-sm font-medium rounded-lg bg-muted hover:bg-muted/70 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  )
+}

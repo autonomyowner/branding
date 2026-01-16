@@ -8,6 +8,7 @@ import voiceRouter from './voice.js'
 import imagesRouter from './images.js'
 import subscriptionsRouter from './subscriptions.js'
 import emailsRouter from './emails.js'
+import adminRouter from './admin.js'
 
 const router = Router()
 
@@ -20,5 +21,6 @@ router.use('/voice', voiceRouter)
 router.use('/images', imagesRouter)
 router.use('/subscriptions', subscriptionsRouter)
 router.use('/emails', emailsRouter)
+router.use('/admin', adminRouter)
 
 export default router

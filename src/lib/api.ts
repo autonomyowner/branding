@@ -442,6 +442,102 @@ class ApiClient {
       body: JSON.stringify(data),
     })
   }
+
+  // Admin
+  async getAdminStats() {
+    return this.request<{
+      users: {
+        total: number
+        free: number
+        pro: number
+        business: number
+        recentSignups: number
+      }
+      content: {
+        totalPosts: number
+        totalBrands: number
+      }
+      emailCaptures: {
+        total: number
+        withConsent: number
+        consentRate: number
+        recentCaptures: number
+      }
+    }>('/api/v1/admin/stats')
+  }
+
+  async getAdminUsers(page = 1, limit = 50) {
+    return this.request<{
+      users: Array<{
+        id: string
+        email: string
+        name: string | null
+        plan: string
+        postsThisMonth: number
+        brandsCount: number
+        postsCount: number
+        stripeCustomerId: string | null
+        createdAt: string
+        updatedAt: string
+      }>
+      pagination: {
+        page: number
+        limit: number
+        totalCount: number
+        totalPages: number
+      }
+    }>(`/api/v1/admin/users?page=${page}&limit=${limit}`)
+  }
+
+  async getAdminEmailCaptures(page = 1, limit = 50) {
+    return this.request<{
+      captures: Array<{
+        id: string
+        email: string
+        marketingConsent: boolean
+        source: string | null
+        planInterest: string | null
+        capturedAt: string
+        userId: string | null
+      }>
+      pagination: {
+        page: number
+        limit: number
+        totalCount: number
+        totalPages: number
+      }
+    }>(`/api/v1/admin/email-captures?page=${page}&limit=${limit}`)
+  }
+
+  async getAdminRecentActivity(limit = 20) {
+    return this.request<{
+      recentUsers: Array<{
+        id: string
+        email: string
+        name: string | null
+        plan: string
+        createdAt: string
+      }>
+      recentPosts: Array<{
+        id: string
+        content: string
+        platform: string
+        status: string
+        createdAt: string
+        user: {
+          email: string
+          name: string | null
+        }
+      }>
+      recentCaptures: Array<{
+        id: string
+        email: string
+        planInterest: string | null
+        marketingConsent: boolean
+        capturedAt: string
+      }>
+    }>(`/api/v1/admin/recent-activity?limit=${limit}`)
+  }
 }
 
 export const api = new ApiClient(API_BASE_URL)
