@@ -24,9 +24,10 @@ type ContentStyle = typeof CONTENT_STYLES[number]['value']
 interface GenerateModalProps {
   isOpen: boolean
   onClose: () => void
+  initialImageUrl?: string
 }
 
-export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
+export function GenerateModal({ isOpen, onClose, initialImageUrl }: GenerateModalProps) {
   const { t } = useTranslation()
   const { brands, selectedBrandId, addPost } = useData()
   const { canCreatePost, incrementPostCount, openUpgradeModal, getUsagePercentage, getRemainingCount } = useSubscription()
@@ -42,6 +43,14 @@ export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
   const [scheduledDateTime, setScheduledDateTime] = useState<Date | null>(null)
   const [availableModels, setAvailableModels] = useState<Array<{ value: string; label: string }>>([])
   const [selectedModel, setSelectedModel] = useState('anthropic/claude-3-haiku')
+  const [attachedImageUrl, setAttachedImageUrl] = useState<string | undefined>(undefined)
+
+  // Set attached image from initial prop when modal opens
+  useEffect(() => {
+    if (isOpen && initialImageUrl) {
+      setAttachedImageUrl(initialImageUrl)
+    }
+  }, [isOpen, initialImageUrl])
 
   const selectedBrand = brands.find(b => b.id === selectedBrandId) || brands[0]
 
@@ -116,6 +125,7 @@ export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
         brandId: selectedBrand.id,
         platform: selectedPlatform,
         content: generatedContent,
+        imageUrl: attachedImageUrl,
         status: 'draft'
       })
 
@@ -159,6 +169,7 @@ export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
         brandId: selectedBrand.id,
         platform: selectedPlatform,
         content: generatedContent,
+        imageUrl: attachedImageUrl,
         status: 'scheduled',
         scheduledFor: scheduledDateTime.toISOString()
       })
@@ -196,6 +207,7 @@ export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
     setTopic('')
     setError('')
     setScheduledDateTime(null)
+    setAttachedImageUrl(undefined)
     onClose()
   }
 
@@ -316,6 +328,32 @@ export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
                   </p>
                 </div>
 
+                {/* Attached Image Preview */}
+                {attachedImageUrl && (
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium mb-2">Attached Image</label>
+                    <div className="relative rounded-lg overflow-hidden bg-background border border-border">
+                      <img
+                        src={attachedImageUrl}
+                        alt="Attached"
+                        className="w-full h-32 object-cover"
+                      />
+                      <button
+                        onClick={() => setAttachedImageUrl(undefined)}
+                        className="absolute top-2 right-2 p-1.5 rounded-full bg-black/60 hover:bg-black/80 transition-colors"
+                        title="Remove image"
+                      >
+                        <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      This image will be attached to your post
+                    </p>
+                  </div>
+                )}
+
                 {/* Model Selection */}
                 <div className="mb-6">
                   <label className="block text-sm font-medium mb-2">AI Model</label>
@@ -393,7 +431,21 @@ export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
                     <span className="text-xs px-2 py-0.5 rounded-full bg-white/10">
                       {selectedBrand?.name}
                     </span>
+                    {attachedImageUrl && (
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-primary/20 text-primary">
+                        With Image
+                      </span>
+                    )}
                   </div>
+                  {attachedImageUrl && (
+                    <div className="mb-3 rounded-lg overflow-hidden border border-border">
+                      <img
+                        src={attachedImageUrl}
+                        alt="Attached"
+                        className="w-full h-40 object-cover"
+                      />
+                    </div>
+                  )}
                   <div className="p-4 rounded-lg bg-background border border-border min-h-[150px] whitespace-pre-wrap">
                     {generatedContent}
                   </div>
@@ -437,7 +489,21 @@ export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
                       <span className="text-xs px-2 py-0.5 rounded-full bg-white/10">
                         {selectedBrand?.name}
                       </span>
+                      {attachedImageUrl && (
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-primary/20 text-primary">
+                          With Image
+                        </span>
+                      )}
                     </div>
+                    {attachedImageUrl && (
+                      <div className="mb-2 rounded overflow-hidden">
+                        <img
+                          src={attachedImageUrl}
+                          alt="Attached"
+                          className="w-full h-20 object-cover"
+                        />
+                      </div>
+                    )}
                     <p className="text-sm text-muted-foreground line-clamp-2">{generatedContent}</p>
                   </div>
 

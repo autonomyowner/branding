@@ -8,6 +8,7 @@ import { Card } from '../ui/card'
 interface ImageGeneratorModalProps {
   isOpen: boolean
   onClose: () => void
+  onCreatePost?: (imageUrl: string) => void
 }
 
 const IMAGE_STYLES = [
@@ -27,7 +28,7 @@ const ASPECT_RATIOS = [
   { value: '3:4', label: '3:4', description: 'Classic portrait' },
 ]
 
-export function ImageGeneratorModal({ isOpen, onClose }: ImageGeneratorModalProps) {
+export function ImageGeneratorModal({ isOpen, onClose, onCreatePost }: ImageGeneratorModalProps) {
   const { canUseFeature, openUpgradeModal } = useSubscription()
 
   const [prompt, setPrompt] = useState('')
@@ -327,9 +328,14 @@ export function ImageGeneratorModal({ isOpen, onClose }: ImageGeneratorModalProp
                   <Button variant="outline" onClick={handleRegenerate} className="flex-1">
                     New Image
                   </Button>
-                  <Button onClick={handleDownload} className="flex-1">
+                  <Button variant="outline" onClick={handleDownload} className="flex-1">
                     Download
                   </Button>
+                  {onCreatePost && (
+                    <Button onClick={() => onCreatePost(generatedImageUrl)} className="flex-1">
+                      Create Post
+                    </Button>
+                  )}
                 </div>
               </>
             )}

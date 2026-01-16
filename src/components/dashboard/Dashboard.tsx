@@ -29,8 +29,22 @@ export function Dashboard() {
   const [isImageGeneratorModalOpen, setIsImageGeneratorModalOpen] = useState(false)
   const [isBrandModalOpen, setIsBrandModalOpen] = useState(false)
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
+  const [pendingImageUrl, setPendingImageUrl] = useState<string | undefined>(undefined)
   const { user } = useData()
   const { subscription } = useSubscription()
+
+  // Handler for creating a post with a generated image
+  const handleCreatePostWithImage = (imageUrl: string) => {
+    setIsImageGeneratorModalOpen(false)
+    setPendingImageUrl(imageUrl)
+    setIsGenerateModalOpen(true)
+  }
+
+  // Clear pending image when generate modal closes
+  const handleGenerateModalClose = () => {
+    setIsGenerateModalOpen(false)
+    setPendingImageUrl(undefined)
+  }
 
   // Show welcome modal for first-time visitors
   const [isWelcomeModalOpen, setIsWelcomeModalOpen] = useState(!subscription.hasSeenWelcome)
@@ -154,7 +168,8 @@ export function Dashboard() {
       {/* Modals */}
       <GenerateModal
         isOpen={isGenerateModalOpen}
-        onClose={() => setIsGenerateModalOpen(false)}
+        onClose={handleGenerateModalClose}
+        initialImageUrl={pendingImageUrl}
       />
       <VideoToPostsModal
         isOpen={isVideoModalOpen}
@@ -167,6 +182,7 @@ export function Dashboard() {
       <ImageGeneratorModal
         isOpen={isImageGeneratorModalOpen}
         onClose={() => setIsImageGeneratorModalOpen(false)}
+        onCreatePost={handleCreatePostWithImage}
       />
       <BrandModal
         isOpen={isBrandModalOpen}
