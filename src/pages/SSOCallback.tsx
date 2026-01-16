@@ -3,12 +3,16 @@ import { useNavigate } from 'react-router-dom'
 import { useSignIn, useSignUp, useClerk } from '@clerk/clerk-react'
 import { motion } from 'framer-motion'
 import { Logo } from '../components/ui/Logo'
+import { useMetaPixel } from '../hooks/useMetaPixel'
+import { useGA4 } from '../hooks/useGA4'
 
 export function SSOCallback() {
   const { signIn, setActive: setActiveSignIn } = useSignIn()
   const { signUp, setActive: setActiveSignUp } = useSignUp()
   const { handleRedirectCallback } = useClerk()
   const navigate = useNavigate()
+  const { trackEvent: trackMetaEvent } = useMetaPixel()
+  const { trackEvent: trackGA4Event } = useGA4()
 
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
   const [error, setError] = useState('')
@@ -33,6 +37,18 @@ export function SSOCallback() {
 
           if (signUp?.status === 'complete' && setActiveSignUp) {
             setStatus('success')
+
+            // Track new user registration (Meta Pixel)
+            trackMetaEvent('CompleteRegistration', {
+              content_name: 'User Sign Up',
+              status: 'completed'
+            })
+
+            // Track new user registration (GA4)
+            trackGA4Event('sign_up', {
+              method: 'OAuth'
+            })
+
             await setActiveSignUp({ session: signUp.createdSessionId })
             navigate('/dashboard')
             return
@@ -54,6 +70,18 @@ export function SSOCallback() {
 
             if (signUp?.status === 'complete' && setActiveSignUp) {
               setStatus('success')
+
+              // Track new user registration (Meta Pixel)
+              trackMetaEvent('CompleteRegistration', {
+                content_name: 'User Sign Up',
+                status: 'completed'
+              })
+
+              // Track new user registration (GA4)
+              trackGA4Event('sign_up', {
+                method: 'OAuth'
+              })
+
               await setActiveSignUp({ session: signUp.createdSessionId })
               navigate('/dashboard')
               return true

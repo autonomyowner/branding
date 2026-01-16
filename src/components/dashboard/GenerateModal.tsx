@@ -7,6 +7,8 @@ import { api } from '../../lib/api'
 import { Button } from '../ui/button'
 import { Card } from '../ui/card'
 import { DateTimePicker } from '../ui/calendar'
+import { useMetaPixel } from '../../hooks/useMetaPixel'
+import { useGA4 } from '../../hooks/useGA4'
 
 // Content styles available
 const CONTENT_STYLES = [
@@ -28,6 +30,8 @@ export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
   const { t } = useTranslation()
   const { brands, selectedBrandId, addPost } = useData()
   const { canCreatePost, incrementPostCount, openUpgradeModal, getUsagePercentage, getRemainingCount } = useSubscription()
+  const { trackCustomEvent: trackMetaCustomEvent } = useMetaPixel()
+  const { trackEvent: trackGA4Event } = useGA4()
   const [selectedPlatform, setSelectedPlatform] = useState<Platform>('Instagram')
   const [selectedStyle, setSelectedStyle] = useState<ContentStyle>('viral')
   const [topic, setTopic] = useState('')
@@ -79,6 +83,24 @@ export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
       })
       setGeneratedContent(result.content)
       setStep('result')
+
+      // Track successful content generation (Meta Pixel)
+      trackMetaCustomEvent('ContentGenerated', {
+        platform: selectedPlatform,
+        style: selectedStyle,
+        brand: selectedBrand.name,
+        has_topic: !!topic,
+        model: selectedModel,
+      })
+
+      // Track successful content generation (GA4)
+      trackGA4Event('content_generated', {
+        platform: selectedPlatform,
+        style: selectedStyle,
+        brand: selectedBrand.name,
+        has_topic: !!topic,
+        model: selectedModel,
+      })
     } catch (err) {
       setError(err instanceof Error ? err.message : t('generateModal.error'))
     } finally {
@@ -99,6 +121,21 @@ export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
 
       // Increment post count for subscription tracking
       incrementPostCount()
+
+      // Track post saved as draft (Meta Pixel)
+      trackMetaCustomEvent('PostSaved', {
+        platform: selectedPlatform,
+        status: 'draft',
+        brand: selectedBrand.name,
+      })
+
+      // Track post saved as draft (GA4)
+      trackGA4Event('post_saved', {
+        platform: selectedPlatform,
+        status: 'draft',
+        brand: selectedBrand.name,
+      })
+
       handleClose()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to save post')
@@ -128,6 +165,21 @@ export function GenerateModal({ isOpen, onClose }: GenerateModalProps) {
 
       // Increment post count for subscription tracking
       incrementPostCount()
+
+      // Track post scheduled (Meta Pixel)
+      trackMetaCustomEvent('PostScheduled', {
+        platform: selectedPlatform,
+        brand: selectedBrand.name,
+        scheduled_date: scheduledDateTime.toISOString(),
+      })
+
+      // Track post scheduled (GA4)
+      trackGA4Event('post_scheduled', {
+        platform: selectedPlatform,
+        brand: selectedBrand.name,
+        scheduled_date: scheduledDateTime.toISOString(),
+      })
+
       handleClose()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to schedule post')

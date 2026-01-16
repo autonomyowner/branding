@@ -1,7 +1,9 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "./ui/button"
 import { Card } from "./ui/card"
+import { useMetaPixel } from "../hooks/useMetaPixel"
+import { useGA4 } from "../hooks/useGA4"
 
 interface StripeCheckoutProps {
   isOpen: boolean
@@ -18,6 +20,37 @@ export function StripeCheckout({ isOpen, onClose, planName, planPrice, isYearly 
   const [name, setName] = useState("")
   const [isProcessing, setIsProcessing] = useState(false)
   const [isComplete, setIsComplete] = useState(false)
+  const { trackEvent: trackMetaEvent } = useMetaPixel()
+  const { trackEvent: trackGA4Event } = useGA4()
+
+  // Track InitiateCheckout when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      // Parse price value from string (e.g., "$9" -> 9)
+      const priceValue = parseFloat(planPrice.replace(/[^0-9.]/g, '')) || 0
+
+      // Track with Meta Pixel
+      trackMetaEvent('InitiateCheckout', {
+        content_name: planName,
+        content_category: isYearly ? 'Yearly Subscription' : 'Monthly Subscription',
+        currency: 'USD',
+        value: priceValue,
+      })
+
+      // Track with GA4
+      trackGA4Event('begin_checkout', {
+        currency: 'USD',
+        value: priceValue,
+        items: [{
+          item_id: isYearly ? 'subscription_yearly' : 'subscription_monthly',
+          item_name: planName,
+          item_category: 'Subscription',
+          price: priceValue,
+          quantity: 1,
+        }],
+      })
+    }
+  }, [isOpen, planName, planPrice, isYearly, trackMetaEvent, trackGA4Event])
 
   const formatCardNumber = (value: string) => {
     const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "")
@@ -53,6 +86,40 @@ export function StripeCheckout({ isOpen, onClose, planName, planPrice, isYearly 
 
     setIsProcessing(false)
     setIsComplete(true)
+
+    // Parse price value from string (e.g., "$9" -> 9)
+    const priceValue = parseFloat(planPrice.replace(/[^0-9.]/g, '')) || 0
+    const transactionId = `TXN_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+
+    // Track successful purchase with Meta Pixel
+    trackMetaEvent('Purchase', {
+      content_name: planName,
+      content_type: isYearly ? 'Yearly Subscription' : 'Monthly Subscription',
+      currency: 'USD',
+      value: priceValue,
+      num_items: 1,
+    })
+
+    // Also track Subscribe event for subscription-specific tracking (Meta)
+    trackMetaEvent('Subscribe', {
+      currency: 'USD',
+      value: priceValue,
+      predicted_ltv: isYearly ? priceValue : priceValue * 12, // Yearly LTV estimate
+    })
+
+    // Track successful purchase with GA4
+    trackGA4Event('purchase', {
+      transaction_id: transactionId,
+      value: priceValue,
+      currency: 'USD',
+      items: [{
+        item_id: isYearly ? 'subscription_yearly' : 'subscription_monthly',
+        item_name: planName,
+        item_category: 'Subscription',
+        price: priceValue,
+        quantity: 1,
+      }],
+    })
 
     // Auto close after success
     setTimeout(() => {

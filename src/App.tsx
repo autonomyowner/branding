@@ -5,6 +5,7 @@ import { ClerkProvider, SignedIn, SignedOut, useAuth } from "@clerk/clerk-react"
 import { DataProvider } from "./context/DataContext"
 import { SubscriptionProvider, useSubscription } from "./context/SubscriptionContext"
 import { UpgradeModal } from "./components/UpgradeModal"
+import { PageViewTracker } from "./components/PageViewTracker"
 
 // Get Clerk publishable key from environment
 const CLERK_PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
@@ -55,6 +56,7 @@ function AppContent() {
   return (
     <>
       <BrowserRouter>
+        <PageViewTracker />
         <Suspense fallback={
           <div className="min-h-screen bg-background flex items-center justify-center">
             <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
