@@ -58,11 +58,20 @@ function AppContent() {
           </div>
         }>
           <Routes>
+            {/* Public routes */}
             <Route path="/" element={<LandingPage />} />
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/posts" element={<PostsPage />} />
-            <Route path="/calendar" element={<CalendarPage />} />
             <Route path="/roadmap1" element={<RoadmapPage />} />
+
+            {/* Protected routes - require sign in */}
+            <Route path="/dashboard" element={
+              <ProtectedRoute><DashboardPage /></ProtectedRoute>
+            } />
+            <Route path="/posts" element={
+              <ProtectedRoute><PostsPage /></ProtectedRoute>
+            } />
+            <Route path="/calendar" element={
+              <ProtectedRoute><CalendarPage /></ProtectedRoute>
+            } />
           </Routes>
         </Suspense>
       </BrowserRouter>
@@ -81,16 +90,37 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }) {
   )
 }
 
+// Fallback content when Clerk is not configured
+function NoAuthFallback() {
+  return (
+    <BrowserRouter>
+      <Suspense fallback={
+        <div className="min-h-screen bg-background flex items-center justify-center">
+          <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+        </div>
+      }>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/roadmap1" element={<RoadmapPage />} />
+          <Route path="*" element={
+            <div className="min-h-screen bg-background flex items-center justify-center">
+              <div className="text-center p-8">
+                <h1 className="text-2xl font-bold mb-4">Authentication Required</h1>
+                <p className="text-muted-foreground mb-4">Please configure Clerk to access this page.</p>
+                <a href="/" className="text-primary hover:underline">Go to Home</a>
+              </div>
+            </div>
+          } />
+        </Routes>
+      </Suspense>
+    </BrowserRouter>
+  )
+}
+
 function App() {
-  // If Clerk is not configured, fall back to local-only mode
+  // If Clerk is not configured, show limited functionality
   if (!CLERK_PUBLISHABLE_KEY) {
-    return (
-      <DataProvider>
-        <SubscriptionProvider>
-          <AppContent />
-        </SubscriptionProvider>
-      </DataProvider>
-    )
+    return <NoAuthFallback />
   }
 
   return (
