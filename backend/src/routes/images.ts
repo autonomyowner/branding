@@ -27,14 +27,14 @@ router.post('/generate', checkFeature('image'), validateBody(generateImageSchema
     const { prompt, model, aspectRatio, style } = req.body
 
     // Generate image
-    const { buffer } = await generateImage(prompt, {
+    const { buffer, contentType } = await generateImage(prompt, {
       model,
       aspectRatio,
       style,
     })
 
-    // Upload to R2
-    const imageUrl = await uploadImage(buffer)
+    // Upload to R2 with the actual content type
+    const imageUrl = await uploadImage(buffer, contentType)
 
     res.json({
       url: imageUrl,

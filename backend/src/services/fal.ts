@@ -37,7 +37,7 @@ function getImageSize(aspectRatio: string): { width: number; height: number } {
 export async function generateImage(
   prompt: string,
   options: Partial<GenerationOptions> = {}
-): Promise<{ url: string; buffer: Buffer }> {
+): Promise<{ url: string; buffer: Buffer; contentType: string }> {
   const apiKey = env.FAL_API_KEY
   if (!apiKey) {
     throw new Error('Fal.ai API key not configured')
@@ -93,10 +93,13 @@ export async function generateImage(
     throw new Error('Failed to download generated image')
   }
 
+  // Get the actual content type from the response
+  const contentType = imageResponse.headers.get('content-type') || 'image/jpeg'
+
   const arrayBuffer = await imageResponse.arrayBuffer()
   const buffer = Buffer.from(arrayBuffer)
 
-  return { url: imageUrl, buffer }
+  return { url: imageUrl, buffer, contentType }
 }
 
 export const AVAILABLE_MODELS = [
