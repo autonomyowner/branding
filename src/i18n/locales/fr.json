@@ -206,7 +206,9 @@
     "q8": {
       "question": "Puis-je annuler à tout moment?",
       "answer": "Oui! Il n'y a pas de contrats à long terme. Vous pouvez annuler ou changer votre plan à tout moment depuis votre tableau de bord."
-    }
+    },
+    "stillHaveQuestions": "Vous avez encore des questions?",
+    "contactUs": "Contactez-nous à"
   },
   "footer": {
     "product": {

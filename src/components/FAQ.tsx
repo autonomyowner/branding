@@ -86,9 +86,9 @@ export function FAQ() {
           transition={{ duration: 0.5, delay: 0.3 }}
           className="text-center mt-12 p-6 rounded-2xl bg-card border border-white/10"
         >
-          <p className="text-muted-foreground mb-2">Still have questions?</p>
+          <p className="text-muted-foreground mb-2">{t('faq.stillHaveQuestions')}</p>
           <p className="text-white font-medium">
-            Contact us at{" "}
+            {t('faq.contactUs')}{" "}
             <a href="mailto:support@branding.ai" className="text-primary hover:underline">
               support@branding.ai
             </a>

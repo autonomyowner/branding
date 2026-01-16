@@ -205,7 +205,9 @@
     "q8": {
       "question": "Can I cancel anytime?",
       "answer": "Yes! There are no long-term contracts. You can cancel or change your plan anytime from your dashboard."
-    }
+    },
+    "stillHaveQuestions": "Still have questions?",
+    "contactUs": "Contact us at"
   },
   "footer": {
     "product": {
