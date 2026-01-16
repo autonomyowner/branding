@@ -77,6 +77,22 @@ export function VoiceoverModal({ isOpen, onClose, initialText = '' }: VoiceoverM
     }
   }, [isOpen, hasAccess])
 
+  // Cleanup audio elements on unmount to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      // Stop and clean up preview audio
+      if (previewAudio) {
+        previewAudio.pause()
+        previewAudio.src = ''
+      }
+      // Stop main audio player
+      if (audioRef.current) {
+        audioRef.current.pause()
+        audioRef.current.src = ''
+      }
+    }
+  }, [previewAudio])
+
   const loadVoices = async () => {
     setIsLoadingVoices(true)
     setError('')
@@ -148,8 +164,10 @@ export function VoiceoverModal({ isOpen, onClose, initialText = '' }: VoiceoverM
   }
 
   const handlePreviewVoice = (voice: Voice) => {
+    // Clean up previous audio to prevent memory leak
     if (previewAudio) {
       previewAudio.pause()
+      previewAudio.src = '' // Release the audio resource
     }
 
     if (voice.previewUrl) {
@@ -160,12 +178,15 @@ export function VoiceoverModal({ isOpen, onClose, initialText = '' }: VoiceoverM
   }
 
   const handleClose = () => {
-    // Stop any playing audio
+    // Stop and clean up any playing audio to prevent memory leaks
     if (audioRef.current) {
       audioRef.current.pause()
+      audioRef.current.src = ''
     }
     if (previewAudio) {
       previewAudio.pause()
+      previewAudio.src = ''
+      setPreviewAudio(null)
     }
 
     // Reset state

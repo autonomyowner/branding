@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { prisma } from '../lib/prisma.js'
-import { requireAuthentication, loadUser } from '../middleware/auth.js'
+import { requireAuthentication, loadUser, getAuthenticatedUser } from '../middleware/auth.js'
 import { validateBody } from '../middleware/validate.js'
 import { checkFeature } from '../middleware/quota.js'
 import { generateContentSchema, generateFromVideoSchema } from '../schemas/ai.js'
@@ -20,7 +20,7 @@ router.get('/models', (req, res) => {
 // POST /api/v1/ai/generate - Generate content
 router.post('/generate', validateBody(generateContentSchema), async (req, res, next) => {
   try {
-    const user = req.user!
+    const user = getAuthenticatedUser(req)
     const { brandId, platform, topic, style, model } = req.body
 
     // Verify brand ownership
@@ -62,7 +62,7 @@ router.post('/generate', validateBody(generateContentSchema), async (req, res, n
 // POST /api/v1/ai/video-to-posts - Generate posts from video transcript
 router.post('/video-to-posts', checkFeature('videoRepurpose'), validateBody(generateFromVideoSchema), async (req, res, next) => {
   try {
-    const user = req.user!
+    const user = getAuthenticatedUser(req)
     const { brandId, platform, transcript, videoTitle, numberOfPosts, style, model } = req.body
 
     // Verify brand ownership

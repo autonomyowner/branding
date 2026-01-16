@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { z } from 'zod'
 import { prisma } from '../lib/prisma.js'
-import { requireAuthentication, loadUser } from '../middleware/auth.js'
+import { requireAuthentication, loadUser, getAuthenticatedUser } from '../middleware/auth.js'
 import { validateBody } from '../middleware/validate.js'
 import { PLAN_LIMITS } from '../middleware/quota.js'
 
@@ -13,7 +13,7 @@ router.use(requireAuthentication, loadUser)
 // GET /api/v1/users/me - Get current user profile with usage stats
 router.get('/me', async (req, res, next) => {
   try {
-    const user = req.user!
+    const user = getAuthenticatedUser(req)
 
     // Get brand count
     const brandCount = await prisma.brand.count({
@@ -59,7 +59,7 @@ const updateUserSchema = z.object({
 
 router.patch('/me', validateBody(updateUserSchema), async (req, res, next) => {
   try {
-    const user = req.user!
+    const user = getAuthenticatedUser(req)
     const { name } = req.body
 
     const updatedUser = await prisma.user.update({

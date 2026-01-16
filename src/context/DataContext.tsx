@@ -165,9 +165,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
         brand: p.brand
       })))
 
-      // Select first brand if none selected
-      if (!selectedBrandId && brandsData.length > 0) {
-        setSelectedBrandId(brandsData[0].id)
+      // Select first brand if none selected (use functional update to avoid race condition)
+      if (brandsData.length > 0) {
+        setSelectedBrandId(currentId => currentId ?? brandsData[0].id)
       }
     } catch (err) {
       console.error('Failed to load data:', err)
@@ -175,7 +175,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoading(false)
     }
-  }, [isSignedIn, selectedBrandId])
+  }, [isSignedIn])
 
   // Load data on mount and when auth changes
   useEffect(() => {
@@ -210,11 +210,18 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
   const deleteBrand = useCallback(async (id: string) => {
     await api.deleteBrand(id)
-    setBrands(prev => prev.filter(b => b.id !== id))
-    if (selectedBrandId === id) {
-      setSelectedBrandId(brands.find(b => b.id !== id)?.id || null)
-    }
-  }, [selectedBrandId, brands])
+    setBrands(prev => {
+      const remaining = prev.filter(b => b.id !== id)
+      // Use functional update for selectedBrandId to avoid race condition
+      setSelectedBrandId(currentId => {
+        if (currentId === id) {
+          return remaining.length > 0 ? remaining[0].id : null
+        }
+        return currentId
+      })
+      return remaining
+    })
+  }, [])
 
   const selectBrand = useCallback((id: string | null) => {
     setSelectedBrandId(id)

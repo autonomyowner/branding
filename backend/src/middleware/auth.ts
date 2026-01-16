@@ -5,6 +5,18 @@ import { UnauthorizedError } from '../lib/errors.js'
 import { env } from '../config/env.js'
 import type { User } from '@prisma/client'
 
+/**
+ * Get the authenticated user from the request.
+ * Should only be called after loadUser middleware has run.
+ * Throws UnauthorizedError if user is not set.
+ */
+export function getAuthenticatedUser(req: Request): User {
+  if (!req.user) {
+    throw new UnauthorizedError('User not authenticated')
+  }
+  return req.user
+}
+
 // Initialize Clerk client with secret key
 const clerkClient = createClerkClient({ secretKey: env.CLERK_SECRET_KEY })
 
@@ -63,11 +75,17 @@ export async function loadUser(req: Request, res: Response, next: NextFunction) 
       }
     }
 
-    // Check and reset monthly usage if needed
+    // Check and reset monthly usage if needed (using UTC for consistency across timezones)
     const now = new Date()
     const resetDate = new Date(user.usageResetDate)
 
-    if (now.getMonth() !== resetDate.getMonth() || now.getFullYear() !== resetDate.getFullYear()) {
+    // Compare using UTC to ensure consistent behavior regardless of server timezone
+    const nowMonth = now.getUTCMonth()
+    const nowYear = now.getUTCFullYear()
+    const resetMonth = resetDate.getUTCMonth()
+    const resetYear = resetDate.getUTCFullYear()
+
+    if (nowMonth !== resetMonth || nowYear !== resetYear) {
       const updatedUser = await prisma.user.update({
         where: { id: user.id },
         data: {

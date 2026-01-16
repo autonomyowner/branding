@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { z } from 'zod'
 import { prisma } from '../lib/prisma.js'
-import { requireAuthentication, loadUser } from '../middleware/auth.js'
+import { requireAuthentication, loadUser, getAuthenticatedUser } from '../middleware/auth.js'
 import { validateBody } from '../middleware/validate.js'
 import { PLAN_LIMITS } from '../middleware/quota.js'
 import { createCheckoutSession, createPortalSession, getOrCreateCustomer, getActiveSubscription, isStripeConfigured } from '../services/stripe.js'
@@ -15,7 +15,7 @@ router.use(requireAuthentication, loadUser)
 // GET /api/v1/subscriptions/current - Get current subscription
 router.get('/current', async (req, res, next) => {
   try {
-    const user = req.user!
+    const user = getAuthenticatedUser(req)
     const limits = PLAN_LIMITS[user.plan]
 
     let subscription = null
@@ -57,7 +57,7 @@ router.post('/checkout', validateBody(checkoutSchema), async (req, res, next) =>
       })
     }
 
-    const user = req.user!
+    const user = getAuthenticatedUser(req)
     const { plan, successUrl, cancelUrl } = req.body
 
     // Get or create Stripe customer
@@ -99,7 +99,7 @@ router.post('/portal', async (req, res, next) => {
       })
     }
 
-    const user = req.user!
+    const user = getAuthenticatedUser(req)
 
     if (!user.stripeCustomerId) {
       return res.status(400).json({

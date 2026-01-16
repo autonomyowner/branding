@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { prisma } from '../lib/prisma.js'
-import { requireAuthentication, loadUser } from '../middleware/auth.js'
+import { requireAuthentication, loadUser, getAuthenticatedUser } from '../middleware/auth.js'
 import { validateBody } from '../middleware/validate.js'
 import { checkBrandQuota } from '../middleware/quota.js'
 import { createBrandSchema, updateBrandSchema } from '../schemas/brand.js'
@@ -14,7 +14,7 @@ router.use(requireAuthentication, loadUser)
 // GET /api/v1/brands - List user's brands
 router.get('/', async (req, res, next) => {
   try {
-    const user = req.user!
+    const user = getAuthenticatedUser(req)
 
     const brands = await prisma.brand.findMany({
       where: { userId: user.id },
@@ -46,7 +46,7 @@ router.get('/', async (req, res, next) => {
 // POST /api/v1/brands - Create a new brand
 router.post('/', checkBrandQuota(), validateBody(createBrandSchema), async (req, res, next) => {
   try {
-    const user = req.user!
+    const user = getAuthenticatedUser(req)
     const { name, description, color, initials, voice, topics } = req.body
 
     // Generate initials from name if not provided
@@ -89,7 +89,7 @@ router.post('/', checkBrandQuota(), validateBody(createBrandSchema), async (req,
 // GET /api/v1/brands/:id - Get a specific brand
 router.get('/:id', async (req, res, next) => {
   try {
-    const user = req.user!
+    const user = getAuthenticatedUser(req)
     const id = req.params.id as string
 
     const brand = await prisma.brand.findUnique({
@@ -126,7 +126,7 @@ router.get('/:id', async (req, res, next) => {
 // PATCH /api/v1/brands/:id - Update a brand
 router.patch('/:id', validateBody(updateBrandSchema), async (req, res, next) => {
   try {
-    const user = req.user!
+    const user = getAuthenticatedUser(req)
     const id = req.params.id as string
 
     // Check ownership
@@ -168,7 +168,7 @@ router.patch('/:id', validateBody(updateBrandSchema), async (req, res, next) => 
 // DELETE /api/v1/brands/:id - Delete a brand
 router.delete('/:id', async (req, res, next) => {
   try {
-    const user = req.user!
+    const user = getAuthenticatedUser(req)
     const id = req.params.id as string
 
     // Check ownership

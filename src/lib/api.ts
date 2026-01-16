@@ -1,10 +1,37 @@
 // API client for backend communication
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001'
+import { env } from '../config/env'
+
+const API_BASE_URL = env.VITE_API_URL
+
+// Retry configuration
+const MAX_RETRIES = 3
+const INITIAL_RETRY_DELAY = 1000 // 1 second
+const MAX_RETRY_DELAY = 10000 // 10 seconds
 
 interface ApiError {
   message: string
   code: string
+}
+
+// Helper to determine if an error is retryable
+function isRetryableError(status: number): boolean {
+  // Retry on network errors (status 0) and server errors (5xx)
+  // Don't retry on client errors (4xx) as those are unlikely to succeed
+  return status === 0 || (status >= 500 && status < 600)
+}
+
+// Helper to calculate exponential backoff delay
+function getRetryDelay(attempt: number): number {
+  const delay = INITIAL_RETRY_DELAY * Math.pow(2, attempt)
+  // Add jitter to prevent thundering herd
+  const jitter = Math.random() * 200
+  return Math.min(delay + jitter, MAX_RETRY_DELAY)
+}
+
+// Helper to sleep for a given duration
+function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms))
 }
 
 class ApiClient {
@@ -21,7 +48,8 @@ class ApiClient {
 
   private async request<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
+    retryCount = 0
   ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`
 
@@ -38,10 +66,30 @@ class ApiClient {
       }
     }
 
-    const response = await fetch(url, {
-      ...options,
-      headers,
-    })
+    let response: Response
+    try {
+      response = await fetch(url, {
+        ...options,
+        headers,
+      })
+    } catch (networkError) {
+      // Network error (no response) - retry if we haven't exceeded max retries
+      if (retryCount < MAX_RETRIES) {
+        const delay = getRetryDelay(retryCount)
+        console.warn(`Network error, retrying in ${delay}ms (attempt ${retryCount + 1}/${MAX_RETRIES})`)
+        await sleep(delay)
+        return this.request<T>(endpoint, options, retryCount + 1)
+      }
+      throw new Error('Network error: Unable to connect to server')
+    }
+
+    // Check if we should retry based on status code
+    if (!response.ok && isRetryableError(response.status) && retryCount < MAX_RETRIES) {
+      const delay = getRetryDelay(retryCount)
+      console.warn(`Server error ${response.status}, retrying in ${delay}ms (attempt ${retryCount + 1}/${MAX_RETRIES})`)
+      await sleep(delay)
+      return this.request<T>(endpoint, options, retryCount + 1)
+    }
 
     if (!response.ok) {
       const error: { error: ApiError } = await response.json().catch(() => ({

@@ -1,10 +1,17 @@
 import { Router } from 'express'
+import { PostStatus } from '@prisma/client'
 import { prisma } from '../lib/prisma.js'
-import { requireAuthentication, loadUser } from '../middleware/auth.js'
+import { requireAuthentication, loadUser, getAuthenticatedUser } from '../middleware/auth.js'
 import { validateBody } from '../middleware/validate.js'
 import { checkPostQuota } from '../middleware/quota.js'
-import { createPostSchema, updatePostSchema } from '../schemas/post.js'
+import { createPostSchema, updatePostSchema, UpdatePostInput } from '../schemas/post.js'
 import { NotFoundError, ForbiddenError } from '../lib/errors.js'
+
+// Valid post status values for type-safe filtering
+const VALID_POST_STATUSES = ['DRAFT', 'SCHEDULED', 'PUBLISHED'] as const
+function isValidPostStatus(status: string): status is PostStatus {
+  return VALID_POST_STATUSES.includes(status.toUpperCase() as typeof VALID_POST_STATUSES[number])
+}
 
 const router = Router()
 
@@ -14,16 +21,18 @@ router.use(requireAuthentication, loadUser)
 // GET /api/v1/posts - List user's posts
 router.get('/', async (req, res, next) => {
   try {
-    const user = req.user!
+    const user = getAuthenticatedUser(req)
     const brandId = req.query.brandId as string | undefined
     const status = req.query.status as string | undefined
     const limit = Math.min(100, Math.max(1, parseInt(req.query.limit as string) || 50))
     const offset = Math.max(0, parseInt(req.query.offset as string) || 0)
 
+    // Build where clause with proper type checking
+    const normalizedStatus = status ? status.toUpperCase() : undefined
     const where = {
       userId: user.id,
       ...(brandId && { brandId }),
-      ...(status && { status: status as any }),
+      ...(normalizedStatus && isValidPostStatus(normalizedStatus) && { status: normalizedStatus as PostStatus }),
     }
 
     const [posts, total] = await Promise.all([
@@ -74,7 +83,7 @@ router.get('/', async (req, res, next) => {
 // POST /api/v1/posts - Create a new post
 router.post('/', checkPostQuota(), validateBody(createPostSchema), async (req, res, next) => {
   try {
-    const user = req.user!
+    const user = getAuthenticatedUser(req)
     const { content, platform, brandId, imageUrl, voiceUrl, status, scheduledFor, aiGenerated, aiModel } = req.body
 
     // Verify brand ownership
@@ -143,7 +152,7 @@ router.post('/', checkPostQuota(), validateBody(createPostSchema), async (req, r
 // GET /api/v1/posts/:id - Get a specific post
 router.get('/:id', async (req, res, next) => {
   try {
-    const user = req.user!
+    const user = getAuthenticatedUser(req)
     const id = req.params.id as string
 
     const post = await prisma.post.findUnique({
@@ -186,7 +195,7 @@ router.get('/:id', async (req, res, next) => {
 // PATCH /api/v1/posts/:id - Update a post
 router.patch('/:id', validateBody(updatePostSchema), async (req, res, next) => {
   try {
-    const user = req.user!
+    const user = getAuthenticatedUser(req)
     const id = req.params.id as string
 
     // Check ownership
@@ -200,9 +209,13 @@ router.patch('/:id', validateBody(updatePostSchema), async (req, res, next) => {
       throw new ForbiddenError('You do not have access to this post')
     }
 
-    const updateData: any = { ...req.body }
-    if (updateData.scheduledFor !== undefined) {
-      updateData.scheduledFor = updateData.scheduledFor ? new Date(updateData.scheduledFor) : null
+    // Build update data with proper typing
+    const body = req.body as UpdatePostInput
+    const updateData: Parameters<typeof prisma.post.update>[0]['data'] = {
+      ...body,
+      scheduledFor: body.scheduledFor !== undefined
+        ? (body.scheduledFor ? new Date(body.scheduledFor) : null)
+        : undefined,
     }
 
     const post = await prisma.post.update({
@@ -239,7 +252,7 @@ router.patch('/:id', validateBody(updatePostSchema), async (req, res, next) => {
 // DELETE /api/v1/posts/:id - Delete a post
 router.delete('/:id', async (req, res, next) => {
   try {
-    const user = req.user!
+    const user = getAuthenticatedUser(req)
     const id = req.params.id as string
 
     // Check ownership
