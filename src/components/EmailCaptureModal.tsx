@@ -4,6 +4,9 @@ import { useTranslation } from 'react-i18next'
 import { Button } from './ui/button'
 import { Card } from './ui/card'
 import { useSubscription } from '../context/SubscriptionContext'
+import { useMetaPixel } from '../hooks/useMetaPixel'
+import { useGA4 } from '../hooks/useGA4'
+import { api } from '../lib/api'
 
 interface EmailCaptureModalProps {
   isOpen: boolean
@@ -22,16 +25,19 @@ export function EmailCaptureModal({
 }: EmailCaptureModalProps) {
   const { t } = useTranslation()
   const { captureEmail } = useSubscription()
+  const { trackEvent: trackMetaEvent } = useMetaPixel()
+  const { trackEvent: trackGA4Event } = useGA4()
   const [email, setEmail] = useState('')
   const [acceptMarketing, setAcceptMarketing] = useState(true)
   const [error, setError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     return emailRegex.test(email)
   }
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (!email.trim()) {
       setError(t('emailCapture.emailRequired') || 'Email is required')
       return
@@ -42,12 +48,45 @@ export function EmailCaptureModal({
       return
     }
 
-    // Capture the email
-    captureEmail(email)
-
-    // Clear form and continue
+    setIsSubmitting(true)
     setError('')
-    onContinue(email)
+
+    try {
+      // Save email to backend
+      await api.captureEmail({
+        email,
+        marketingConsent: acceptMarketing,
+        source: 'pricing_modal',
+        planInterest: planName,
+      })
+
+      // Save to localStorage for checkout pre-fill
+      captureEmail(email)
+
+      // Track email capture with Meta Pixel
+      trackMetaEvent('Lead', {
+        content_name: 'Email Capture',
+        content_category: planName,
+        value: parseFloat(planPrice.replace(/[^0-9.]/g, '')) || 0,
+        currency: 'USD',
+      })
+
+      // Track email capture with GA4
+      trackGA4Event('generate_lead', {
+        currency: 'USD',
+        value: parseFloat(planPrice.replace(/[^0-9.]/g, '')) || 0,
+        plan: planName,
+        marketing_consent: acceptMarketing,
+      })
+
+      // Continue to checkout
+      onContinue(email)
+    } catch (err) {
+      console.error('Failed to capture email:', err)
+      setError('Failed to save email. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleClose = () => {
@@ -161,8 +200,8 @@ export function EmailCaptureModal({
               </div>
 
               {/* Continue Button */}
-              <Button onClick={handleContinue} className="w-full">
-                {t('emailCapture.continue') || 'Continue to Checkout'}
+              <Button onClick={handleContinue} className="w-full" disabled={isSubmitting}>
+                {isSubmitting ? t('emailCapture.submitting') || 'Saving...' : t('emailCapture.continue') || 'Continue to Checkout'}
               </Button>
 
               {/* Skip Link */}

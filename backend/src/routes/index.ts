@@ -7,6 +7,7 @@ import aiRouter from './ai.js'
 import voiceRouter from './voice.js'
 import imagesRouter from './images.js'
 import subscriptionsRouter from './subscriptions.js'
+import emailsRouter from './emails.js'
 
 const router = Router()
 
@@ -18,5 +19,6 @@ router.use('/ai', aiRouter)
 router.use('/voice', voiceRouter)
 router.use('/images', imagesRouter)
 router.use('/subscriptions', subscriptionsRouter)
+router.use('/emails', emailsRouter)
 
 export default router

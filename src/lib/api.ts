@@ -418,6 +418,30 @@ class ApiClient {
       body: JSON.stringify({ returnUrl }),
     })
   }
+
+  // Emails
+  async captureEmail(data: {
+    email: string
+    marketingConsent?: boolean
+    source?: string
+    planInterest?: string
+  }) {
+    return this.request<{
+      success: boolean
+      capture: {
+        id: string
+        email: string
+        marketingConsent: boolean
+        source: string | null
+        planInterest: string | null
+        capturedAt: string
+      }
+      message: string
+    }>('/api/v1/emails/capture', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+  }
 }
 
 export const api = new ApiClient(API_BASE_URL)

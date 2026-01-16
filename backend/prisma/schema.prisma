@@ -116,3 +116,22 @@ enum PostStatus {
   SCHEDULED
   PUBLISHED
 }
+
+// ============================================
+// EMAIL CAPTURES
+// ============================================
+
+model EmailCapture {
+  id                String   @id @default(cuid())
+  email             String
+  marketingConsent  Boolean  @default(false)
+  source            String?  @default("pricing_modal") // Where the email was captured
+  planInterest      String?  // Which plan they were interested in
+  capturedAt        DateTime @default(now())
+
+  // Optional: Link to user if they eventually sign up
+  userId            String?
+
+  @@index([email])
+  @@index([capturedAt])
+}
