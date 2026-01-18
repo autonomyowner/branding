@@ -479,26 +479,38 @@ export function CalendarPage() {
           </motion.div>
 
           {/* Sidebar - 1 column */}
-          <div className="space-y-4 sm:space-y-6">
-            {/* Weekly Stats */}
+          <div className="space-y-2 sm:space-y-6">
+            {/* Mobile: Inline stats row */}
+            <div className="flex sm:hidden gap-2">
+              <div className="flex-1 rounded-lg bg-white/[0.05] border border-white/10 p-2 flex items-center justify-between">
+                <span className="text-[10px] text-white/50">This Week</span>
+                <span className="font-mono text-sm font-bold text-amber-400">{weekStats.weekTotal}</span>
+              </div>
+              <div className="flex-1 rounded-lg bg-white/[0.05] border border-white/10 p-2 flex items-center justify-between">
+                <span className="text-[10px] text-white/50 truncate max-w-[60px]">
+                  {selectedDay ? selectedDay.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Select'}
+                </span>
+                <span className="font-mono text-sm font-bold text-white/80">{selectedDayPosts.length}</span>
+              </div>
+            </div>
+
+            {/* Desktop: Weekly Stats */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="rounded-xl sm:rounded-2xl bg-gradient-to-b from-white/[0.07] to-white/[0.02] border border-white/10 backdrop-blur-xl p-3 sm:p-6"
+              className="hidden sm:block rounded-2xl bg-gradient-to-b from-white/[0.07] to-white/[0.02] border border-white/10 backdrop-blur-xl p-6"
             >
-              <div className="flex items-center justify-between sm:block">
-                <h3 className="font-display text-sm sm:text-lg font-semibold sm:mb-4 text-white/80">This Week</h3>
-                <div className="flex items-baseline gap-1 sm:block sm:mb-6">
-                  <div className="font-display text-2xl sm:text-5xl font-bold bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
-                    {weekStats.weekTotal}
-                  </div>
-                  <div className="text-[10px] sm:text-sm text-white/40 sm:mt-1">scheduled</div>
+              <h3 className="font-display text-lg font-semibold mb-4 text-white/80">This Week</h3>
+              <div className="mb-6">
+                <div className="font-display text-5xl font-bold bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
+                  {weekStats.weekTotal}
                 </div>
+                <div className="text-sm text-white/40 mt-1">posts scheduled</div>
               </div>
 
               {Object.entries(weekStats.platformCounts).length > 0 ? (
-                <div className="hidden sm:block space-y-3">
+                <div className="space-y-3">
                   {(Object.entries(weekStats.platformCounts) as [Platform, number][]).map(([platform, count]) => (
                     <div key={platform} className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
@@ -510,31 +522,24 @@ export function CalendarPage() {
                   ))}
                 </div>
               ) : (
-                <p className="hidden sm:block text-sm text-white/30">No posts scheduled</p>
+                <p className="text-sm text-white/30">No posts scheduled</p>
               )}
             </motion.div>
 
-            {/* Selected Day Details */}
+            {/* Desktop: Selected Day Details */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="rounded-xl sm:rounded-2xl bg-gradient-to-b from-white/[0.07] to-white/[0.02] border border-white/10 backdrop-blur-xl p-3 sm:p-6"
+              className="hidden sm:block rounded-2xl bg-gradient-to-b from-white/[0.07] to-white/[0.02] border border-white/10 backdrop-blur-xl p-6"
             >
-              <div className="flex items-center justify-between sm:block mb-2 sm:mb-0">
-                <h3 className="font-display text-sm sm:text-lg font-semibold sm:mb-1">
-                  {selectedDay
-                    ? selectedDay.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
-                    : 'Select a Day'}
-                </h3>
-                {selectedDay && (
-                  <span className="text-[10px] sm:hidden text-white/40">
-                    {selectedDayPosts.length} post{selectedDayPosts.length !== 1 ? 's' : ''}
-                  </span>
-                )}
-              </div>
+              <h3 className="font-display text-lg font-semibold mb-1">
+                {selectedDay
+                  ? selectedDay.toLocaleDateString('en-US', { weekday: 'long' })
+                  : 'Select a Day'}
+              </h3>
               {selectedDay && (
-                <p className="hidden sm:block text-sm text-white/40 mb-4">
+                <p className="text-sm text-white/40 mb-4">
                   {selectedDay.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}
                 </p>
               )}
@@ -542,7 +547,7 @@ export function CalendarPage() {
               {selectedDay && (
                 <>
                   {selectedDayPosts.length > 0 ? (
-                    <div className="space-y-2 sm:space-y-3 max-h-[200px] sm:max-h-[400px] overflow-y-auto custom-scrollbar pr-1">
+                    <div className="space-y-3 max-h-[400px] overflow-y-auto custom-scrollbar pr-1">
                       {selectedDayPosts.map(post => {
                         const isExpanded = expandedPostId === post.id
                         const isCopied = copiedId === post.id
@@ -553,29 +558,24 @@ export function CalendarPage() {
                             layout
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            className="rounded-lg sm:rounded-xl bg-white/[0.03] border border-white/5 overflow-hidden"
+                            className="rounded-xl bg-white/[0.03] border border-white/5 overflow-hidden"
                           >
-                            {/* Post Header */}
-                            <div className="px-2 sm:px-4 py-1.5 sm:py-3 border-b border-white/5 flex items-center justify-between">
-                              <div className="flex items-center gap-1 sm:gap-2">
-                                <Badge className={`${platformStyles[post.platform].bg} ${platformStyles[post.platform].text} text-[8px] sm:text-[10px] font-semibold px-1.5 sm:px-2`}>
+                            <div className="px-4 py-3 border-b border-white/5 flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <Badge className={`${platformStyles[post.platform].bg} ${platformStyles[post.platform].text} text-[10px] font-semibold`}>
                                   {post.platform}
                                 </Badge>
-                                <span className="text-[9px] sm:text-xs text-white/50 font-medium">
+                                <span className="text-xs text-white/50 font-medium">
                                   {formatTime(post.scheduledFor!)}
                                 </span>
                               </div>
-                              <span className="hidden sm:inline text-[10px] text-white/30 truncate max-w-[80px]">{getBrandName(post.brandId)}</span>
+                              <span className="text-[10px] text-white/30 truncate max-w-[80px]">{getBrandName(post.brandId)}</span>
                             </div>
 
-                            {/* Post Content - hidden on mobile */}
-                            <div className="hidden sm:block px-4 py-3">
-                              <div
-                                className={`text-sm text-white/70 leading-relaxed whitespace-pre-wrap ${isExpanded ? '' : 'line-clamp-3'}`}
-                              >
+                            <div className="px-4 py-3">
+                              <div className={`text-sm text-white/70 leading-relaxed whitespace-pre-wrap ${isExpanded ? '' : 'line-clamp-3'}`}>
                                 {post.content}
                               </div>
-
                               {post.content.length > 100 && (
                                 <button
                                   onClick={() => setExpandedPostId(isExpanded ? null : post.id)}
@@ -586,12 +586,11 @@ export function CalendarPage() {
                               )}
                             </div>
 
-                            {/* Actions */}
-                            <div className="px-2 sm:px-4 py-1.5 sm:py-3 border-t border-white/5 flex items-center gap-1 sm:gap-2">
+                            <div className="px-4 py-3 border-t border-white/5 flex items-center gap-2">
                               <Button
                                 variant="default"
                                 size="sm"
-                                className="flex-1 bg-white/10 hover:bg-white/20 text-white text-[9px] sm:text-xs h-6 sm:h-8"
+                                className="flex-1 bg-white/10 hover:bg-white/20 text-white text-xs h-8"
                                 onClick={() => handleCopy(post)}
                               >
                                 {isCopied ? 'Copied' : 'Copy'}
@@ -599,10 +598,10 @@ export function CalendarPage() {
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className="text-red-400 hover:text-red-300 hover:bg-red-500/10 text-[9px] sm:text-xs h-6 sm:h-8 px-1.5 sm:px-3"
+                                className="text-red-400 hover:text-red-300 hover:bg-red-500/10 text-xs h-8 px-3"
                                 onClick={() => deletePost(post.id)}
                               >
-                                Del
+                                Delete
                               </Button>
                             </div>
                           </motion.div>
@@ -610,13 +609,13 @@ export function CalendarPage() {
                       })}
                     </div>
                   ) : (
-                    <div className="text-center py-4 sm:py-8">
-                      <p className="text-white/30 text-xs sm:text-sm">No posts</p>
+                    <div className="text-center py-8">
+                      <p className="text-white/30 text-sm mb-4">No posts scheduled</p>
                     </div>
                   )}
 
-                  <Button asChild className="w-full mt-2 sm:mt-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-semibold shadow-lg shadow-amber-500/20 text-[10px] sm:text-sm h-7 sm:h-10">
-                    <Link to="/dashboard">Schedule</Link>
+                  <Button asChild className="w-full mt-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-semibold shadow-lg shadow-amber-500/20 text-sm h-10">
+                    <Link to="/dashboard">Schedule Post</Link>
                   </Button>
                 </>
               )}
