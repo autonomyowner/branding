@@ -3,9 +3,9 @@ import { useState, useRef, useEffect } from 'react';
 import { Button } from './ui/button';
 
 const languages = [
-  { code: 'en', label: 'EN', name: 'English' },
-  { code: 'fr', label: 'FR', name: 'Français' },
-  { code: 'ar', label: 'AR', name: 'العربية' },
+  { code: 'en', label: 'eng' },
+  { code: 'fr', label: 'fr' },
+  { code: 'ar', label: 'ar' },
 ];
 
 export function LanguageSwitcher() {
@@ -53,8 +53,7 @@ export function LanguageSwitcher() {
                   : 'text-foreground'
               }`}
             >
-              <span className="font-medium">{lang.label}</span>
-              <span className="text-muted-foreground ms-2">{lang.name}</span>
+              {lang.label}
             </button>
           ))}
         </div>

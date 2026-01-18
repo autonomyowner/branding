@@ -25,11 +25,11 @@ export function Footer() {
   return (
     <footer className="py-16 border-t border-white/10">
       <div className="max-w-6xl mx-auto px-6">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-8 mb-12">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <a href="/" className="text-2xl font-bold tracking-tight mb-4 block">
-              <span className="text-white">Postaify</span>
+              <span className="text-white">Post</span><span className="text-primary">aify</span>
             </a>
             <p className="text-sm text-muted-foreground mb-4">
               Automate your content with AI-powered tools.
@@ -69,7 +69,18 @@ export function Footer() {
         {/* Bottom */}
         <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground">
-            © 2024 Postaify. {t('footer.rights')}
+            © 2024 Post<span className="text-primary">aify</span>. {t('footer.rights')}
+          </p>
+          <p className="text-sm text-muted-foreground">
+            In partnership with{" "}
+            <a
+              href="https://www.zsst.xyz"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              ZST
+            </a>
           </p>
         </div>
       </div>

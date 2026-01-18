@@ -15,7 +15,7 @@ export function Logo({ size = "md", useRouterLink = false }: LogoProps) {
 
   const content = (
     <>
-      <span className="text-white">Posta</span>
+      <span className="text-white">Post</span>
       <motion.span
         className="text-primary inline-block"
         initial={{ opacity: 0, y: 10 }}
@@ -41,7 +41,7 @@ export function Logo({ size = "md", useRouterLink = false }: LogoProps) {
             ease: "easeInOut"
           }}
         >
-          ify
+          aify
         </motion.span>
       </motion.span>
     </>
