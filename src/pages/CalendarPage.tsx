@@ -134,10 +134,11 @@ export function CalendarPage() {
 
     return posts.filter(p => {
       if (p.status !== 'scheduled' || !p.scheduledFor) return false
+      if (selectedPlatform !== 'all' && p.platform !== selectedPlatform) return false
       const postDate = new Date(p.scheduledFor)
       return postDate >= dayStart && postDate <= dayEnd
     }).sort((a, b) => new Date(a.scheduledFor!).getTime() - new Date(b.scheduledFor!).getTime())
-  }, [selectedDay, posts])
+  }, [selectedDay, posts, selectedPlatform])
 
   // Weekly stats
   const weekStats = useMemo(() => {

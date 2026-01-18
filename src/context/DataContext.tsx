@@ -125,10 +125,11 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
     try {
       // Fetch user, brands, and posts in parallel
+      // Fetch more posts to ensure all scheduled posts appear in calendar
       const [userData, brandsData, postsData] = await Promise.all([
         api.getMe(),
         api.getBrands(),
-        api.getPosts({ limit: 100 })
+        api.getPosts({ limit: 1000 })
       ])
 
       setUser({
@@ -158,7 +159,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
         content: p.content,
         imageUrl: p.imageUrl || undefined,
         voiceUrl: p.voiceUrl || undefined,
-        status: p.status as 'draft' | 'scheduled' | 'published',
+        status: p.status.toLowerCase() as 'draft' | 'scheduled' | 'published',
         scheduledFor: p.scheduledFor || undefined,
         createdAt: new Date(p.createdAt).getTime(),
         publishedAt: p.publishedAt ? new Date(p.publishedAt).getTime() : undefined,

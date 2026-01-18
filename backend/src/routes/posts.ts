@@ -24,7 +24,7 @@ router.get('/', async (req, res, next) => {
     const user = getAuthenticatedUser(req)
     const brandId = req.query.brandId as string | undefined
     const status = req.query.status as string | undefined
-    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit as string) || 50))
+    const limit = Math.min(1000, Math.max(1, parseInt(req.query.limit as string) || 50))
     const offset = Math.max(0, parseInt(req.query.offset as string) || 0)
 
     // Build where clause with proper type checking
