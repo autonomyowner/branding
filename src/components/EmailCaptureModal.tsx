@@ -14,6 +14,7 @@ interface EmailCaptureModalProps {
   onContinue: (email: string) => void
   planName: string
   planPrice: string
+  isBetaWaitlist?: boolean
 }
 
 export function EmailCaptureModal({
@@ -21,7 +22,8 @@ export function EmailCaptureModal({
   onClose,
   onContinue,
   planName,
-  planPrice
+  planPrice,
+  isBetaWaitlist = false
 }: EmailCaptureModalProps) {
   const { t } = useTranslation()
   const { captureEmail } = useSubscription()
@@ -31,6 +33,7 @@ export function EmailCaptureModal({
   const [acceptMarketing, setAcceptMarketing] = useState(true)
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -79,6 +82,12 @@ export function EmailCaptureModal({
         marketing_consent: acceptMarketing,
       })
 
+      // For beta waitlist, show success message instead of checkout
+      if (isBetaWaitlist) {
+        setShowSuccess(true)
+        return
+      }
+
       // Continue to checkout
       onContinue(email)
     } catch (err) {
@@ -92,6 +101,7 @@ export function EmailCaptureModal({
   const handleClose = () => {
     setEmail('')
     setError('')
+    setShowSuccess(false)
     onClose()
   }
 
@@ -116,101 +126,141 @@ export function EmailCaptureModal({
               {/* Close button */}
               <button
                 onClick={handleClose}
-                className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors"
+                className="absolute top-4 end-4 text-muted-foreground hover:text-foreground transition-colors"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
 
-              {/* Header */}
-              <div className="text-center mb-6">
-                <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
-                  <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                </div>
-                <h2 className="text-xl font-bold text-foreground">
-                  {t('emailCapture.title') || 'Almost there!'}
-                </h2>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {t('emailCapture.subtitle') || 'Enter your email to continue to checkout'}
-                </p>
-              </div>
-
-              {/* Plan Summary */}
-              <div className="p-4 rounded-lg bg-background border border-border mb-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-foreground">{planName}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {t('emailCapture.planSelected') || 'Selected plan'}
+              {showSuccess && isBetaWaitlist ? (
+                // Success message for beta waitlist
+                <div className="text-center py-4">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-green-500/20 flex items-center justify-center">
+                    <svg className="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <h2 className="text-2xl font-bold text-foreground mb-2">
+                    You're on the list!
+                  </h2>
+                  <p className="text-muted-foreground mb-6">
+                    Thanks for your interest in <span className="text-primary font-medium">{planName}</span>.
+                    We'll notify you as soon as paid plans are available.
+                  </p>
+                  <div className="p-4 rounded-lg bg-primary/10 border border-primary/20 mb-6">
+                    <p className="text-sm text-foreground">
+                      We're currently in <span className="font-semibold text-primary">beta</span> and working hard to bring you the best experience.
+                      Paid plans are coming soon!
                     </p>
                   </div>
-                  <div className="text-right">
-                    <p className="text-xl font-bold text-foreground">{planPrice}</p>
-                  </div>
+                  <Button onClick={handleClose} className="w-full">
+                    Got it
+                  </Button>
                 </div>
-              </div>
+              ) : (
+                <>
+                  {/* Header */}
+                  <div className="text-center mb-6">
+                    <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+                      <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <h2 className="text-xl font-bold text-foreground">
+                      {isBetaWaitlist
+                        ? 'Join the Waitlist'
+                        : (t('emailCapture.title') || 'Almost there!')}
+                    </h2>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {isBetaWaitlist
+                        ? "We're in beta. Get notified when paid plans launch!"
+                        : (t('emailCapture.subtitle') || 'Enter your email to continue to checkout')}
+                    </p>
+                  </div>
 
-              {/* Email Input */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium mb-2">
-                  {t('emailCapture.emailLabel') || 'Email address'}
-                </label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value)
-                    if (error) setError('')
-                  }}
-                  placeholder={t('emailCapture.emailPlaceholder') || 'you@example.com'}
-                  className={`w-full px-3 py-2 rounded-lg bg-background border text-sm focus:outline-none focus:border-primary ${
-                    error ? 'border-red-500' : 'border-border'
-                  }`}
-                  autoFocus
-                />
-                {error && (
-                  <p className="text-xs text-red-400 mt-1">{error}</p>
-                )}
-              </div>
+                  {/* Plan Summary */}
+                  <div className="p-4 rounded-lg bg-background border border-border mb-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium text-foreground">{planName}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {isBetaWaitlist ? 'Coming soon' : (t('emailCapture.planSelected') || 'Selected plan')}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xl font-bold text-foreground">{planPrice}</p>
+                        {isBetaWaitlist && (
+                          <span className="text-xs text-primary font-medium">Beta</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
 
-              {/* Marketing Checkbox */}
-              <div className="mb-6">
-                <label className="flex items-start gap-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={acceptMarketing}
-                    onChange={(e) => setAcceptMarketing(e.target.checked)}
-                    className="mt-0.5 rounded border-border bg-background text-primary focus:ring-primary"
-                  />
-                  <span className="text-sm text-muted-foreground">
-                    {t('emailCapture.marketingConsent') || 'Send me tips and updates about new features'}
-                  </span>
-                </label>
-              </div>
+                  {/* Email Input */}
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium mb-2">
+                      {t('emailCapture.emailLabel') || 'Email address'}
+                    </label>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value)
+                        if (error) setError('')
+                      }}
+                      placeholder={t('emailCapture.emailPlaceholder') || 'you@example.com'}
+                      className={`w-full px-3 py-2 rounded-lg bg-background border text-sm focus:outline-none focus:border-primary ${
+                        error ? 'border-red-500' : 'border-border'
+                      }`}
+                      autoFocus
+                    />
+                    {error && (
+                      <p className="text-xs text-red-400 mt-1">{error}</p>
+                    )}
+                  </div>
 
-              {/* Security Note */}
-              <div className="flex items-center gap-2 mb-6 text-xs text-muted-foreground">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-                <span>{t('emailCapture.securityNote') || "We'll never share your email with anyone"}</span>
-              </div>
+                  {/* Marketing Checkbox */}
+                  <div className="mb-6">
+                    <label className="flex items-start gap-3 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={acceptMarketing}
+                        onChange={(e) => setAcceptMarketing(e.target.checked)}
+                        className="mt-0.5 rounded border-border bg-background text-primary focus:ring-primary"
+                      />
+                      <span className="text-sm text-muted-foreground">
+                        {t('emailCapture.marketingConsent') || 'Send me tips and updates about new features'}
+                      </span>
+                    </label>
+                  </div>
 
-              {/* Continue Button */}
-              <Button onClick={handleContinue} className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? t('emailCapture.submitting') || 'Saving...' : t('emailCapture.continue') || 'Continue to Checkout'}
-              </Button>
+                  {/* Security Note */}
+                  <div className="flex items-center gap-2 mb-6 text-xs text-muted-foreground">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    <span>{t('emailCapture.securityNote') || "We'll never share your email with anyone"}</span>
+                  </div>
 
-              {/* Skip Link */}
-              <button
-                onClick={handleClose}
-                className="w-full text-center text-sm text-muted-foreground hover:text-foreground mt-3 transition-colors"
-              >
-                {t('emailCapture.skip') || 'Skip for now'}
-              </button>
+                  {/* Continue Button */}
+                  <Button onClick={handleContinue} className="w-full" disabled={isSubmitting}>
+                    {isSubmitting
+                      ? (t('emailCapture.submitting') || 'Saving...')
+                      : isBetaWaitlist
+                        ? 'Notify Me'
+                        : (t('emailCapture.continue') || 'Continue to Checkout')}
+                  </Button>
+
+                  {/* Skip Link */}
+                  <button
+                    onClick={handleClose}
+                    className="w-full text-center text-sm text-muted-foreground hover:text-foreground mt-3 transition-colors"
+                  >
+                    {t('emailCapture.skip') || 'Skip for now'}
+                  </button>
+                </>
+              )}
             </Card>
           </motion.div>
         </motion.div>
