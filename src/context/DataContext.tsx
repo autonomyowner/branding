@@ -152,10 +152,22 @@ export function DataProvider({ children }: { children: ReactNode }) {
         postCount: b.postCount
       })))
 
+      // Helper to normalize platform case from backend (INSTAGRAM -> Instagram)
+      const normalizePlatform = (p: string): Platform => {
+        const platformMap: Record<string, Platform> = {
+          'INSTAGRAM': 'Instagram',
+          'TWITTER': 'Twitter',
+          'LINKEDIN': 'LinkedIn',
+          'TIKTOK': 'TikTok',
+          'FACEBOOK': 'Facebook'
+        }
+        return platformMap[p.toUpperCase()] || p as Platform
+      }
+
       setPosts(postsData.posts.map(p => ({
         id: p.id,
         brandId: p.brand.id,
-        platform: p.platform as Platform,
+        platform: normalizePlatform(p.platform),
         content: p.content,
         imageUrl: p.imageUrl || undefined,
         voiceUrl: p.voiceUrl || undefined,
