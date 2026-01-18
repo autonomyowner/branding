@@ -257,12 +257,12 @@ export function CalendarPage() {
         </motion.div>
 
         <div className="grid lg:grid-cols-4 gap-4 sm:gap-8">
-          {/* Calendar - 3 columns */}
+          {/* Calendar - full width on mobile, 3 columns on desktop */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="lg:col-span-3"
+            className="col-span-full lg:col-span-3"
           >
             <div className="rounded-2xl bg-gradient-to-b from-white/[0.07] to-white/[0.02] border border-white/10 backdrop-blur-xl overflow-hidden">
               {/* Calendar Header */}
@@ -478,28 +478,14 @@ export function CalendarPage() {
             </div>
           </motion.div>
 
-          {/* Sidebar - 1 column */}
-          <div className="space-y-2 sm:space-y-6">
-            {/* Mobile: Inline stats row */}
-            <div className="flex sm:hidden gap-2">
-              <div className="flex-1 rounded-lg bg-white/[0.05] border border-white/10 p-2 flex items-center justify-between">
-                <span className="text-[10px] text-white/50">This Week</span>
-                <span className="font-mono text-sm font-bold text-amber-400">{weekStats.weekTotal}</span>
-              </div>
-              <div className="flex-1 rounded-lg bg-white/[0.05] border border-white/10 p-2 flex items-center justify-between">
-                <span className="text-[10px] text-white/50 truncate max-w-[60px]">
-                  {selectedDay ? selectedDay.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Select'}
-                </span>
-                <span className="font-mono text-sm font-bold text-white/80">{selectedDayPosts.length}</span>
-              </div>
-            </div>
-
-            {/* Desktop: Weekly Stats */}
+          {/* Sidebar - hidden on mobile, shown on desktop */}
+          <div className="hidden lg:block space-y-6">
+            {/* Weekly Stats */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="hidden sm:block rounded-2xl bg-gradient-to-b from-white/[0.07] to-white/[0.02] border border-white/10 backdrop-blur-xl p-6"
+              className="rounded-2xl bg-gradient-to-b from-white/[0.07] to-white/[0.02] border border-white/10 backdrop-blur-xl p-6"
             >
               <h3 className="font-display text-lg font-semibold mb-4 text-white/80">This Week</h3>
               <div className="mb-6">
@@ -526,12 +512,12 @@ export function CalendarPage() {
               )}
             </motion.div>
 
-            {/* Desktop: Selected Day Details */}
+            {/* Selected Day Details */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="hidden sm:block rounded-2xl bg-gradient-to-b from-white/[0.07] to-white/[0.02] border border-white/10 backdrop-blur-xl p-6"
+              className="rounded-2xl bg-gradient-to-b from-white/[0.07] to-white/[0.02] border border-white/10 backdrop-blur-xl p-6"
             >
               <h3 className="font-display text-lg font-semibold mb-1">
                 {selectedDay
@@ -621,33 +607,33 @@ export function CalendarPage() {
               )}
             </motion.div>
 
-            {/* Optimal Times - Hidden on mobile to save space */}
+            {/* Optimal Times */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
-              className="hidden sm:block rounded-xl sm:rounded-2xl bg-gradient-to-b from-white/[0.07] to-white/[0.02] border border-white/10 backdrop-blur-xl p-4 sm:p-6"
+              className="rounded-2xl bg-gradient-to-b from-white/[0.07] to-white/[0.02] border border-white/10 backdrop-blur-xl p-6"
             >
-              <h3 className="font-display text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-white/80">Best Times to Post</h3>
+              <h3 className="font-display text-lg font-semibold mb-4 text-white/80">Best Times to Post</h3>
 
-              <div className="space-y-3 sm:space-y-4">
+              <div className="space-y-4">
                 {(Object.entries(OPTIMAL_TIMES) as [Platform, typeof OPTIMAL_TIMES[Platform]][]).map(([platform, data]) => (
                   <div
                     key={platform}
-                    className={`pb-3 sm:pb-4 border-b border-white/5 last:border-0 last:pb-0 transition-opacity ${
+                    className={`pb-4 border-b border-white/5 last:border-0 last:pb-0 transition-opacity ${
                       selectedPlatform !== 'all' && selectedPlatform !== platform ? 'opacity-30' : ''
                     }`}
                   >
-                    <div className="flex items-center gap-2 mb-1.5 sm:mb-2">
-                      <div className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-sm ${platformStyles[platform].bg}`} />
-                      <span className="font-semibold text-xs sm:text-sm text-white/90">{platform}</span>
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className={`w-2.5 h-2.5 rounded-sm ${platformStyles[platform].bg}`} />
+                      <span className="font-semibold text-sm text-white/90">{platform}</span>
                     </div>
-                    <p className="text-[10px] sm:text-xs text-white/40 mb-1.5 sm:mb-2 leading-relaxed">{data.description}</p>
+                    <p className="text-xs text-white/40 mb-2 leading-relaxed">{data.description}</p>
                     <div className="flex flex-wrap gap-1">
                       {data.times.map(time => (
                         <span
                           key={time}
-                          className="text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md bg-white/5 text-white/60 font-medium"
+                          className="text-[10px] px-2 py-1 rounded-md bg-white/5 text-white/60 font-medium"
                         >
                           {time}
                         </span>
