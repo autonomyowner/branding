@@ -46,11 +46,11 @@ export function Dashboard() {
   const userName = user?.name || user?.email?.split('@')[0] || 'User'
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background overflow-x-hidden">
       {/* Header */}
       <header className="border-b border-border bg-card/50 backdrop-blur-xl sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-8">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
+          <div className="flex items-center gap-4 sm:gap-8">
             <Logo />
             <nav className="hidden md:flex items-center gap-6">
               <Link to="/dashboard" className="text-sm text-white font-medium">{t('nav.dashboard')}</Link>
@@ -70,16 +70,18 @@ export function Dashboard() {
               </button>
             </nav>
           </div>
-          <div className="flex items-center gap-4">
-            <BrandSelector onAddBrand={() => setIsBrandModalOpen(true)} />
+          <div className="flex items-center gap-2 sm:gap-4">
+            <div className="hidden sm:block">
+              <BrandSelector onAddBrand={() => setIsBrandModalOpen(true)} />
+            </div>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setIsSettingsModalOpen(true)}
-              className="text-muted-foreground hover:text-white"
+              className="text-muted-foreground hover:text-white h-8 w-8 sm:h-9 sm:w-9 p-0"
               title={t('common.settings')}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
@@ -89,7 +91,7 @@ export function Dashboard() {
             </SignedIn>
             <SignedOut>
               <SignInButton mode="modal">
-                <Button variant="outline" size="sm">Sign In</Button>
+                <Button variant="outline" size="sm" className="text-xs sm:text-sm px-2 sm:px-4">Sign In</Button>
               </SignInButton>
             </SignedOut>
           </div>
@@ -97,7 +99,7 @@ export function Dashboard() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-6 py-8">
+      <main className="max-w-7xl mx-auto px-3 sm:px-6 py-6 sm:py-8 overflow-x-hidden">
         {/* Welcome Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
