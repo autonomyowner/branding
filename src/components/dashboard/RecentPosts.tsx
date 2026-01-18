@@ -39,21 +39,10 @@ function formatScheduledTime(dateString?: string): string {
 
 export function RecentPosts() {
   const { t } = useTranslation()
-  const { posts, brands, deletePost, updatePost } = useData()
+  const { posts, deletePost } = useData()
 
   // Get the 10 most recent posts
   const recentPosts = posts.slice(0, 10)
-
-  const getBrandName = (brandId: string) => {
-    return brands.find(b => b.id === brandId)?.name || 'Unknown Brand'
-  }
-
-  const handlePublish = (postId: string) => {
-    updatePost(postId, {
-      status: 'published',
-      publishedAt: Date.now()
-    })
-  }
 
   if (recentPosts.length === 0) {
     return (
