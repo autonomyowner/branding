@@ -16,7 +16,6 @@ import { SettingsModal } from "./SettingsModal"
 import { MobileNav } from "./MobileNav"
 import { Link } from "react-router-dom"
 import { useData } from "../../context/DataContext"
-import { useSubscription } from "../../context/SubscriptionContext"
 import { Logo } from "../ui/Logo"
 import { Button } from "../ui/button"
 
@@ -30,7 +29,6 @@ export function Dashboard() {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false)
   const [pendingImageUrl, setPendingImageUrl] = useState<string | undefined>(undefined)
   const { user } = useData()
-  const { subscription } = useSubscription()
 
   // Handler for creating a post with a generated image
   const handleCreatePostWithImage = (imageUrl: string) => {
