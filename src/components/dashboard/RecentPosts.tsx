@@ -57,34 +57,34 @@ export function RecentPosts() {
 
   if (recentPosts.length === 0) {
     return (
-      <Card className="p-3 sm:p-6">
-        <div className="flex items-center justify-between mb-4 sm:mb-6">
-          <h2 className="text-base sm:text-lg font-semibold">{t('dashboard.recentPosts')}</h2>
+      <Card className="p-2 sm:p-6">
+        <div className="flex items-center justify-between mb-3 sm:mb-6 px-1 sm:px-0">
+          <h2 className="text-sm sm:text-lg font-semibold">{t('dashboard.recentPosts')}</h2>
         </div>
-        <div className="text-center py-8 sm:py-12">
-          <p className="text-muted-foreground mb-2 text-sm">{t('dashboard.noPosts')}</p>
-          <p className="text-xs sm:text-sm text-muted-foreground">{t('dashboard.createFirst')}</p>
+        <div className="text-center py-6 sm:py-12">
+          <p className="text-muted-foreground mb-1 sm:mb-2 text-xs sm:text-sm">{t('dashboard.noPosts')}</p>
+          <p className="text-[10px] sm:text-sm text-muted-foreground">{t('dashboard.createFirst')}</p>
         </div>
       </Card>
     )
   }
 
   return (
-    <Card className="p-3 sm:p-6 overflow-hidden">
-      <div className="flex items-center justify-between mb-4 sm:mb-6">
-        <h2 className="text-base sm:text-lg font-semibold">{t('dashboard.recentPosts')}</h2>
-        <span className="text-xs sm:text-sm text-muted-foreground">{posts.length} total</span>
+    <Card className="p-2 sm:p-6 overflow-hidden">
+      <div className="flex items-center justify-between mb-3 sm:mb-6 px-1 sm:px-0">
+        <h2 className="text-sm sm:text-lg font-semibold">{t('dashboard.recentPosts')}</h2>
+        <span className="text-[10px] sm:text-sm text-muted-foreground">{posts.length} total</span>
       </div>
 
-      <div className="space-y-2 sm:space-y-4">
+      <div className="space-y-1 sm:space-y-4">
         {recentPosts.map((post) => (
           <div
             key={post.id}
-            className="flex gap-2 sm:gap-4 p-2 sm:p-3 rounded-lg hover:bg-white/5 transition-colors group"
+            className="flex gap-2 sm:gap-4 p-1.5 sm:p-3 rounded-lg hover:bg-white/5 transition-colors group"
           >
             {/* Platform Color Bar */}
             <div
-              className="w-1 rounded-full flex-shrink-0"
+              className="w-0.5 sm:w-1 rounded-full flex-shrink-0"
               style={{
                 backgroundColor: post.platform === 'Instagram' ? '#ec4899' :
                   post.platform === 'Twitter' ? '#3b82f6' :
@@ -95,20 +95,19 @@ export function RecentPosts() {
             />
 
             {/* Content */}
-            <div className="flex-1 min-w-0 overflow-hidden">
-              <div className="flex items-center gap-1 sm:gap-2 mb-1 flex-wrap">
-                <Badge variant="outline" className={`text-[10px] sm:text-xs ${platformColors[post.platform]}`}>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-1 mb-0.5 sm:mb-1">
+                <Badge variant="outline" className={`text-[9px] sm:text-xs px-1 sm:px-2 py-0 sm:py-0.5 ${platformColors[post.platform]}`}>
                   {t(`posts.platform.${post.platform.toLowerCase()}`)}
                 </Badge>
-                <Badge variant="secondary" className={`text-[10px] sm:text-xs ${statusColors[post.status]}`}>
+                <Badge variant="secondary" className={`text-[9px] sm:text-xs px-1 sm:px-2 py-0 sm:py-0.5 ${statusColors[post.status]}`}>
                   {t(`posts.status.${post.status}`)}
                 </Badge>
-                <span className="text-[10px] sm:text-xs text-muted-foreground truncate hidden sm:inline">{getBrandName(post.brandId)}</span>
               </div>
-              <p className="text-xs sm:text-sm text-foreground line-clamp-2 mb-1">
+              <p className="text-[11px] sm:text-sm text-foreground line-clamp-1 sm:line-clamp-2">
                 {post.content}
               </p>
-              <p className="text-[10px] sm:text-xs text-muted-foreground">
+              <p className="text-[9px] sm:text-xs text-muted-foreground mt-0.5">
                 {post.status === 'scheduled'
                   ? formatScheduledTime(post.scheduledFor)
                   : post.status === 'published'
@@ -118,8 +117,8 @@ export function RecentPosts() {
               </p>
             </div>
 
-            {/* Actions - visible on mobile, hover on desktop */}
-            <div className="flex items-center gap-1 sm:gap-2 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity flex-shrink-0">
+            {/* Actions - hidden on mobile */}
+            <div className="hidden sm:flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
               <Button
                 variant="ghost"
                 size="sm"
@@ -131,7 +130,7 @@ export function RecentPosts() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-red-400 hover:text-red-300 h-7 px-2 text-xs hidden sm:inline-flex"
+                className="text-red-400 hover:text-red-300 h-7 px-2 text-xs"
                 onClick={() => deletePost(post.id)}
               >
                 Delete

@@ -104,10 +104,10 @@ export function Dashboard() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
+          className="mb-4 sm:mb-8"
         >
-          <h1 className="text-2xl font-bold mb-2">{t('dashboard.welcome')}, {userName}</h1>
-          <p className="text-muted-foreground">{t('dashboard.overview')}</p>
+          <h1 className="text-xl sm:text-2xl font-bold mb-1 sm:mb-2">{t('dashboard.welcome')}, {userName}</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">{t('dashboard.overview')}</p>
         </motion.div>
 
         {/* Stats Cards */}
@@ -124,7 +124,7 @@ export function Dashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="mt-8 mb-4 md:mb-0"
+          className="mt-4 sm:mt-8 mb-4 md:mb-0"
         >
           <QuickActions
             onGenerateContent={() => setIsGenerateModalOpen(true)}
