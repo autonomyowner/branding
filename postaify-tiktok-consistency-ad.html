@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Postaify TikTok Ad - Consistency Story</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #1a1a1a;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      font-family: 'DM Sans', sans-serif;
+      cursor: none !important;
+    }
+
+    .video-container {
+      position: relative;
+      width: 1080px;
+      height: 1920px;
+      background: #000000;
+      overflow: hidden;
+      border: 3px dashed #ff4444;
+    }
+
+    .video-canvas {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      background: #000000;
+    }
+
+    /* Grid pattern overlay */
+    .grid-overlay {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(to right, rgba(202, 138, 4, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(202, 138, 4, 0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Ambient glow */
+    .ambient-glow {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      filter: blur(150px);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .glow-1 {
+      background: radial-gradient(circle, rgba(202, 138, 4, 0.4) 0%, transparent 70%);
+      top: -200px;
+      left: -100px;
+    }
+
+    .glow-2 {
+      background: radial-gradient(circle, rgba(250, 204, 21, 0.3) 0%, transparent 70%);
+      bottom: -200px;
+      right: -100px;
+    }
+
+    /* Scene containers */
+    .scene {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px;
+      opacity: 0;
+      z-index: 10;
+    }
+
+    /* Typography */
+    .hook-text {
+      font-family: 'Syne', sans-serif;
+      font-size: 72px;
+      font-weight: 800;
+      color: #ffffff;
+      text-align: center;
+      line-height: 1.1;
+      text-transform: uppercase;
+      letter-spacing: -2px;
+    }
+
+    .hook-word {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(40px);
+    }
+
+    .highlight {
+      color: transparent;
+      background: linear-gradient(135deg, #FACC15 0%, #CA8A04 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+
+    .stop-symbol {
+      font-size: 120px;
+      display: block;
+      margin-top: 30px;
+      opacity: 0;
+      transform: scale(0);
+    }
+
+    /* Story text */
+    .story-text {
+      font-size: 48px;
+      font-weight: 500;
+      color: #ffffff;
+      text-align: center;
+      line-height: 1.4;
+      max-width: 900px;
+      opacity: 0;
+    }
+
+    .story-text .em {
+      color: #FACC15;
+      font-weight: 700;
+    }
+
+    /* Pain points */
+    .pain-list {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .pain-item {
+      font-size: 44px;
+      font-weight: 500;
+      color: #888888;
+      text-align: center;
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+
+    .pain-item.active {
+      color: #ffffff;
+    }
+
+    /* Logo */
+    .logo-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+      opacity: 0;
+      transform: scale(0.8);
+    }
+
+    .logo-svg {
+      width: 160px;
+      height: 160px;
+    }
+
+    .logo-text {
+      font-family: 'Syne', sans-serif;
+      font-size: 96px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -3px;
+    }
+
+    .tagline {
+      font-size: 36px;
+      font-weight: 500;
+      color: #FACC15;
+      margin-top: -10px;
+    }
+
+    /* Feature cards */
+    .feature-list {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      width: 100%;
+      max-width: 950px;
+    }
+
+    .feature-card {
+      background: linear-gradient(135deg, rgba(202, 138, 4, 0.15) 0%, rgba(250, 204, 21, 0.05) 100%);
+      border: 1px solid rgba(202, 138, 4, 0.3);
+      border-radius: 24px;
+      padding: 40px 50px;
+      opacity: 0;
+      transform: translateY(40px) scale(0.95);
+    }
+
+    .feature-check {
+      color: #22c55e;
+      font-size: 48px;
+      margin-right: 20px;
+    }
+
+    .feature-title {
+      font-size: 42px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 10px;
+    }
+
+    .feature-desc {
+      font-size: 32px;
+      font-weight: 400;
+      color: #a1a1aa;
+    }
+
+    /* Bottom quote */
+    .quote-text {
+      font-family: 'Syne', sans-serif;
+      font-size: 56px;
+      font-weight: 700;
+      color: #ffffff;
+      text-align: center;
+      line-height: 1.3;
+      opacity: 0;
+    }
+
+    .quote-text .highlight-line {
+      display: block;
+      color: transparent;
+      background: linear-gradient(135deg, #FACC15 0%, #CA8A04 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+
+    /* CTA Scene */
+    .cta-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 50px;
+      opacity: 0;
+    }
+
+    .cta-main {
+      font-family: 'Syne', sans-serif;
+      font-size: 52px;
+      font-weight: 700;
+      color: #ffffff;
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    .cta-button {
+      background: linear-gradient(135deg, #CA8A04 0%, #FACC15 100%);
+      padding: 35px 80px;
+      border-radius: 100px;
+      font-size: 40px;
+      font-weight: 700;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      box-shadow: 0 0 60px rgba(202, 138, 4, 0.5);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 60px rgba(202, 138, 4, 0.5); }
+      50% { transform: scale(1.03); box-shadow: 0 0 80px rgba(202, 138, 4, 0.7); }
+    }
+
+    .cta-instruction {
+      font-size: 36px;
+      font-weight: 500;
+      color: #a1a1aa;
+      text-align: center;
+    }
+
+    .cta-instruction .keyword {
+      color: #FACC15;
+      font-weight: 700;
+    }
+
+    /* Year badge */
+    .year-badge {
+      position: absolute;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(202, 138, 4, 0.2);
+      border: 1px solid rgba(202, 138, 4, 0.4);
+      padding: 15px 40px;
+      border-radius: 50px;
+      font-size: 28px;
+      font-weight: 600;
+      color: #FACC15;
+      opacity: 0;
+    }
+
+    /* Controls */
+    .controls {
+      margin-top: 20px;
+      display: flex;
+      gap: 15px;
+    }
+
+    .control-btn {
+      background: #CA8A04;
+      color: white;
+      border: none;
+      padding: 15px 40px;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .control-btn:hover {
+      background: #A16207;
+      transform: scale(1.05);
+    }
+
+    .dimensions {
+      margin-top: 15px;
+      color: #888;
+      font-size: 16px;
+    }
+
+    /* Floating particles */
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: #CA8A04;
+      border-radius: 50%;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 2;
+    }
+  </style>
+</head>
+<body>
+  <div class="video-container">
+    <div class="video-canvas" id="canvas">
+      <!-- Background effects -->
+      <div class="grid-overlay"></div>
+      <div class="ambient-glow glow-1" id="glow1"></div>
+      <div class="ambient-glow glow-2" id="glow2"></div>
+
+      <!-- Floating particles -->
+      <div class="particle" id="p1"></div>
+      <div class="particle" id="p2"></div>
+      <div class="particle" id="p3"></div>
+      <div class="particle" id="p4"></div>
+      <div class="particle" id="p5"></div>
+
+      <!-- Scene 1: Hook - The Problem Word -->
+      <div class="scene" id="scene1">
+        <p class="hook-text">
+          <span class="hook-word" id="hw1">I spent</span>
+          <span class="hook-word" id="hw2">years</span>
+          <span class="hook-word" id="hw3">failing</span>
+          <span class="hook-word" id="hw4">because of</span>
+          <span class="hook-word" id="hw5">one word:</span>
+        </p>
+        <p class="hook-text highlight" style="margin-top: 40px;">
+          <span class="hook-word" id="hw6">INCONSISTENCY</span>
+        </p>
+        <span class="stop-symbol" id="stopSymbol">&#x1F6D1;</span>
+      </div>
+
+      <!-- Scene 2: The Struggle -->
+      <div class="scene" id="scene2">
+        <p class="story-text" id="story1">
+          I had the <span class="em">ideas</span>.<br>
+          I had the <span class="em">passion</span>.<br><br>
+          But the daily grind<br>wore me down.
+        </p>
+      </div>
+
+      <!-- Scene 3: Pain Points -->
+      <div class="scene" id="scene3">
+        <div class="pain-list">
+          <p class="pain-item" id="pain1">Posting every day?</p>
+          <p class="pain-item" id="pain2">Managing 5 platforms?</p>
+          <p class="pain-item" id="pain3">Creating workflows from scratch?</p>
+          <p class="pain-item" id="pain4" style="font-size: 52px; color: #ef4444; font-weight: 700;">It became a chore.</p>
+        </div>
+      </div>
+
+      <!-- Scene 4: The Turn - Brand Reveal -->
+      <div class="scene" id="scene4">
+        <p class="story-text" id="story2" style="font-size: 44px; margin-bottom: 60px;">
+          That's why I built
+        </p>
+        <div class="logo-container" id="logoReveal">
+          <svg class="logo-svg" viewBox="0 0 32 32">
+            <defs>
+              <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#FACC15"/>
+                <stop offset="100%" style="stop-color:#CA8A04"/>
+              </linearGradient>
+            </defs>
+            <rect x="4" y="6" width="16" height="3" rx="1.5" fill="url(#grad)"/>
+            <rect x="4" y="12" width="24" height="3" rx="1.5" fill="url(#grad)" opacity="0.8"/>
+            <rect x="4" y="18" width="20" height="3" rx="1.5" fill="url(#grad)" opacity="0.6"/>
+            <rect x="4" y="24" width="12" height="3" rx="1.5" fill="url(#grad)" opacity="0.4"/>
+          </svg>
+          <span class="logo-text">Postaify</span>
+          <span class="tagline">Making the hard parts easy.</span>
+        </div>
+      </div>
+
+      <!-- Scene 5: Features -->
+      <div class="scene" id="scene5">
+        <div class="feature-list">
+          <div class="feature-card" id="feat1">
+            <p class="feature-title"><span class="feature-check">&#10003;</span>Auto-Pilot Scheduling</p>
+            <p class="feature-desc">Plan a month of content in minutes.</p>
+          </div>
+          <div class="feature-card" id="feat2">
+            <p class="feature-title"><span class="feature-check">&#10003;</span>AI Workflows</p>
+            <p class="feature-desc">Turn one idea into 10 viral posts.</p>
+          </div>
+          <div class="feature-card" id="feat3">
+            <p class="feature-title"><span class="feature-check">&#10003;</span>Fun-First Design</p>
+            <p class="feature-desc">A workspace that makes you want to show up.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scene 6: Insight -->
+      <div class="scene" id="scene6">
+        <p class="quote-text" id="quoteText">
+          Consistency isn't a superpower.
+          <span class="highlight-line">It's just having the right tools.</span>
+        </p>
+      </div>
+
+      <!-- Scene 7: CTA -->
+      <div class="scene" id="scene7">
+        <div class="cta-container" id="ctaBlock">
+          <p class="cta-main">
+            I'm giving away early access<br>to stay consistent in 2026.
+          </p>
+          <div class="cta-button">START FREE</div>
+          <p class="cta-instruction">
+            Comment "<span class="keyword">CONSISTENT</span>" below<br>
+            and I'll send you the private link.
+          </p>
+        </div>
+        <div class="year-badge" id="yearBadge">&#128640; 2026</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dimensions">1080 x 1920 px (TikTok / Reels)</div>
+
+  <div class="controls">
+    <button class="control-btn" id="playBtn">Play</button>
+    <button class="control-btn" id="restartBtn">Restart</button>
+  </div>
+
+  <script>
+    // Animation timeline
+    let isPlaying = false;
+    let animationTimeout = null;
+
+    const scenes = {
+      scene1: document.getElementById('scene1'),
+      scene2: document.getElementById('scene2'),
+      scene3: document.getElementById('scene3'),
+      scene4: document.getElementById('scene4'),
+      scene5: document.getElementById('scene5'),
+      scene6: document.getElementById('scene6'),
+      scene7: document.getElementById('scene7'),
+    };
+
+    const glow1 = document.getElementById('glow1');
+    const glow2 = document.getElementById('glow2');
+
+    // Utility functions
+    function animate(el, props, duration, easing = 'cubic-bezier(0.16, 1, 0.3, 1)') {
+      if (!el) return;
+      el.style.transition = `all ${duration}ms ${easing}`;
+      Object.keys(props).forEach(prop => {
+        el.style[prop] = props[prop];
+      });
+    }
+
+    function delay(ms) {
+      return new Promise(resolve => {
+        animationTimeout = setTimeout(resolve, ms);
+      });
+    }
+
+    function showScene(scene) {
+      Object.values(scenes).forEach(s => {
+        s.style.opacity = '0';
+        s.style.pointerEvents = 'none';
+      });
+      scene.style.opacity = '1';
+      scene.style.pointerEvents = 'auto';
+    }
+
+    // Particle animation
+    function animateParticles() {
+      const particles = document.querySelectorAll('.particle');
+      particles.forEach((p, i) => {
+        const startX = Math.random() * 1080;
+        const startY = 1920 + 50;
+        const endY = -50;
+        const duration = 8000 + Math.random() * 4000;
+        const delayTime = i * 1500;
+
+        p.style.left = startX + 'px';
+        p.style.top = startY + 'px';
+        p.style.opacity = '0';
+
+        setTimeout(() => {
+          p.style.transition = `top ${duration}ms linear, opacity 1000ms ease`;
+          p.style.opacity = '0.4';
+          p.style.top = endY + 'px';
+        }, delayTime);
+      });
+    }
+
+    // Main animation sequence
+    async function playAnimation() {
+      if (isPlaying) return;
+      isPlaying = true;
+
+      // Reset all scenes
+      Object.values(scenes).forEach(s => {
+        s.style.opacity = '0';
+        s.style.transition = 'none';
+      });
+
+      // Start ambient glow
+      animate(glow1, { opacity: '1' }, 2000);
+      animate(glow2, { opacity: '1' }, 2000);
+
+      // Start particles
+      animateParticles();
+      setInterval(animateParticles, 12000);
+
+      // Scene 1: Hook (0-4s)
+      showScene(scenes.scene1);
+      animate(scenes.scene1, { opacity: '1' }, 500);
+
+      const hookWords = ['hw1', 'hw2', 'hw3', 'hw4', 'hw5'];
+      for (let i = 0; i < hookWords.length; i++) {
+        await delay(350);
+        const word = document.getElementById(hookWords[i]);
+        animate(word, { opacity: '1', transform: 'translateY(0)' }, 400);
+      }
+
+      await delay(500);
+      const hw6 = document.getElementById('hw6');
+      animate(hw6, { opacity: '1', transform: 'translateY(0) scale(1.1)' }, 600, 'cubic-bezier(0.34, 1.56, 0.64, 1)');
+
+      await delay(400);
+      const stopSymbol = document.getElementById('stopSymbol');
+      animate(stopSymbol, { opacity: '1', transform: 'scale(1)' }, 500, 'cubic-bezier(0.34, 1.56, 0.64, 1)');
+
+      await delay(1500);
+
+      // Scene 2: The Struggle (4-7s)
+      animate(scenes.scene1, { opacity: '0' }, 400);
+      await delay(400);
+      showScene(scenes.scene2);
+      animate(scenes.scene2, { opacity: '1' }, 400);
+
+      const story1 = document.getElementById('story1');
+      animate(story1, { opacity: '1' }, 800);
+
+      await delay(3000);
+
+      // Scene 3: Pain Points (7-11s)
+      animate(scenes.scene2, { opacity: '0' }, 400);
+      await delay(400);
+      showScene(scenes.scene3);
+      animate(scenes.scene3, { opacity: '1' }, 400);
+
+      const pains = ['pain1', 'pain2', 'pain3', 'pain4'];
+      for (let i = 0; i < pains.length; i++) {
+        await delay(700);
+        const pain = document.getElementById(pains[i]);
+        animate(pain, { opacity: '1', transform: 'translateX(0)' }, 500);
+        if (i < pains.length - 1) {
+          pain.classList.add('active');
+        }
+      }
+
+      await delay(1500);
+
+      // Scene 4: Brand Reveal (11-15s)
+      animate(scenes.scene3, { opacity: '0' }, 400);
+      await delay(400);
+      showScene(scenes.scene4);
+      animate(scenes.scene4, { opacity: '1' }, 400);
+
+      const story2 = document.getElementById('story2');
+      animate(story2, { opacity: '1' }, 600);
+
+      await delay(800);
+
+      const logoReveal = document.getElementById('logoReveal');
+      animate(logoReveal, { opacity: '1', transform: 'scale(1)' }, 800, 'cubic-bezier(0.34, 1.56, 0.64, 1)');
+
+      await delay(3000);
+
+      // Scene 5: Features (15-24s)
+      animate(scenes.scene4, { opacity: '0' }, 400);
+      await delay(400);
+      showScene(scenes.scene5);
+      animate(scenes.scene5, { opacity: '1' }, 400);
+
+      const features = ['feat1', 'feat2', 'feat3'];
+      for (let i = 0; i < features.length; i++) {
+        await delay(800);
+        const feat = document.getElementById(features[i]);
+        animate(feat, { opacity: '1', transform: 'translateY(0) scale(1)' }, 600, 'cubic-bezier(0.34, 1.56, 0.64, 1)');
+      }
+
+      await delay(2500);
+
+      // Scene 6: Quote (24-28s)
+      animate(scenes.scene5, { opacity: '0' }, 400);
+      await delay(400);
+      showScene(scenes.scene6);
+      animate(scenes.scene6, { opacity: '1' }, 400);
+
+      const quoteText = document.getElementById('quoteText');
+      animate(quoteText, { opacity: '1' }, 800);
+
+      await delay(3500);
+
+      // Scene 7: CTA (28-35s)
+      animate(scenes.scene6, { opacity: '0' }, 400);
+      await delay(400);
+      showScene(scenes.scene7);
+      animate(scenes.scene7, { opacity: '1' }, 400);
+
+      const ctaBlock = document.getElementById('ctaBlock');
+      animate(ctaBlock, { opacity: '1' }, 800);
+
+      await delay(600);
+
+      const yearBadge = document.getElementById('yearBadge');
+      animate(yearBadge, { opacity: '1' }, 500);
+
+      // Hold final frame
+      await delay(5000);
+
+      isPlaying = false;
+    }
+
+    function resetAnimation() {
+      isPlaying = false;
+      if (animationTimeout) {
+        clearTimeout(animationTimeout);
+      }
+
+      // Reset all elements
+      Object.values(scenes).forEach(s => {
+        s.style.opacity = '0';
+        s.style.transition = 'none';
+      });
+
+      // Reset hook words
+      ['hw1', 'hw2', 'hw3', 'hw4', 'hw5', 'hw6'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.style.opacity = '0';
+          el.style.transform = 'translateY(40px)';
+          el.style.transition = 'none';
+        }
+      });
+
+      // Reset stop symbol
+      const stopSymbol = document.getElementById('stopSymbol');
+      if (stopSymbol) {
+        stopSymbol.style.opacity = '0';
+        stopSymbol.style.transform = 'scale(0)';
+        stopSymbol.style.transition = 'none';
+      }
+
+      // Reset story texts
+      ['story1', 'story2'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.style.opacity = '0';
+          el.style.transition = 'none';
+        }
+      });
+
+      // Reset pain items
+      ['pain1', 'pain2', 'pain3', 'pain4'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.style.opacity = '0';
+          el.style.transform = 'translateX(-30px)';
+          el.style.transition = 'none';
+          el.classList.remove('active');
+        }
+      });
+
+      // Reset logo
+      const logoReveal = document.getElementById('logoReveal');
+      if (logoReveal) {
+        logoReveal.style.opacity = '0';
+        logoReveal.style.transform = 'scale(0.8)';
+        logoReveal.style.transition = 'none';
+      }
+
+      // Reset features
+      ['feat1', 'feat2', 'feat3'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.style.opacity = '0';
+          el.style.transform = 'translateY(40px) scale(0.95)';
+          el.style.transition = 'none';
+        }
+      });
+
+      // Reset quote
+      const quoteText = document.getElementById('quoteText');
+      if (quoteText) {
+        quoteText.style.opacity = '0';
+        quoteText.style.transition = 'none';
+      }
+
+      // Reset CTA
+      const ctaBlock = document.getElementById('ctaBlock');
+      if (ctaBlock) {
+        ctaBlock.style.opacity = '0';
+        ctaBlock.style.transition = 'none';
+      }
+
+      const yearBadge = document.getElementById('yearBadge');
+      if (yearBadge) {
+        yearBadge.style.opacity = '0';
+        yearBadge.style.transition = 'none';
+      }
+
+      // Reset glows
+      glow1.style.opacity = '0';
+      glow1.style.transition = 'none';
+      glow2.style.opacity = '0';
+      glow2.style.transition = 'none';
+
+      // Reset particles
+      document.querySelectorAll('.particle').forEach(p => {
+        p.style.opacity = '0';
+        p.style.transition = 'none';
+      });
+    }
+
+    // Event listeners
+    document.getElementById('playBtn').addEventListener('click', playAnimation);
+    document.getElementById('restartBtn').addEventListener('click', () => {
+      resetAnimation();
+      setTimeout(playAnimation, 100);
+    });
+  </script>
+</body>
+</html>

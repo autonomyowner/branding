@@ -44,7 +44,7 @@ function FloatingOrb({ size, x, y, delay, duration }: {
         height: size,
         left: x,
         top: y,
-        background: `radial-gradient(circle, hsl(262, 83%, 58%) 0%, transparent 70%)`,
+        background: `radial-gradient(circle, hsl(48, 96%, 53%) 0%, transparent 70%)`,
         filter: "blur(1px)"
       }}
       animate={{
@@ -76,7 +76,7 @@ function ConnectionLine({ startX, startY, endX, endY, delay }: {
       y1={startY}
       x2={endX}
       y2={endY}
-      stroke="hsl(262, 83%, 58%)"
+      stroke="hsl(48, 96%, 53%)"
       strokeWidth="1"
       strokeOpacity="0.2"
       initial={{ pathLength: 0 }}
@@ -100,9 +100,9 @@ export function Hero() {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
       {/* Background Effects */}
       <div className="absolute inset-0 grid-pattern" />
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-primary/20 rounded-full blur-[150px]" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-purple-500/10 rounded-full blur-[120px]" />
-      <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-violet-500/10 rounded-full blur-[100px]" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[300px] h-[300px] md:w-[600px] md:h-[600px] bg-primary/20 rounded-full blur-[100px] md:blur-[150px]" />
+      <div className="absolute bottom-0 left-0 w-[200px] h-[200px] md:w-[400px] md:h-[400px] bg-yellow-500/10 rounded-full blur-[80px] md:blur-[120px]" />
+      <div className="absolute top-0 right-0 w-[150px] h-[150px] md:w-[300px] md:h-[300px] bg-amber-500/10 rounded-full blur-[60px] md:blur-[100px]" />
 
       {/* Floating Orbs - Only render on desktop for better mobile performance */}
       {!reduceMotion && (
@@ -121,7 +121,7 @@ export function Hero() {
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <svg
             viewBox="0 0 800 600"
-            className="w-full h-full max-w-6xl opacity-30"
+            className="w-full h-full max-w-4xl md:max-w-6xl opacity-30"
             preserveAspectRatio="xMidYMid meet"
           >
           <defs>
@@ -142,7 +142,7 @@ export function Hero() {
               rx="250"
               ry="100"
               fill="none"
-              stroke="hsl(262, 83%, 58%)"
+              stroke="hsl(48, 96%, 53%)"
               strokeWidth="0.5"
               strokeOpacity="0.3"
               strokeDasharray="8 4"
@@ -156,7 +156,7 @@ export function Hero() {
               rx="200"
               ry="80"
               fill="none"
-              stroke="hsl(262, 83%, 58%)"
+              stroke="hsl(48, 96%, 53%)"
               strokeWidth="0.5"
               strokeOpacity="0.2"
               strokeDasharray="4 8"
@@ -183,7 +183,7 @@ export function Hero() {
                 cx={node.cx}
                 cy={node.cy}
                 r="4"
-                fill="hsl(262, 83%, 58%)"
+                fill="hsl(48, 96%, 53%)"
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{
                   scale: [0.8, 1.2, 0.8],
@@ -215,7 +215,7 @@ export function Hero() {
             />
             <motion.circle
               r="2"
-              fill="hsl(262, 83%, 70%)"
+              fill="hsl(48, 96%, 70%)"
               animate={{
                 cx: [150, 400, 650, 400, 150],
                 cy: [300, 380, 300, 220, 300]
@@ -225,7 +225,7 @@ export function Hero() {
                 repeat: Infinity,
                 ease: "linear"
               }}
-              style={{ filter: "drop-shadow(0 0 3px hsl(262, 83%, 70%))" }}
+              style={{ filter: "drop-shadow(0 0 3px hsl(48, 96%, 70%))" }}
             />
           </g>
         </svg>
@@ -253,7 +253,7 @@ export function Hero() {
         >
           <span className="text-white">{t('hero.title')}</span>
           <br />
-          <span className="text-gradient-purple">{t('hero.titleHighlight')}</span>
+          <span className="text-gradient-yellow">{t('hero.titleHighlight')}</span>
         </motion.h1>
 
         {/* Subheadline */}

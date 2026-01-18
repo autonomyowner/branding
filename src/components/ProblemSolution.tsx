@@ -185,6 +185,8 @@ function AutomatedFlow({ isActive }: { isActive: boolean }) {
             transition={{ duration: 1, delay: i * 0.2 }}
           />
           <motion.circle
+            cx={path.startX}
+            cy={path.startY}
             r="3"
             fill="hsl(142, 70%, 60%)"
             initial={{ opacity: 0 }}
@@ -192,7 +194,7 @@ function AutomatedFlow({ isActive }: { isActive: boolean }) {
               opacity: [0, 1, 1, 0],
               cx: [path.startX, path.endX],
               cy: [path.startY, path.endY]
-            } : { opacity: 0 }}
+            } : { opacity: 0, cx: path.startX, cy: path.startY }}
             transition={{
               duration: 1.5,
               delay: i * 0.3,
@@ -222,6 +224,8 @@ function AutomatedFlow({ isActive }: { isActive: boolean }) {
             transition={{ duration: 1, delay: 0.5 + i * 0.2 }}
           />
           <motion.circle
+            cx={path.startX}
+            cy={path.startY}
             r="3"
             fill="hsl(142, 70%, 60%)"
             initial={{ opacity: 0 }}
@@ -229,7 +233,7 @@ function AutomatedFlow({ isActive }: { isActive: boolean }) {
               opacity: [0, 1, 1, 0],
               cx: [path.startX, path.endX],
               cy: [path.startY, path.endY]
-            } : { opacity: 0 }}
+            } : { opacity: 0, cx: path.startX, cy: path.startY }}
             transition={{
               duration: 1.5,
               delay: 0.8 + i * 0.3,
@@ -333,7 +337,7 @@ function TransformationArrow({ isAnimating }: { isAnimating: boolean }) {
           <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
             <motion.path
               d="M8 16H24M24 16L18 10M24 16L18 22"
-              stroke="hsl(262, 83%, 58%)"
+              stroke="hsl(48, 96%, 53%)"
               strokeWidth="2.5"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -368,14 +372,14 @@ function ComparisonVisualization({ activeMode }: { activeMode: 'before' | 'after
           <div className="w-3 h-3 rounded-full bg-red-500/50" />
           <div className="w-3 h-3 rounded-full bg-yellow-500/50" />
           <div className="w-3 h-3 rounded-full bg-green-500/50" />
-          <span className="ml-3 text-xs text-muted-foreground font-mono">workflow_comparison.viz</span>
+          <span className="ms-3 text-xs text-muted-foreground font-mono">workflow_comparison.viz</span>
         </div>
 
         {/* Visualization area */}
         <div className="grid grid-cols-7 gap-0 p-4">
           {/* Before side */}
           <div className="col-span-3 relative">
-            <div className={`absolute top-2 left-2 px-2 py-1 rounded text-xs font-mono ${
+            <div className={`absolute top-2 start-2 px-2 py-1 rounded text-xs font-mono ${
               activeMode === 'before' || activeMode === 'both' ? 'bg-red-500/20 text-red-400' : 'bg-white/5 text-muted-foreground'
             }`}>
               MANUAL
@@ -403,7 +407,7 @@ function ComparisonVisualization({ activeMode }: { activeMode: 'before' | 'after
 
           {/* After side */}
           <div className="col-span-3 relative">
-            <div className={`absolute top-2 right-2 px-2 py-1 rounded text-xs font-mono ${
+            <div className={`absolute top-2 end-2 px-2 py-1 rounded text-xs font-mono ${
               activeMode === 'after' || activeMode === 'both' ? 'bg-green-500/20 text-green-400' : 'bg-white/5 text-muted-foreground'
             }`}>
               AUTOMATED
@@ -495,10 +499,10 @@ export function ProblemSolution() {
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent" />
 
       {/* Ambient glows */}
-      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-red-500/5 rounded-full blur-[150px]" />
-      <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-green-500/5 rounded-full blur-[150px]" />
+      <div className="absolute top-1/4 left-1/4 w-[250px] h-[250px] md:w-[500px] md:h-[500px] bg-red-500/5 rounded-full blur-[100px] md:blur-[150px]" />
+      <div className="absolute bottom-1/4 right-1/4 w-[250px] h-[250px] md:w-[500px] md:h-[500px] bg-green-500/5 rounded-full blur-[100px] md:blur-[150px]" />
 
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -542,7 +546,7 @@ export function ProblemSolution() {
                 {activeCard === 'before' && (
                   <motion.div
                     layoutId="problemIndicator"
-                    className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-16 bg-red-500 rounded-r-full"
+                    className="absolute start-0 top-1/2 -translate-y-1/2 w-1 h-16 bg-red-500 rounded-e-full"
                     style={{ filter: "drop-shadow(0 0 8px hsl(0, 70%, 50%))" }}
                   />
                 )}
@@ -599,7 +603,7 @@ export function ProblemSolution() {
                 {activeCard === 'after' && (
                   <motion.div
                     layoutId="problemIndicator"
-                    className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-16 bg-green-500 rounded-r-full"
+                    className="absolute start-0 top-1/2 -translate-y-1/2 w-1 h-16 bg-green-500 rounded-e-full"
                     style={{ filter: "drop-shadow(0 0 8px hsl(142, 70%, 45%))" }}
                   />
                 )}

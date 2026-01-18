@@ -12,7 +12,7 @@ interface BrandModalProps {
   editBrandId?: string | null
 }
 
-const COLORS = ['#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#06b6d4', '#84cc16'] as const
+const COLORS = ['#EAB308', '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#ec4899', '#06b6d4', '#84cc16'] as const
 
 function BrandModalComponent({ isOpen, onClose, editBrandId }: BrandModalProps) {
   const { t } = useTranslation()
@@ -105,7 +105,7 @@ function BrandModalComponent({ isOpen, onClose, editBrandId }: BrandModalProps) 
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           className="relative w-full max-w-lg mx-4"
         >
-          <Card className="p-6 bg-card border-border">
+          <Card className="p-4 sm:p-6 bg-card border-border max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold">
                 {editBrandId ? t('brandModal.edit') : t('brandModal.create')}

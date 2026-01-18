@@ -261,7 +261,7 @@ function GenerateModalComponent({ isOpen, onClose, initialImageUrl }: GenerateMo
                   <div className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border">
                     <div
                       className="w-8 h-8 rounded-md flex items-center justify-center text-sm font-bold text-white"
-                      style={{ backgroundColor: selectedBrand?.color || '#8b5cf6' }}
+                      style={{ backgroundColor: selectedBrand?.color || '#EAB308' }}
                     >
                       {selectedBrand?.initials || '?'}
                     </div>
@@ -340,7 +340,7 @@ function GenerateModalComponent({ isOpen, onClose, initialImageUrl }: GenerateMo
                       />
                       <button
                         onClick={() => setAttachedImageUrl(undefined)}
-                        className="absolute top-2 right-2 p-1.5 rounded-full bg-black/60 hover:bg-black/80 transition-colors"
+                        className="absolute top-2 end-2 p-1.5 rounded-full bg-black/60 hover:bg-black/80 transition-colors"
                         title="Remove image"
                       >
                         <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">

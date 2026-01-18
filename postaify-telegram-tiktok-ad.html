@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1080, height=1920">
+  <title>Postaify - Telegram Bot TikTok Ad</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      cursor: none !important;
+    }
+
+    body {
+      width: 1080px;
+      height: 1920px;
+      background: #000000;
+      font-family: 'DM Sans', sans-serif;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Grid background pattern */
+    .grid-bg {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(to right, rgba(234, 179, 8, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(234, 179, 8, 0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0;
+    }
+
+    /* Gradient orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0;
+    }
+
+    .orb-1 {
+      width: 600px;
+      height: 600px;
+      background: linear-gradient(135deg, #EAB308, #6366f1);
+      top: -200px;
+      right: -200px;
+    }
+
+    .orb-2 {
+      width: 500px;
+      height: 500px;
+      background: linear-gradient(135deg, #FACC15, #EAB308);
+      bottom: 200px;
+      left: -150px;
+    }
+
+    .orb-3 {
+      width: 400px;
+      height: 400px;
+      background: linear-gradient(135deg, #0ea5e9, #EAB308);
+      bottom: -100px;
+      right: -100px;
+    }
+
+    /* Scene containers */
+    .scene {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      padding: 60px;
+    }
+
+    /* Scene 1: Hook - Pain Point */
+    .scene-1 .hook-text {
+      font-size: 72px;
+      font-weight: 800;
+      color: #fff;
+      text-align: center;
+      line-height: 1.1;
+      opacity: 0;
+      transform: translateY(40px);
+    }
+
+    .scene-1 .hook-highlight {
+      color: #EAB308;
+      display: block;
+      font-size: 80px;
+    }
+
+    .scene-1 .frustrated-emoji {
+      font-size: 120px;
+      margin-bottom: 40px;
+      opacity: 0;
+      transform: scale(0);
+    }
+
+    /* Scene 2: The Question */
+    .scene-2 .question {
+      font-size: 64px;
+      font-weight: 700;
+      color: #fff;
+      text-align: center;
+      line-height: 1.2;
+      opacity: 0;
+    }
+
+    .scene-2 .question-mark {
+      font-size: 200px;
+      font-weight: 800;
+      color: #EAB308;
+      opacity: 0;
+      transform: scale(0) rotate(-20deg);
+    }
+
+    /* Scene 3: Solution Reveal */
+    .scene-3 .brand-name {
+      font-size: 120px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fff 0%, #FACC15 50%, #EAB308 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      opacity: 0;
+      transform: scale(0.5);
+    }
+
+    .scene-3 .tagline {
+      font-size: 42px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.8);
+      margin-top: 20px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .scene-3 .glow-ring {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border: 3px solid rgba(234, 179, 8, 0.3);
+      border-radius: 50%;
+      opacity: 0;
+      transform: scale(0);
+    }
+
+    /* Scene 4: Telegram Bot Feature */
+    .scene-4 {
+      padding: 80px;
+    }
+
+    .scene-4 .feature-title {
+      font-size: 56px;
+      font-weight: 700;
+      color: #fff;
+      text-align: center;
+      margin-bottom: 60px;
+      opacity: 0;
+    }
+
+    .phone-mockup {
+      width: 420px;
+      height: 800px;
+      background: linear-gradient(145deg, #1a1a2e 0%, #0f0f1a 100%);
+      border-radius: 50px;
+      border: 3px solid rgba(234, 179, 8, 0.3);
+      position: relative;
+      opacity: 0;
+      transform: translateY(60px);
+      overflow: hidden;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.05),
+        0 25px 50px -12px rgba(0,0,0,0.5),
+        0 0 100px rgba(234, 179, 8, 0.2);
+    }
+
+    .phone-notch {
+      width: 150px;
+      height: 35px;
+      background: #000;
+      border-radius: 0 0 20px 20px;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .telegram-header {
+      background: linear-gradient(135deg, #0088cc, #0077b5);
+      padding: 60px 30px 25px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .bot-avatar {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #EAB308, #FACC15);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .bot-avatar span {
+      color: #fff;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .bot-info {
+      flex: 1;
+    }
+
+    .bot-name {
+      color: #fff;
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    .bot-status {
+      color: rgba(255,255,255,0.7);
+      font-size: 14px;
+    }
+
+    .chat-area {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      height: calc(100% - 180px);
+      overflow: hidden;
+    }
+
+    .message {
+      max-width: 85%;
+      padding: 16px 20px;
+      border-radius: 20px;
+      font-size: 18px;
+      line-height: 1.4;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .message.bot {
+      background: #1e1e30;
+      color: #fff;
+      align-self: flex-start;
+      border-bottom-left-radius: 6px;
+    }
+
+    .message.user {
+      background: linear-gradient(135deg, #EAB308, #CA8A04);
+      color: #fff;
+      align-self: flex-end;
+      border-bottom-right-radius: 6px;
+    }
+
+    .message .platform-badge {
+      display: inline-block;
+      background: rgba(234, 179, 8, 0.3);
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      margin-bottom: 8px;
+      color: #FACC15;
+    }
+
+    .message .post-content {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.9);
+    }
+
+    /* Scene 5: Calendar Feature */
+    .scene-5 {
+      padding: 60px;
+    }
+
+    .scene-5 .feature-title {
+      font-size: 52px;
+      font-weight: 700;
+      color: #fff;
+      text-align: center;
+      margin-bottom: 50px;
+      opacity: 0;
+    }
+
+    .calendar-mockup {
+      width: 900px;
+      background: linear-gradient(145deg, #1a1a2e 0%, #0f0f1a 100%);
+      border-radius: 30px;
+      border: 2px solid rgba(234, 179, 8, 0.2);
+      padding: 40px;
+      opacity: 0;
+      transform: scale(0.9);
+      box-shadow:
+        0 25px 50px -12px rgba(0,0,0,0.5),
+        0 0 80px rgba(234, 179, 8, 0.15);
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .calendar-month {
+      font-size: 36px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .calendar-nav {
+      display: flex;
+      gap: 10px;
+    }
+
+    .nav-btn {
+      width: 50px;
+      height: 50px;
+      background: rgba(234, 179, 8, 0.2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #EAB308;
+      font-size: 24px;
+    }
+
+    .calendar-days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+
+    .day-name {
+      text-align: center;
+      font-size: 16px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.5);
+      padding: 10px;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+
+    .calendar-cell {
+      aspect-ratio: 1;
+      background: rgba(255,255,255,0.03);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 8px;
+      position: relative;
+      opacity: 0;
+      transform: scale(0.8);
+    }
+
+    .calendar-cell.today {
+      background: linear-gradient(135deg, rgba(234, 179, 8, 0.3), rgba(234, 179, 8, 0.1));
+      border: 2px solid #EAB308;
+    }
+
+    .calendar-cell .date {
+      font-size: 22px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .calendar-cell .post-dots {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .post-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      opacity: 0;
+      transform: scale(0);
+    }
+
+    .post-dot.instagram { background: linear-gradient(135deg, #f472b6, #ec4899); }
+    .post-dot.twitter { background: linear-gradient(135deg, #38bdf8, #0ea5e9); }
+    .post-dot.linkedin { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+    .post-dot.tiktok { background: #fff; }
+
+    /* Scene 6: Auto-Generate Feature */
+    .scene-6 {
+      padding: 80px;
+    }
+
+    .scene-6 .feature-title {
+      font-size: 52px;
+      font-weight: 700;
+      color: #fff;
+      text-align: center;
+      margin-bottom: 60px;
+      opacity: 0;
+    }
+
+    .ai-generation-demo {
+      width: 850px;
+      background: linear-gradient(145deg, #1a1a2e 0%, #0f0f1a 100%);
+      border-radius: 30px;
+      border: 2px solid rgba(234, 179, 8, 0.2);
+      padding: 50px;
+      opacity: 0;
+      transform: translateY(40px);
+    }
+
+    .input-area {
+      background: rgba(0,0,0,0.3);
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 40px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .input-label {
+      font-size: 16px;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .typed-text {
+      font-size: 28px;
+      color: #fff;
+      min-height: 40px;
+    }
+
+    .cursor-blink {
+      display: inline-block;
+      width: 3px;
+      height: 35px;
+      background: #EAB308;
+      margin-left: 4px;
+      animation: blink 1s infinite;
+      vertical-align: middle;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    .output-area {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .output-label {
+      font-size: 16px;
+      color: #EAB308;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .generating-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .generating-dots span {
+      width: 8px;
+      height: 8px;
+      background: #EAB308;
+      border-radius: 50%;
+      animation: bounce 1.4s infinite ease-in-out;
+    }
+
+    .generating-dots span:nth-child(1) { animation-delay: -0.32s; }
+    .generating-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
+    }
+
+    .generated-posts {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .generated-post {
+      background: rgba(234, 179, 8, 0.1);
+      border-radius: 16px;
+      padding: 25px;
+      border-left: 4px solid #EAB308;
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+
+    .generated-post .platform {
+      font-size: 14px;
+      font-weight: 600;
+      color: #EAB308;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .generated-post .content {
+      font-size: 20px;
+      color: #fff;
+      line-height: 1.5;
+    }
+
+    /* Scene 7: Benefits */
+    .scene-7 {
+      padding: 80px;
+    }
+
+    .scene-7 .benefits-title {
+      font-size: 56px;
+      font-weight: 700;
+      color: #fff;
+      text-align: center;
+      margin-bottom: 60px;
+      opacity: 0;
+    }
+
+    .benefits-list {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .benefit-item {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      background: linear-gradient(135deg, rgba(234, 179, 8, 0.15), rgba(234, 179, 8, 0.05));
+      border-radius: 24px;
+      padding: 35px 40px;
+      border: 1px solid rgba(234, 179, 8, 0.2);
+      opacity: 0;
+      transform: translateX(-40px);
+    }
+
+    .benefit-number {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, #EAB308, #CA8A04);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .benefit-text {
+      font-size: 32px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    /* Scene 8: CTA */
+    .scene-8 {
+      padding: 80px;
+    }
+
+    .scene-8 .cta-container {
+      text-align: center;
+    }
+
+    .scene-8 .brand-name {
+      font-size: 100px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fff 0%, #FACC15 50%, #EAB308 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 30px;
+      opacity: 0;
+      transform: scale(0.8);
+    }
+
+    .scene-8 .cta-text {
+      font-size: 48px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 50px;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .cta-button {
+      display: inline-block;
+      background: linear-gradient(135deg, #EAB308, #CA8A04);
+      color: #fff;
+      font-size: 36px;
+      font-weight: 700;
+      padding: 30px 80px;
+      border-radius: 60px;
+      opacity: 0;
+      transform: scale(0.8);
+      box-shadow:
+        0 20px 40px rgba(234, 179, 8, 0.4),
+        0 0 60px rgba(234, 179, 8, 0.3);
+    }
+
+    .scene-8 .tagline {
+      font-size: 28px;
+      color: rgba(255,255,255,0.6);
+      margin-top: 40px;
+      opacity: 0;
+    }
+
+    /* Playback controls */
+    .controls {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 20px;
+      z-index: 1000;
+      background: rgba(0,0,0,0.8);
+      padding: 15px 30px;
+      border-radius: 50px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .controls button {
+      background: linear-gradient(135deg, #EAB308, #CA8A04);
+      color: #fff;
+      border: none;
+      padding: 15px 40px;
+      font-size: 18px;
+      font-weight: 600;
+      border-radius: 30px;
+      cursor: pointer !important;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .controls button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 30px rgba(234, 179, 8, 0.4);
+    }
+
+    /* Progress bar */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 6px;
+      background: linear-gradient(90deg, #EAB308, #FACC15);
+      width: 0%;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <div class="progress-bar" id="progressBar"></div>
+
+  <!-- Background elements -->
+  <div class="grid-bg" id="gridBg"></div>
+  <div class="orb orb-1" id="orb1"></div>
+  <div class="orb orb-2" id="orb2"></div>
+  <div class="orb orb-3" id="orb3"></div>
+
+  <!-- Scene 1: Hook -->
+  <div class="scene scene-1" id="scene1">
+    <div class="frustrated-emoji">😩</div>
+    <div class="hook-text">
+      Still manually
+      <span class="hook-highlight">copying posts</span>
+      to every platform?
+    </div>
+  </div>
+
+  <!-- Scene 2: Question -->
+  <div class="scene scene-2" id="scene2">
+    <div class="question-mark">?</div>
+    <div class="question">
+      What if your posts<br>
+      delivered themselves<br>
+      <span style="color: #EAB308">straight to Telegram</span>
+    </div>
+  </div>
+
+  <!-- Scene 3: Solution -->
+  <div class="scene scene-3" id="scene3">
+    <div class="glow-ring" id="glowRing"></div>
+    <div class="brand-name">Postaify</div>
+    <div class="tagline">AI-Powered Social Content Automation</div>
+  </div>
+
+  <!-- Scene 4: Telegram Feature -->
+  <div class="scene scene-4" id="scene4">
+    <div class="feature-title">Instant Telegram Delivery</div>
+    <div class="phone-mockup" id="phoneMockup">
+      <div class="phone-notch"></div>
+      <div class="telegram-header">
+        <div class="bot-avatar"><span>P</span></div>
+        <div class="bot-info">
+          <div class="bot-name">Postaify Bot</div>
+          <div class="bot-status">Online</div>
+        </div>
+      </div>
+      <div class="chat-area">
+        <div class="message bot" id="msg1">
+          <div class="platform-badge">LinkedIn</div>
+          <div>Your post is ready!</div>
+          <div class="post-content">"AI isn't replacing marketers — it's empowering them to do more with less. The future belongs to those who adapt."</div>
+        </div>
+        <div class="message user" id="msg2">Generate for Twitter too</div>
+        <div class="message bot" id="msg3">
+          <div class="platform-badge">Twitter</div>
+          <div>Here's your thread:</div>
+          <div class="post-content">"Hot take: AI won't replace marketers. It'll replace marketers who don't use AI. 🧵"</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 5: Calendar -->
+  <div class="scene scene-5" id="scene5">
+    <div class="feature-title">Smart Content Calendar</div>
+    <div class="calendar-mockup" id="calendarMockup">
+      <div class="calendar-header">
+        <div class="calendar-month">January 2025</div>
+        <div class="calendar-nav">
+          <div class="nav-btn">&lt;</div>
+          <div class="nav-btn">&gt;</div>
+        </div>
+      </div>
+      <div class="calendar-days">
+        <div class="day-name">Sun</div>
+        <div class="day-name">Mon</div>
+        <div class="day-name">Tue</div>
+        <div class="day-name">Wed</div>
+        <div class="day-name">Thu</div>
+        <div class="day-name">Fri</div>
+        <div class="day-name">Sat</div>
+      </div>
+      <div class="calendar-grid" id="calendarGrid">
+        <!-- Will be populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 6: AI Generation -->
+  <div class="scene scene-6" id="scene6">
+    <div class="feature-title">AI Auto-Generation</div>
+    <div class="ai-generation-demo" id="aiDemo">
+      <div class="input-area">
+        <div class="input-label">Your Topic</div>
+        <div class="typed-text" id="typedText"></div>
+        <span class="cursor-blink" id="cursorBlink"></span>
+      </div>
+      <div class="output-area" id="outputArea">
+        <div class="output-label">
+          <span>Generated Posts</span>
+          <div class="generating-dots" id="generatingDots">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+        <div class="generated-posts">
+          <div class="generated-post" id="genPost1">
+            <div class="platform">Instagram</div>
+            <div class="content">Remote work isn't just a trend—it's the new normal. Here's how top teams stay productive without an office.</div>
+          </div>
+          <div class="generated-post" id="genPost2">
+            <div class="platform">LinkedIn</div>
+            <div class="content">The office is evolving. In 2025, the best talent works from anywhere. Companies that embrace this win the war for talent.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 7: Benefits -->
+  <div class="scene scene-7" id="scene7">
+    <div class="benefits-title">Why Creators Love It</div>
+    <div class="benefits-list">
+      <div class="benefit-item" id="benefit1">
+        <div class="benefit-number">1</div>
+        <div class="benefit-text">Posts delivered to Telegram instantly</div>
+      </div>
+      <div class="benefit-item" id="benefit2">
+        <div class="benefit-number">2</div>
+        <div class="benefit-text">Schedule weeks of content in minutes</div>
+      </div>
+      <div class="benefit-item" id="benefit3">
+        <div class="benefit-number">3</div>
+        <div class="benefit-text">AI writes for 5 platforms at once</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 8: CTA -->
+  <div class="scene scene-8" id="scene8">
+    <div class="cta-container">
+      <div class="brand-name">Postaify</div>
+      <div class="cta-text">Automate Your Social Presence</div>
+      <div class="cta-button" id="ctaButton">Start Free Today</div>
+      <div class="tagline" id="ctaTagline">No credit card required</div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls">
+    <button onclick="playAnimation()">Play</button>
+    <button onclick="restartAnimation()">Restart</button>
+  </div>
+
+  <script>
+    // Animation timeline
+    let animationFrame;
+    let startTime;
+    let isPlaying = false;
+    const totalDuration = 18000; // 18 seconds
+
+    // Calendar data
+    const calendarData = [
+      { day: 1, posts: [] },
+      { day: 2, posts: ['instagram'] },
+      { day: 3, posts: ['linkedin', 'twitter'] },
+      { day: 4, posts: [] },
+      { day: 5, posts: ['tiktok'] },
+      { day: 6, posts: ['instagram', 'linkedin'] },
+      { day: 7, posts: ['twitter'] },
+      { day: 8, posts: [] },
+      { day: 9, posts: ['instagram', 'twitter', 'linkedin'] },
+      { day: 10, posts: ['tiktok'] },
+      { day: 11, posts: [] },
+      { day: 12, posts: ['instagram'] },
+      { day: 13, posts: ['linkedin', 'twitter', 'tiktok'] },
+      { day: 14, posts: ['instagram'] },
+    ];
+
+    // Build calendar
+    function buildCalendar() {
+      const grid = document.getElementById('calendarGrid');
+      // Add empty cells for first row offset
+      for (let i = 0; i < 3; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'calendar-cell';
+        cell.style.opacity = '0.3';
+        grid.appendChild(cell);
+      }
+
+      calendarData.forEach((data, index) => {
+        const cell = document.createElement('div');
+        cell.className = 'calendar-cell' + (data.day === 9 ? ' today' : '');
+        cell.id = 'cell' + data.day;
+        cell.innerHTML = `
+          <span class="date">${data.day}</span>
+          <div class="post-dots">
+            ${data.posts.map(p => `<span class="post-dot ${p}" id="dot-${data.day}-${p}"></span>`).join('')}
+          </div>
+        `;
+        grid.appendChild(cell);
+      });
+    }
+    buildCalendar();
+
+    // Typing text for AI demo
+    const typingText = "Tips for remote work productivity";
+
+    // Easing function
+    function easeOutCubic(t) {
+      return 1 - Math.pow(1 - t, 3);
+    }
+
+    function easeOutBack(t) {
+      const c1 = 1.70158;
+      const c3 = c1 + 1;
+      return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+    }
+
+    // Animate element
+    function animate(el, props, duration, delay, easing = easeOutCubic) {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          const start = performance.now();
+          const initialProps = {};
+
+          for (let prop in props) {
+            if (prop === 'opacity') {
+              initialProps[prop] = parseFloat(getComputedStyle(el).opacity) || 0;
+            } else if (prop === 'transform') {
+              initialProps[prop] = getComputedStyle(el).transform;
+            }
+          }
+
+          function step(currentTime) {
+            const elapsed = currentTime - start;
+            const progress = Math.min(elapsed / duration, 1);
+            const easedProgress = easing(progress);
+
+            for (let prop in props) {
+              if (prop === 'opacity') {
+                el.style.opacity = initialProps[prop] + (props[prop] - initialProps[prop]) * easedProgress;
+              } else if (prop === 'transform') {
+                el.style.transform = props[prop];
+                el.style.transition = `transform ${duration}ms cubic-bezier(0.16, 1, 0.3, 1)`;
+              }
+            }
+
+            if (progress < 1) {
+              requestAnimationFrame(step);
+            } else {
+              resolve();
+            }
+          }
+          requestAnimationFrame(step);
+        }, delay);
+      });
+    }
+
+    // Set element style immediately
+    function setStyle(el, props) {
+      for (let prop in props) {
+        el.style[prop] = props[prop];
+      }
+    }
+
+    // Type text animation
+    function typeText(elementId, text, delay, speed = 50) {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          const el = document.getElementById(elementId);
+          let i = 0;
+          const interval = setInterval(() => {
+            if (i < text.length) {
+              el.textContent = text.substring(0, i + 1);
+              i++;
+            } else {
+              clearInterval(interval);
+              resolve();
+            }
+          }, speed);
+        }, delay);
+      });
+    }
+
+    // Update progress bar
+    function updateProgress(progress) {
+      document.getElementById('progressBar').style.width = (progress * 100) + '%';
+    }
+
+    // Reset all animations
+    function resetAll() {
+      // Hide all scenes
+      document.querySelectorAll('.scene').forEach(s => s.style.opacity = '0');
+
+      // Reset background
+      document.getElementById('gridBg').style.opacity = '0';
+      document.getElementById('orb1').style.opacity = '0';
+      document.getElementById('orb2').style.opacity = '0';
+      document.getElementById('orb3').style.opacity = '0';
+
+      // Reset scene 1
+      document.querySelector('.scene-1 .frustrated-emoji').style.cssText = 'opacity: 0; transform: scale(0)';
+      document.querySelector('.scene-1 .hook-text').style.cssText = 'opacity: 0; transform: translateY(40px)';
+
+      // Reset scene 2
+      document.querySelector('.scene-2 .question-mark').style.cssText = 'opacity: 0; transform: scale(0) rotate(-20deg)';
+      document.querySelector('.scene-2 .question').style.opacity = '0';
+
+      // Reset scene 3
+      document.querySelector('.scene-3 .brand-name').style.cssText = 'opacity: 0; transform: scale(0.5)';
+      document.querySelector('.scene-3 .tagline').style.cssText = 'opacity: 0; transform: translateY(20px)';
+      document.getElementById('glowRing').style.cssText = 'opacity: 0; transform: scale(0)';
+
+      // Reset scene 4
+      document.querySelector('.scene-4 .feature-title').style.opacity = '0';
+      document.getElementById('phoneMockup').style.cssText = 'opacity: 0; transform: translateY(60px)';
+      document.querySelectorAll('.scene-4 .message').forEach(m => m.style.cssText = 'opacity: 0; transform: translateY(20px)');
+
+      // Reset scene 5
+      document.querySelector('.scene-5 .feature-title').style.opacity = '0';
+      document.getElementById('calendarMockup').style.cssText = 'opacity: 0; transform: scale(0.9)';
+      document.querySelectorAll('.calendar-cell').forEach(c => c.style.cssText = 'opacity: 0; transform: scale(0.8)');
+      document.querySelectorAll('.post-dot').forEach(d => d.style.cssText = 'opacity: 0; transform: scale(0)');
+
+      // Reset scene 6
+      document.querySelector('.scene-6 .feature-title').style.opacity = '0';
+      document.getElementById('aiDemo').style.cssText = 'opacity: 0; transform: translateY(40px)';
+      document.getElementById('typedText').textContent = '';
+      document.getElementById('outputArea').style.cssText = 'opacity: 0; transform: translateY(20px)';
+      document.querySelectorAll('.generated-post').forEach(p => p.style.cssText = 'opacity: 0; transform: translateX(-20px)');
+
+      // Reset scene 7
+      document.querySelector('.scene-7 .benefits-title').style.opacity = '0';
+      document.querySelectorAll('.benefit-item').forEach(b => b.style.cssText = 'opacity: 0; transform: translateX(-40px)');
+
+      // Reset scene 8
+      document.querySelector('.scene-8 .brand-name').style.cssText = 'opacity: 0; transform: scale(0.8)';
+      document.querySelector('.scene-8 .cta-text').style.cssText = 'opacity: 0; transform: translateY(30px)';
+      document.getElementById('ctaButton').style.cssText = 'opacity: 0; transform: scale(0.8)';
+      document.getElementById('ctaTagline').style.opacity = '0';
+
+      // Reset progress
+      updateProgress(0);
+    }
+
+    // Main animation sequence
+    async function playAnimation() {
+      if (isPlaying) return;
+      isPlaying = true;
+      resetAll();
+
+      // Background fade in
+      animate(document.getElementById('gridBg'), { opacity: 1 }, 1000, 0);
+      animate(document.getElementById('orb1'), { opacity: 0.6 }, 1500, 200);
+      animate(document.getElementById('orb2'), { opacity: 0.5 }, 1500, 400);
+      animate(document.getElementById('orb3'), { opacity: 0.4 }, 1500, 600);
+
+      // SCENE 1: Hook (0-2.5s)
+      const scene1 = document.getElementById('scene1');
+      scene1.style.opacity = '1';
+
+      await animate(document.querySelector('.scene-1 .frustrated-emoji'),
+        { opacity: 1, transform: 'scale(1)' }, 500, 200, easeOutBack);
+      await animate(document.querySelector('.scene-1 .hook-text'),
+        { opacity: 1, transform: 'translateY(0)' }, 600, 100);
+
+      updateProgress(0.12);
+      await new Promise(r => setTimeout(r, 1200));
+
+      // Fade out scene 1
+      scene1.style.transition = 'opacity 0.3s';
+      scene1.style.opacity = '0';
+      await new Promise(r => setTimeout(r, 300));
+
+      // SCENE 2: Question (2.5-4.5s)
+      updateProgress(0.22);
+      const scene2 = document.getElementById('scene2');
+      scene2.style.opacity = '1';
+
+      await animate(document.querySelector('.scene-2 .question-mark'),
+        { opacity: 1, transform: 'scale(1) rotate(0deg)' }, 500, 100, easeOutBack);
+      await animate(document.querySelector('.scene-2 .question'),
+        { opacity: 1 }, 500, 100);
+
+      await new Promise(r => setTimeout(r, 1200));
+
+      // Fade out scene 2
+      scene2.style.transition = 'opacity 0.3s';
+      scene2.style.opacity = '0';
+      await new Promise(r => setTimeout(r, 300));
+
+      // SCENE 3: Brand Reveal (4.5-6s)
+      updateProgress(0.33);
+      const scene3 = document.getElementById('scene3');
+      scene3.style.opacity = '1';
+
+      animate(document.getElementById('glowRing'),
+        { opacity: 0.5, transform: 'scale(1)' }, 800, 0);
+      await animate(document.querySelector('.scene-3 .brand-name'),
+        { opacity: 1, transform: 'scale(1)' }, 600, 100, easeOutBack);
+      await animate(document.querySelector('.scene-3 .tagline'),
+        { opacity: 1, transform: 'translateY(0)' }, 400, 100);
+
+      await new Promise(r => setTimeout(r, 800));
+
+      // Fade out scene 3
+      scene3.style.transition = 'opacity 0.3s';
+      scene3.style.opacity = '0';
+      await new Promise(r => setTimeout(r, 300));
+
+      // SCENE 4: Telegram Feature (6-9s)
+      updateProgress(0.44);
+      const scene4 = document.getElementById('scene4');
+      scene4.style.opacity = '1';
+
+      await animate(document.querySelector('.scene-4 .feature-title'),
+        { opacity: 1 }, 400, 0);
+      await animate(document.getElementById('phoneMockup'),
+        { opacity: 1, transform: 'translateY(0)' }, 600, 100);
+
+      // Messages appear
+      await animate(document.getElementById('msg1'),
+        { opacity: 1, transform: 'translateY(0)' }, 400, 300);
+      await animate(document.getElementById('msg2'),
+        { opacity: 1, transform: 'translateY(0)' }, 400, 400);
+      await animate(document.getElementById('msg3'),
+        { opacity: 1, transform: 'translateY(0)' }, 400, 400);
+
+      await new Promise(r => setTimeout(r, 600));
+
+      // Fade out scene 4
+      scene4.style.transition = 'opacity 0.3s';
+      scene4.style.opacity = '0';
+      await new Promise(r => setTimeout(r, 300));
+
+      // SCENE 5: Calendar (9-11.5s)
+      updateProgress(0.55);
+      const scene5 = document.getElementById('scene5');
+      scene5.style.opacity = '1';
+
+      await animate(document.querySelector('.scene-5 .feature-title'),
+        { opacity: 1 }, 400, 0);
+      await animate(document.getElementById('calendarMockup'),
+        { opacity: 1, transform: 'scale(1)' }, 500, 100);
+
+      // Animate calendar cells
+      const cells = document.querySelectorAll('.calendar-cell');
+      cells.forEach((cell, i) => {
+        setTimeout(() => {
+          cell.style.transition = 'opacity 0.3s, transform 0.3s';
+          cell.style.opacity = '1';
+          cell.style.transform = 'scale(1)';
+        }, i * 30);
+      });
+
+      await new Promise(r => setTimeout(r, 600));
+
+      // Animate post dots
+      const dots = document.querySelectorAll('.post-dot');
+      dots.forEach((dot, i) => {
+        setTimeout(() => {
+          dot.style.transition = 'opacity 0.2s, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+          dot.style.opacity = '1';
+          dot.style.transform = 'scale(1)';
+        }, i * 80);
+      });
+
+      await new Promise(r => setTimeout(r, 800));
+
+      // Fade out scene 5
+      scene5.style.transition = 'opacity 0.3s';
+      scene5.style.opacity = '0';
+      await new Promise(r => setTimeout(r, 300));
+
+      // SCENE 6: AI Generation (11.5-14s)
+      updateProgress(0.66);
+      const scene6 = document.getElementById('scene6');
+      scene6.style.opacity = '1';
+
+      await animate(document.querySelector('.scene-6 .feature-title'),
+        { opacity: 1 }, 400, 0);
+      await animate(document.getElementById('aiDemo'),
+        { opacity: 1, transform: 'translateY(0)' }, 500, 100);
+
+      // Type the input
+      await typeText('typedText', typingText, 300, 40);
+
+      // Show output
+      await animate(document.getElementById('outputArea'),
+        { opacity: 1, transform: 'translateY(0)' }, 400, 200);
+
+      // Show generated posts
+      await animate(document.getElementById('genPost1'),
+        { opacity: 1, transform: 'translateX(0)' }, 400, 300);
+      await animate(document.getElementById('genPost2'),
+        { opacity: 1, transform: 'translateX(0)' }, 400, 200);
+
+      // Hide generating dots
+      document.getElementById('generatingDots').style.display = 'none';
+
+      await new Promise(r => setTimeout(r, 400));
+
+      // Fade out scene 6
+      scene6.style.transition = 'opacity 0.3s';
+      scene6.style.opacity = '0';
+      await new Promise(r => setTimeout(r, 300));
+
+      // SCENE 7: Benefits (14-16s)
+      updateProgress(0.77);
+      const scene7 = document.getElementById('scene7');
+      scene7.style.opacity = '1';
+
+      await animate(document.querySelector('.scene-7 .benefits-title'),
+        { opacity: 1 }, 400, 0);
+
+      await animate(document.getElementById('benefit1'),
+        { opacity: 1, transform: 'translateX(0)' }, 400, 200);
+      await animate(document.getElementById('benefit2'),
+        { opacity: 1, transform: 'translateX(0)' }, 400, 150);
+      await animate(document.getElementById('benefit3'),
+        { opacity: 1, transform: 'translateX(0)' }, 400, 150);
+
+      await new Promise(r => setTimeout(r, 600));
+
+      // Fade out scene 7
+      scene7.style.transition = 'opacity 0.3s';
+      scene7.style.opacity = '0';
+      await new Promise(r => setTimeout(r, 300));
+
+      // SCENE 8: CTA (16-18s)
+      updateProgress(0.88);
+      const scene8 = document.getElementById('scene8');
+      scene8.style.opacity = '1';
+
+      await animate(document.querySelector('.scene-8 .brand-name'),
+        { opacity: 1, transform: 'scale(1)' }, 500, 0, easeOutBack);
+      await animate(document.querySelector('.scene-8 .cta-text'),
+        { opacity: 1, transform: 'translateY(0)' }, 400, 100);
+      await animate(document.getElementById('ctaButton'),
+        { opacity: 1, transform: 'scale(1)' }, 500, 100, easeOutBack);
+      await animate(document.getElementById('ctaTagline'),
+        { opacity: 1 }, 300, 200);
+
+      updateProgress(1);
+
+      // End
+      isPlaying = false;
+    }
+
+    function restartAnimation() {
+      isPlaying = false;
+      resetAll();
+      setTimeout(playAnimation, 100);
+    }
+
+    // Initial reset
+    resetAll();
+  </script>
+</body>
+</html>

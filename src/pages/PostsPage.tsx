@@ -44,7 +44,7 @@ export function PostsPage() {
   }
 
   const getBrandColor = (brandId: string) => {
-    return brands.find(b => b.id === brandId)?.color || '#8b5cf6'
+    return brands.find(b => b.id === brandId)?.color || '#EAB308'
   }
 
   const handlePublish = (postId: string) => {

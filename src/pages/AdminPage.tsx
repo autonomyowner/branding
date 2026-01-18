@@ -259,7 +259,7 @@ function OverviewTab({ stats }: { stats: any }) {
   // Prepare chart data
   const userDistributionData = [
     { name: 'Free', value: stats.users.free, color: '#9ca3af' },
-    { name: 'Pro', value: stats.users.pro, color: '#a78bfa' },
+    { name: 'Pro', value: stats.users.pro, color: '#FACC15' },
     { name: 'Business', value: stats.users.business, color: '#60a5fa' },
   ]
 
@@ -270,7 +270,7 @@ function OverviewTab({ stats }: { stats: any }) {
 
   const activityData = [
     { name: 'New Users', value: stats.users.recentSignups, color: '#60a5fa' },
-    { name: 'Email Captures', value: stats.emailCaptures.recentCaptures, color: '#a78bfa' },
+    { name: 'Email Captures', value: stats.emailCaptures.recentCaptures, color: '#FACC15' },
     { name: 'Posts', value: stats.content.totalPosts > 100 ? Math.floor(stats.content.totalPosts / 10) : stats.content.totalPosts, color: '#4ade80' },
   ]
 
@@ -279,7 +279,7 @@ function OverviewTab({ stats }: { stats: any }) {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard title="Total Users" value={stats.users.total} />
-        <StatCard title="Pro Users" value={stats.users.pro} color="text-purple-400" />
+        <StatCard title="Pro Users" value={stats.users.pro} color="text-yellow-400" />
         <StatCard title="Business Users" value={stats.users.business} color="text-blue-400" />
         <StatCard title="Free Users" value={stats.users.free} color="text-gray-400" />
       </div>
@@ -537,7 +537,7 @@ function StatCard({ title, value, color = 'text-primary' }: any) {
 function PlanBadge({ plan }: { plan: string }) {
   const colors = {
     FREE: 'bg-gray-500/20 text-gray-300 border-gray-500/30',
-    PRO: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+    PRO: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
     BUSINESS: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
   }
 

@@ -5,7 +5,7 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
     <meta name="description" content="The first automated content platform. Create brands, generate AI content, and schedule posts automatically." />
-    <meta name="theme-color" content="#7C3AED" />
+    <meta name="theme-color" content="#EAB308" />
 
     <!-- Preconnect to Google Fonts for faster loading -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -36,15 +36,16 @@
       fbq('init', '1621282909251748');
       fbq('track', 'PageView');
     </script>
-    <noscript>
-      <img height="1" width="1" style="display:none"
-           src="https://www.facebook.com/tr?id=1621282909251748&ev=PageView&noscript=1" />
-    </noscript>
     <!-- End Meta Pixel Code -->
 
     <title>Automated Content Platform</title>
   </head>
   <body>
+    <!-- Meta Pixel noscript fallback (must be in body) -->
+    <noscript>
+      <img height="1" width="1" style="display:none"
+           src="https://www.facebook.com/tr?id=1621282909251748&ev=PageView&noscript=1" />
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

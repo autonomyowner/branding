@@ -10,7 +10,7 @@
     body {
       width: 100vw;
       height: 100vh;
-      background: #000;
+      background: #0a0a0a;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -28,11 +28,11 @@
       overflow: hidden;
     }
 
-    /* Floating orbs for ambient effect */
+    /* Floating orbs - matching POSTAIFY brand */
     .orb {
       position: absolute;
       border-radius: 50%;
-      filter: blur(80px);
+      filter: blur(100px);
       opacity: 0;
       animation: blob-float 20s ease-in-out infinite;
     }
@@ -41,7 +41,7 @@
       width: 600px;
       height: 600px;
       background: radial-gradient(circle, hsl(48, 96%, 53%) 0%, transparent 70%);
-      top: 10%;
+      top: 15%;
       left: 20%;
       animation-delay: 0s;
     }
@@ -49,15 +49,15 @@
     .orb-2 {
       width: 500px;
       height: 500px;
-      background: radial-gradient(circle, hsl(200, 83%, 58%) 0%, transparent 70%);
+      background: radial-gradient(circle, hsl(48, 96%, 53%) 0%, transparent 70%);
       bottom: 20%;
-      right: 10%;
+      right: 15%;
       animation-delay: 7s;
     }
 
     .orb-3 {
-      width: 400px;
-      height: 400px;
+      width: 450px;
+      height: 450px;
       background: radial-gradient(circle, hsl(142, 70%, 45%) 0%, transparent 70%);
       top: 50%;
       left: 50%;
@@ -66,9 +66,9 @@
     }
 
     @keyframes blob-float {
-      0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.15; }
-      33% { transform: translate(30px, -40px) scale(1.1); opacity: 0.25; }
-      66% { transform: translate(-20px, 20px) scale(0.9); opacity: 0.2; }
+      0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.2; }
+      33% { transform: translate(40px, -50px) scale(1.15); opacity: 0.3; }
+      66% { transform: translate(-30px, 30px) scale(0.95); opacity: 0.25; }
     }
 
     /* Phase sections */
@@ -101,40 +101,43 @@
       to { opacity: 0; transform: scale(0.95); }
     }
 
-    /* Typography styles */
+    /* Typography - matching POSTAIFY */
     .headline {
-      font-size: 120px;
+      font-size: 130px;
       font-weight: 900;
       text-align: center;
-      line-height: 1.1;
+      line-height: 1.05;
       margin-bottom: 40px;
+      color: white;
     }
 
     .subheadline {
-      font-size: 72px;
+      font-size: 80px;
       font-weight: 700;
       text-align: center;
       line-height: 1.2;
       margin-bottom: 30px;
+      color: white;
     }
 
     .body-text {
-      font-size: 56px;
+      font-size: 52px;
       font-weight: 400;
       text-align: center;
       line-height: 1.4;
-      color: #b4b4b4;
+      color: rgba(180, 180, 180, 0.9);
     }
 
-    .gradient-yellow {
-      background: linear-gradient(135deg, hsl(48, 96%, 53%) 0%, hsl(200, 83%, 68%) 100%);
+    /* Brand gradient - exact POSTAIFY yellow */
+    .text-gradient-yellow {
+      background: linear-gradient(135deg, hsl(48, 96%, 53%) 0%, hsl(220, 70%, 65%) 100%);
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
-    .gradient-green {
-      background: linear-gradient(135deg, hsl(142, 70%, 45%) 0%, hsl(180, 70%, 55%) 100%);
+    .text-gradient-green {
+      background: linear-gradient(135deg, hsl(142, 70%, 45%) 0%, hsl(160, 70%, 50%) 100%);
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -144,26 +147,54 @@
       color: hsl(0, 70%, 50%);
     }
 
-    /* Animated elements */
+    /* Stat box */
+    .stat-box {
+      background: rgba(255, 255, 255, 0.03);
+      border: 2px solid rgba(255, 255, 255, 0.08);
+      border-radius: 40px;
+      padding: 70px 100px;
+      margin: 50px 0;
+      backdrop-filter: blur(20px);
+    }
+
+    .stat-number {
+      font-size: 160px;
+      font-weight: 900;
+      text-align: center;
+      margin-bottom: 20px;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 50px;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.5);
+      text-transform: uppercase;
+      letter-spacing: 6px;
+      font-weight: 600;
+    }
+
+    /* Checkmark animation */
     .checkmark {
-      width: 200px;
-      height: 200px;
-      margin: 60px auto;
+      width: 240px;
+      height: 240px;
+      margin: 70px auto;
       position: relative;
     }
 
     .checkmark-circle {
       stroke: hsl(142, 70%, 45%);
-      stroke-width: 8;
+      stroke-width: 10;
       fill: none;
       animation: drawCircle 0.8s ease forwards;
       stroke-dasharray: 630;
       stroke-dashoffset: 630;
+      filter: drop-shadow(0 0 20px hsl(142, 70%, 45%));
     }
 
     .checkmark-check {
       stroke: hsl(142, 70%, 45%);
-      stroke-width: 10;
+      stroke-width: 12;
       fill: none;
       stroke-linecap: round;
       stroke-linejoin: round;
@@ -180,54 +211,36 @@
       to { stroke-dashoffset: 0; }
     }
 
-    /* Counter animation */
-    .stat-box {
-      background: rgba(255, 255, 255, 0.05);
-      border: 2px solid rgba(255, 255, 255, 0.1);
-      border-radius: 30px;
-      padding: 60px 80px;
-      margin: 40px 0;
-      backdrop-filter: blur(10px);
-    }
-
-    .stat-number {
-      font-size: 140px;
-      font-weight: 900;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .stat-label {
-      font-size: 48px;
-      text-align: center;
-      color: #888;
-      text-transform: uppercase;
-      letter-spacing: 4px;
-    }
-
-    /* CTA button */
+    /* CTA button - POSTAIFY yellow */
     .cta-button {
-      background: linear-gradient(135deg, hsl(48, 96%, 53%) 0%, hsl(200, 83%, 68%) 100%);
+      background: linear-gradient(135deg, hsl(48, 96%, 53%) 0%, hsl(220, 70%, 65%) 100%);
       color: white;
-      font-size: 64px;
-      font-weight: 700;
-      padding: 50px 100px;
-      border-radius: 30px;
+      font-size: 68px;
+      font-weight: 800;
+      padding: 55px 110px;
+      border-radius: 35px;
       border: none;
       cursor: pointer;
       animation: pulse 2s ease-in-out infinite;
-      box-shadow: 0 20px 60px rgba(157, 78, 221, 0.4);
+      box-shadow: 0 25px 70px hsla(48, 96%, 53%, 0.5);
+      text-transform: none;
     }
 
     @keyframes pulse {
-      0%, 100% { transform: scale(1); box-shadow: 0 20px 60px rgba(157, 78, 221, 0.4); }
-      50% { transform: scale(1.05); box-shadow: 0 30px 80px rgba(157, 78, 221, 0.6); }
+      0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 25px 70px hsla(48, 96%, 53%, 0.5);
+      }
+      50% {
+        transform: scale(1.05);
+        box-shadow: 0 35px 90px hsla(48, 96%, 53%, 0.7);
+      }
     }
 
-    /* Typing effect */
+    /* Typing cursor */
     .typed-text {
-      border-right: 4px solid hsl(48, 96%, 53%);
-      padding-right: 10px;
+      border-right: 6px solid hsl(48, 96%, 53%);
+      padding-right: 15px;
       animation: blink 0.7s step-end infinite;
     }
 
@@ -238,19 +251,22 @@
     /* Progress bar */
     .progress-container {
       width: 100%;
-      height: 40px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
+      max-width: 800px;
+      height: 50px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 25px;
       overflow: hidden;
-      margin: 60px 0;
+      margin: 70px auto;
+      border: 2px solid rgba(255, 255, 255, 0.08);
     }
 
     .progress-bar {
       height: 100%;
-      background: linear-gradient(90deg, hsl(142, 70%, 45%) 0%, hsl(180, 70%, 55%) 100%);
+      background: linear-gradient(90deg, hsl(142, 70%, 45%) 0%, hsl(160, 70%, 50%) 100%);
       width: 0;
-      transition: width 2s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: width 2.5s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
+      box-shadow: 0 0 30px hsla(142, 70%, 45%, 0.6);
     }
 
     .progress-bar::after {
@@ -260,7 +276,7 @@
       right: 0;
       bottom: 0;
       left: 0;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
       animation: shimmer 2s infinite;
     }
 
@@ -269,16 +285,30 @@
       100% { transform: translateX(100%); }
     }
 
-    /* Brand logo text */
+    /* Brand name */
     .brand {
-      font-size: 80px;
+      font-size: 100px;
       font-weight: 900;
-      letter-spacing: -2px;
+      letter-spacing: -3px;
+    }
+
+    /* Grid pattern background - subtle */
+    .grid-pattern {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+      background-size: 50px 50px;
+      opacity: 0.5;
     }
   </style>
 </head>
 <body>
   <div class="container">
+    <!-- Grid pattern -->
+    <div class="grid-pattern"></div>
+
     <!-- Ambient background orbs -->
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
@@ -286,27 +316,32 @@
 
     <!-- Section 1: Hook (0-3s) -->
     <div class="section section-1">
-      <h1 class="headline text-red">
+      <h1 class="headline">
         <span class="typed-text" id="hook-text"></span>
       </h1>
+      <p class="body-text" style="margin-top: 40px;">on social media posts?</p>
     </div>
 
     <!-- Section 2: Problem (3-8s) -->
     <div class="section section-2">
-      <h2 class="subheadline" style="color: white;">You're spending</h2>
+      <h2 class="subheadline">You're spending</h2>
       <div class="stat-box">
         <div class="stat-number text-red" id="hours-counter">0</div>
-        <div class="stat-label">Hours per week</div>
+        <div class="stat-label">Hours weekly</div>
       </div>
-      <p class="body-text">Creating social media posts manually</p>
+      <p class="body-text" style="max-width: 800px;">
+        Writing posts<br/>
+        Designing graphics<br/>
+        Scheduling everything
+      </p>
     </div>
 
     <!-- Section 3: Solution (8-13s) -->
     <div class="section section-3">
-      <h2 class="subheadline gradient-yellow">What if it took</h2>
-      <div class="stat-box">
-        <div class="stat-number gradient-green">5 min</div>
-        <div class="stat-label" style="color: hsl(142, 70%, 45%);">Total time</div>
+      <h2 class="subheadline text-gradient-yellow">What if it took</h2>
+      <div class="stat-box" style="border-color: hsla(142, 70%, 45%, 0.3); background: hsla(142, 70%, 45%, 0.05);">
+        <div class="stat-number text-gradient-green">5 min</div>
+        <div class="stat-label" style="color: hsl(142, 70%, 45%);">per week</div>
       </div>
       <svg class="checkmark" viewBox="0 0 100 100">
         <circle class="checkmark-circle" cx="50" cy="50" r="45"/>
@@ -314,28 +349,35 @@
       </svg>
     </div>
 
-    <!-- Section 4: Product intro (13-18s) -->
+    <!-- Section 4: Product (13-18s) -->
     <div class="section section-4">
-      <h2 class="subheadline" style="color: white; margin-bottom: 60px;">Meet</h2>
-      <h1 class="headline brand gradient-yellow">POSTAIFY</h1>
-      <p class="body-text">AI agents that create & schedule<br/>all your content automatically</p>
+      <h2 class="subheadline" style="margin-bottom: 50px;">Meet</h2>
+      <h1 class="headline brand text-gradient-yellow">POSTAIFY</h1>
+      <p class="body-text" style="margin: 50px 0; max-width: 850px;">
+        AI agents that create & schedule<br/>
+        all your content automatically
+      </p>
       <div class="progress-container">
         <div class="progress-bar" id="auto-progress"></div>
       </div>
     </div>
 
-    <!-- Section 5: CTA (18-22s) -->
+    <!-- Section 5: CTA (18-23s) -->
     <div class="section section-5">
-      <h2 class="subheadline gradient-yellow" style="margin-bottom: 80px;">Start free today</h2>
-      <button class="cta-button">Get Started</button>
-      <p class="body-text" style="margin-top: 60px; font-size: 44px;">
-        No credit card • 2 brands free • 20 posts/month
+      <h2 class="subheadline text-gradient-yellow" style="margin-bottom: 90px;">
+        Start free today
+      </h2>
+      <button class="cta-button">Get Started Free</button>
+      <p class="body-text" style="margin-top: 70px; font-size: 46px; max-width: 850px; line-height: 1.6;">
+        No credit card required<br/>
+        2 brands • 20 posts/month<br/>
+        <span style="color: hsl(142, 70%, 45%); font-weight: 600;">100% Free Forever</span>
       </p>
     </div>
   </div>
 
   <script>
-    // Timeline controller
+    // Timeline
     const TIMELINE = {
       hook: { start: 0, end: 3000 },
       problem: { start: 3000, end: 8000 },
@@ -347,15 +389,15 @@
     let currentTime = 0;
     let currentPhase = null;
 
-    // Typing effect for hook
-    function typeText(element, text, speed = 80) {
+    // Typing animation
+    function typeText(element, text, speed = 70) {
       let i = 0;
       const interval = setInterval(() => {
         element.textContent = text.slice(0, i);
         i++;
         if (i > text.length) {
           clearInterval(interval);
-          element.classList.remove('typed-text');
+          setTimeout(() => element.classList.remove('typed-text'), 500);
         }
       }, speed);
     }
@@ -375,7 +417,7 @@
       }, 16);
     }
 
-    // Phase manager
+    // Phase controller
     function updatePhase() {
       currentTime += 100;
 
@@ -386,7 +428,6 @@
       else if (currentTime < TIMELINE.product.end) newPhase = 'product';
       else if (currentTime < TIMELINE.cta.end) newPhase = 'cta';
       else {
-        // Loop back
         currentTime = 0;
         document.querySelectorAll('.section').forEach(s => s.classList.remove('visible', 'exit'));
         setTimeout(updatePhase, 100);
@@ -394,21 +435,18 @@
       }
 
       if (newPhase !== currentPhase) {
-        // Exit old phase
         if (currentPhase) {
           const oldSection = document.querySelector(`.section-${getSectionNumber(currentPhase)}`);
           oldSection.classList.remove('visible');
           oldSection.classList.add('exit');
         }
 
-        // Enter new phase
         currentPhase = newPhase;
         const newSection = document.querySelector(`.section-${getSectionNumber(newPhase)}`);
         setTimeout(() => {
           newSection.classList.remove('exit');
           newSection.classList.add('visible');
 
-          // Trigger phase-specific animations
           if (newPhase === 'hook') {
             const hookText = document.getElementById('hook-text');
             hookText.textContent = '';
@@ -416,12 +454,12 @@
             setTimeout(() => typeText(hookText, 'Stop wasting hours'), 200);
           }
           else if (newPhase === 'problem') {
-            setTimeout(() => animateCounter(document.getElementById('hours-counter'), 8), 300);
+            setTimeout(() => animateCounter(document.getElementById('hours-counter'), 8), 400);
           }
           else if (newPhase === 'product') {
             setTimeout(() => {
               document.getElementById('auto-progress').style.width = '100%';
-            }, 500);
+            }, 600);
           }
         }, 100);
       }
@@ -432,7 +470,6 @@
       return map[phase];
     }
 
-    // Start animation
     setInterval(updatePhase, 100);
   </script>
 </body>
@@ -442,10 +479,10 @@
 VOICEOVER SCRIPT:
 
 [0:00-0:03] HOOK: "Stop wasting hours on social media posts"
-[0:03-0:08] PROBLEM: "You're spending 8+ hours every week creating content manually. Stuck in a cycle of writing, designing, scheduling... over and over."
-[0:08-0:13] SOLUTION: "What if it took just 5 minutes total? Imagine that."
-[0:13-0:18] PRODUCT: "Meet POSTAIFY. AI agents that create and schedule all your content automatically. While you focus on growing your business."
-[0:18-0:23] CTA: "Start free today. No credit card needed. 2 brands and 20 posts per month, completely free."
+[0:03-0:08] PROBLEM: "You're spending 8+ hours every week. Writing posts, designing graphics, scheduling everything manually."
+[0:08-0:13] SOLUTION: "What if it took just 5 minutes per week? Imagine the time you'd save."
+[0:13-0:18] PRODUCT: "Meet POSTAIFY. AI agents that create and schedule all your content automatically."
+[0:18-0:23] CTA: "Start free today. No credit card. 2 brands, 20 posts per month, 100% free forever."
 
-RECOMMENDED VOICE: "Adam" (authoritative, confident) or "Rachel" (friendly, professional)
+RECOMMENDED VOICE: "Adam" (authoritative) or "Charlotte" (professional, trustworthy)
 -->

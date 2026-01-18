@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>POSTAIFY - Visual Transformation</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    .container {
+      width: 1080px;
+      height: 1920px;
+      transform: scale(0.5);
+      transform-origin: center;
+      background: #0a0a0a;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Dynamic gradient background */
+    .bg-gradient {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 30% 20%, hsla(48, 96%, 53%, 0.15) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 80%, hsla(142, 70%, 45%, 0.15) 0%, transparent 50%);
+      animation: gradientShift 10s ease-in-out infinite;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { opacity: 0.6; transform: scale(1) rotate(0deg); }
+      50% { opacity: 0.8; transform: scale(1.1) rotate(5deg); }
+    }
+
+    /* Grid overlay */
+    .grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 2px, transparent 2px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 2px, transparent 2px);
+      background-size: 60px 60px;
+      animation: gridMove 20s linear infinite;
+    }
+
+    @keyframes gridMove {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(60px, 60px); }
+    }
+
+    /* Phase container */
+    .phase {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .phase.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* PHASE 1: HOOK - Chaotic VS Clean split screen */
+    .split-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      height: 100%;
+      position: relative;
+    }
+
+    .split-left, .split-right {
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 60px;
+    }
+
+    .split-left {
+      background: linear-gradient(135deg, #1a0a0a 0%, #2a1515 100%);
+    }
+
+    .split-right {
+      background: linear-gradient(135deg, #0a1a0a 0%, #0a2a1a 100%);
+    }
+
+    .divider {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: linear-gradient(180deg,
+        hsl(0, 70%, 50%) 0%,
+        hsl(48, 96%, 53%) 50%,
+        hsl(142, 70%, 45%) 100%);
+      transform: translateX(-50%);
+      box-shadow: 0 0 40px currentColor;
+      animation: dividerPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes dividerPulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; box-shadow: 0 0 60px currentColor; }
+    }
+
+    /* Chaotic side animations */
+    .chaos-container {
+      position: relative;
+      width: 100%;
+      height: 600px;
+    }
+
+    .floating-task {
+      position: absolute;
+      background: rgba(255, 100, 100, 0.15);
+      border: 2px solid rgba(255, 100, 100, 0.4);
+      border-radius: 16px;
+      padding: 20px 30px;
+      font-size: 28px;
+      color: rgba(255, 150, 150, 0.9);
+      animation: chaosFloat 4s ease-in-out infinite;
+      backdrop-filter: blur(10px);
+    }
+
+    .floating-task:nth-child(1) {
+      top: 10%;
+      left: 5%;
+      animation-delay: 0s;
+      transform: rotate(-8deg);
+    }
+
+    .floating-task:nth-child(2) {
+      top: 30%;
+      right: 10%;
+      animation-delay: 0.5s;
+      transform: rotate(5deg);
+    }
+
+    .floating-task:nth-child(3) {
+      top: 55%;
+      left: 15%;
+      animation-delay: 1s;
+      transform: rotate(-3deg);
+    }
+
+    .floating-task:nth-child(4) {
+      top: 75%;
+      right: 5%;
+      animation-delay: 1.5s;
+      transform: rotate(7deg);
+    }
+
+    @keyframes chaosFloat {
+      0%, 100% { transform: translateY(0) rotate(var(--rotation, 0deg)) scale(1); opacity: 0.7; }
+      50% { transform: translateY(-30px) rotate(calc(var(--rotation, 0deg) + 5deg)) scale(1.05); opacity: 1; }
+    }
+
+    .stress-indicator {
+      position: absolute;
+      font-size: 60px;
+      color: hsl(0, 70%, 50%);
+      animation: stressPulse 1s ease-in-out infinite;
+    }
+
+    @keyframes stressPulse {
+      0%, 100% { transform: scale(1) translateY(0); opacity: 0.5; }
+      50% { transform: scale(1.3) translateY(-10px); opacity: 1; }
+    }
+
+    /* Clean automation side */
+    .automation-flow {
+      position: relative;
+      width: 100%;
+      height: 600px;
+    }
+
+    .flow-node {
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 700;
+      background: radial-gradient(circle, hsla(142, 70%, 45%, 0.3) 0%, transparent 70%);
+      border: 3px solid hsl(142, 70%, 45%);
+      box-shadow: 0 0 40px hsla(142, 70%, 45%, 0.6);
+      animation: nodePulse 2s ease-in-out infinite;
+      color: hsl(142, 70%, 60%);
+    }
+
+    @keyframes nodePulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 40px hsla(142, 70%, 45%, 0.6); }
+      50% { transform: scale(1.1); box-shadow: 0 0 60px hsla(142, 70%, 45%, 0.9); }
+    }
+
+    .flow-line {
+      position: absolute;
+      height: 3px;
+      background: linear-gradient(90deg, hsl(142, 70%, 45%), transparent);
+      animation: flowPulse 2s linear infinite;
+    }
+
+    @keyframes flowPulse {
+      0% { opacity: 0.3; transform: scaleX(0.8); }
+      50% { opacity: 1; transform: scaleX(1); }
+      100% { opacity: 0.3; transform: scaleX(0.8); }
+    }
+
+    .particle {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: hsl(142, 70%, 60%);
+      border-radius: 50%;
+      box-shadow: 0 0 15px hsl(142, 70%, 60%);
+      animation: particleFlow 3s linear infinite;
+    }
+
+    @keyframes particleFlow {
+      0% { opacity: 0; transform: translateX(0); }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { opacity: 0; transform: translateX(var(--distance, 300px)); }
+    }
+
+    /* Labels */
+    .label {
+      font-size: 42px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      margin-bottom: 50px;
+      padding: 20px 40px;
+      border-radius: 20px;
+      backdrop-filter: blur(20px);
+    }
+
+    .label-chaos {
+      color: hsl(0, 70%, 60%);
+      background: rgba(255, 100, 100, 0.1);
+      border: 2px solid rgba(255, 100, 100, 0.3);
+    }
+
+    .label-auto {
+      color: hsl(142, 70%, 60%);
+      background: rgba(100, 255, 150, 0.1);
+      border: 2px solid rgba(100, 255, 150, 0.3);
+    }
+
+    .stat-text {
+      font-size: 80px;
+      font-weight: 900;
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    /* PHASE 2: Product intro with morphing logo */
+    .morph-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 100px;
+    }
+
+    .logo-morph {
+      width: 500px;
+      height: 500px;
+      position: relative;
+      margin-bottom: 80px;
+    }
+
+    .morph-shape {
+      position: absolute;
+      inset: 0;
+    }
+
+    .morph-circle {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: linear-gradient(135deg, hsl(48, 96%, 53%) 0%, hsl(142, 70%, 45%) 100%);
+      animation: morphBreathe 4s ease-in-out infinite;
+      filter: blur(2px);
+      opacity: 0.3;
+    }
+
+    @keyframes morphBreathe {
+      0%, 100% { transform: scale(1) rotate(0deg); border-radius: 50%; }
+      25% { transform: scale(1.1) rotate(90deg); border-radius: 30%; }
+      50% { transform: scale(0.9) rotate(180deg); border-radius: 40%; }
+      75% { transform: scale(1.05) rotate(270deg); border-radius: 35%; }
+    }
+
+    .brand-text {
+      font-size: 140px;
+      font-weight: 900;
+      background: linear-gradient(135deg, hsl(48, 96%, 53%) 0%, hsl(142, 70%, 45%) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+      letter-spacing: -4px;
+      animation: textShine 3s ease-in-out infinite;
+    }
+
+    @keyframes textShine {
+      0%, 100% { filter: brightness(1) drop-shadow(0 0 30px hsla(48, 96%, 53%, 0.5)); }
+      50% { filter: brightness(1.3) drop-shadow(0 0 60px hsla(48, 96%, 53%, 0.8)); }
+    }
+
+    .tagline {
+      font-size: 56px;
+      color: rgba(255, 255, 255, 0.8);
+      text-align: center;
+      max-width: 900px;
+      line-height: 1.5;
+      margin-top: 40px;
+    }
+
+    /* PHASE 3: Feature showcase with cards */
+    .cards-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 100px 80px;
+      gap: 40px;
+    }
+
+    .feature-card {
+      width: 900px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 30px;
+      padding: 50px 60px;
+      backdrop-filter: blur(20px);
+      position: relative;
+      overflow: hidden;
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+
+    .feature-card.slide-in {
+      animation: slideIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    @keyframes slideIn {
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 6px;
+      height: 100%;
+      background: linear-gradient(180deg, hsl(48, 96%, 53%), hsl(142, 70%, 45%));
+      box-shadow: 0 0 20px currentColor;
+    }
+
+    .feature-title {
+      font-size: 52px;
+      font-weight: 800;
+      color: white;
+      margin-bottom: 15px;
+    }
+
+    .feature-desc {
+      font-size: 38px;
+      color: rgba(255, 255, 255, 0.6);
+      line-height: 1.4;
+    }
+
+    /* PHASE 4: CTA with animated button */
+    .cta-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 100px;
+    }
+
+    .cta-heading {
+      font-size: 100px;
+      font-weight: 900;
+      background: linear-gradient(135deg, hsl(48, 96%, 53%) 0%, hsl(142, 70%, 45%) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+      margin-bottom: 80px;
+      line-height: 1.2;
+    }
+
+    .cta-button {
+      background: linear-gradient(135deg, hsl(48, 96%, 53%) 0%, hsl(220, 70%, 65%) 100%);
+      color: white;
+      font-size: 72px;
+      font-weight: 800;
+      padding: 60px 120px;
+      border-radius: 40px;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 30px 80px hsla(48, 96%, 53%, 0.6);
+      animation: buttonFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes buttonFloat {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-15px) scale(1.05); }
+    }
+
+    .cta-button::before {
+      content: '';
+      position: absolute;
+      inset: -100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: buttonShine 3s infinite;
+    }
+
+    @keyframes buttonShine {
+      0% { transform: translateX(-100%) rotate(45deg); }
+      100% { transform: translateX(200%) rotate(45deg); }
+    }
+
+    .cta-subtext {
+      font-size: 42px;
+      color: rgba(255, 255, 255, 0.7);
+      text-align: center;
+      margin-top: 60px;
+      line-height: 1.6;
+    }
+
+    .cta-highlight {
+      color: hsl(142, 70%, 50%);
+      font-weight: 700;
+    }
+
+    /* Fade transitions */
+    .fade-in {
+      animation: fadeIn 0.8s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="bg-gradient"></div>
+    <div class="grid"></div>
+
+    <!-- PHASE 1: Split Screen Comparison (0-5s) -->
+    <div class="phase phase-1">
+      <div class="split-container">
+        <!-- Chaotic Manual Side -->
+        <div class="split-left">
+          <div class="label label-chaos">Manual Work</div>
+          <div class="chaos-container">
+            <div class="floating-task" style="--rotation: -8deg;">Write caption</div>
+            <div class="floating-task" style="--rotation: 5deg;">Design graphic</div>
+            <div class="floating-task" style="--rotation: -3deg;">Schedule post</div>
+            <div class="floating-task" style="--rotation: 7deg;">Repeat daily</div>
+            <div class="stress-indicator" style="top: 15%; right: 20%;">😰</div>
+            <div class="stress-indicator" style="bottom: 20%; left: 15%; animation-delay: 0.5s;">⏰</div>
+          </div>
+          <div class="stat-text" style="color: hsl(0, 70%, 50%);">8+ hrs/week</div>
+        </div>
+
+        <!-- Clean Automation Side -->
+        <div class="split-right">
+          <div class="label label-auto">Automated</div>
+          <div class="automation-flow">
+            <svg width="100%" height="100%" style="position: absolute;">
+              <!-- Flow connections -->
+              <line x1="50" y1="100" x2="450" y2="100" stroke="hsl(142, 70%, 45%)" stroke-width="3" opacity="0.3"/>
+              <line x1="450" y1="100" x2="250" y2="300" stroke="hsl(142, 70%, 45%)" stroke-width="3" opacity="0.3"/>
+              <line x1="50" y1="500" x2="450" y2="500" stroke="hsl(142, 70%, 45%)" stroke-width="3" opacity="0.3"/>
+              <line x1="450" y1="500" x2="250" y2="300" stroke="hsl(142, 70%, 45%)" stroke-width="3" opacity="0.3"/>
+
+              <!-- Animated particles -->
+              <circle r="6" fill="hsl(142, 70%, 60%)" filter="url(#glow)">
+                <animateMotion dur="2s" repeatCount="indefinite" path="M 50,100 L 450,100 L 250,300"/>
+              </circle>
+              <circle r="6" fill="hsl(142, 70%, 60%)" filter="url(#glow)">
+                <animateMotion dur="2s" repeatCount="indefinite" begin="0.5s" path="M 50,500 L 450,500 L 250,300"/>
+              </circle>
+
+              <defs>
+                <filter id="glow">
+                  <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                  <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+            </svg>
+
+            <div class="flow-node" style="top: 50px; left: 10%;">AI</div>
+            <div class="flow-node" style="top: 50px; right: 10%; animation-delay: 0.3s;">✓</div>
+            <div class="flow-node" style="bottom: 50px; left: 10%; animation-delay: 0.6s;">⚡</div>
+            <div class="flow-node" style="bottom: 50px; right: 10%; animation-delay: 0.9s;">✓</div>
+            <div class="flow-node" style="top: 50%; left: 50%; transform: translate(-50%, -50%); width: 140px; height: 140px; animation-delay: 0.5s;">🤖</div>
+          </div>
+          <div class="stat-text" style="color: hsl(142, 70%, 50%);">5 min/week</div>
+        </div>
+
+        <div class="divider"></div>
+      </div>
+    </div>
+
+    <!-- PHASE 2: Brand Intro (5-10s) -->
+    <div class="phase phase-2">
+      <div class="morph-container">
+        <div class="logo-morph">
+          <div class="morph-shape">
+            <div class="morph-circle"></div>
+            <div class="morph-circle" style="animation-delay: 0.5s; opacity: 0.2;"></div>
+            <div class="morph-circle" style="animation-delay: 1s; opacity: 0.15;"></div>
+          </div>
+        </div>
+        <h1 class="brand-text">POSTAIFY</h1>
+        <p class="tagline">
+          Your AI-powered social media team<br/>
+          Creating content 24/7 on autopilot
+        </p>
+      </div>
+    </div>
+
+    <!-- PHASE 3: Features (10-18s) -->
+    <div class="phase phase-3">
+      <div class="cards-container">
+        <h2 class="cta-heading" style="margin-bottom: 60px;">What You Get</h2>
+        <div class="feature-card" id="card-1">
+          <div class="feature-title">🎯 AI Content Creation</div>
+          <div class="feature-desc">Professional posts written for your brand voice</div>
+        </div>
+        <div class="feature-card" id="card-2">
+          <div class="feature-title">📅 Auto-Scheduling</div>
+          <div class="feature-desc">Posts go live at perfect times automatically</div>
+        </div>
+        <div class="feature-card" id="card-3">
+          <div class="feature-title">📊 Multi-Platform</div>
+          <div class="feature-desc">Twitter, LinkedIn, Instagram - all in one place</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 4: CTA (18-23s) -->
+    <div class="phase phase-4">
+      <div class="cta-container">
+        <h2 class="cta-heading">
+          Start Free<br/>
+          No Credit Card
+        </h2>
+        <button class="cta-button">Get Started Now</button>
+        <p class="cta-subtext">
+          2 brands • 20 posts/month<br/>
+          <span class="cta-highlight">100% Free Forever</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const phases = [
+      { id: 1, start: 0, end: 5000 },
+      { id: 2, start: 5000, end: 10000 },
+      { id: 3, start: 10000, end: 18000 },
+      { id: 4, start: 18000, end: 23000 }
+    ];
+
+    let currentTime = 0;
+    let activePhase = null;
+
+    function updatePhase() {
+      currentTime += 100;
+
+      const phase = phases.find(p => currentTime >= p.start && currentTime < p.end);
+
+      if (!phase) {
+        currentTime = 0;
+        document.querySelectorAll('.phase').forEach(p => p.classList.remove('active'));
+        setTimeout(updatePhase, 100);
+        return;
+      }
+
+      if (phase.id !== activePhase) {
+        document.querySelectorAll('.phase').forEach(p => p.classList.remove('active'));
+        document.querySelector(`.phase-${phase.id}`).classList.add('active');
+        activePhase = phase.id;
+
+        // Trigger phase-specific animations
+        if (phase.id === 3) {
+          setTimeout(() => document.getElementById('card-1').classList.add('slide-in'), 200);
+          setTimeout(() => document.getElementById('card-2').classList.add('slide-in'), 700);
+          setTimeout(() => document.getElementById('card-3').classList.add('slide-in'), 1200);
+        }
+      }
+    }
+
+    setInterval(updatePhase, 100);
+  </script>
+</body>
+</html>
+
+<!--
+VOICEOVER SCRIPT:
+
+[0:00-0:05] HOOK: "Most people spend 8+ hours a week on social media. Writing captions, designing graphics, scheduling posts... It's exhausting."
+[0:05-0:10] SOLUTION: "What if AI agents did all of this for you? Meet POSTAIFY. Your AI-powered social media team that creates content 24/7 on autopilot."
+[0:10-0:18] FEATURES: "AI writes professional posts in your brand voice. Auto-schedules everything at perfect times. Works across Twitter, LinkedIn, Instagram - all in one place."
+[0:18-0:23] CTA: "Start completely free. No credit card. 2 brands and 20 posts per month, free forever. Get started now."
+
+RECOMMENDED VOICE: "Matthew" (energetic, modern) or "Charlotte" (professional, trustworthy)
+-->

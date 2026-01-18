@@ -15,8 +15,8 @@
     --card-foreground: 0 0% 100%;
     --popover: 0 0% 6%;
     --popover-foreground: 0 0% 100%;
-    --primary: 262 83% 58%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 48 96% 53%;
+    --primary-foreground: 0 0% 0%;
     --secondary: 0 0% 12%;
     --secondary-foreground: 0 0% 100%;
     --muted: 0 0% 15%;
@@ -27,7 +27,7 @@
     --destructive-foreground: 0 0% 100%;
     --border: 0 0% 15%;
     --input: 0 0% 15%;
-    --ring: 262 83% 58%;
+    --ring: 48 96% 53%;
     --radius: 0.75rem;
   }
 
@@ -161,8 +161,8 @@
     @apply bg-clip-text text-transparent bg-gradient-to-r from-white via-white to-white/60;
   }
 
-  .text-gradient-purple {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-400;
+  .text-gradient-yellow {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-yellow-400;
   }
 
   .glass {
@@ -177,14 +177,14 @@
     }
   }
 
-  .glow-purple {
+  .glow-yellow {
     /* Reduce shadow intensity on mobile */
-    box-shadow: 0 0 30px rgba(139, 92, 246, 0.2);
+    box-shadow: 0 0 30px rgba(234, 179, 8, 0.2);
   }
 
   @media (min-width: 768px) {
-    .glow-purple {
-      box-shadow: 0 0 60px rgba(139, 92, 246, 0.3);
+    .glow-yellow {
+      box-shadow: 0 0 60px rgba(234, 179, 8, 0.3);
     }
   }
 

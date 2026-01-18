@@ -62,7 +62,7 @@ export function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ delay: 0.2, type: 'spring' }}
-                  className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center"
+                  className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-yellow-600 flex items-center justify-center"
                 >
                   <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />

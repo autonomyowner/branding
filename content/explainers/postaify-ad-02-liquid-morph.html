@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>POSTAIFY - Liquid Transformation</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    .container {
+      width: 1080px;
+      height: 1920px;
+      transform: scale(0.5);
+      transform-origin: center;
+      background: #0a0a0a;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Animated mesh gradient background */
+    .mesh-gradient {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(at 20% 30%, hsla(48, 96%, 53%, 0.25) 0px, transparent 50%),
+        radial-gradient(at 80% 60%, hsla(142, 70%, 45%, 0.25) 0px, transparent 50%),
+        radial-gradient(at 50% 90%, hsla(220, 70%, 50%, 0.2) 0px, transparent 50%);
+      animation: meshMove 15s ease-in-out infinite;
+      filter: blur(60px);
+    }
+
+    @keyframes meshMove {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(50px, -30px) scale(1.1); }
+      66% { transform: translate(-30px, 50px) scale(0.95); }
+    }
+
+    /* Noise texture overlay */
+    .noise {
+      position: absolute;
+      inset: 0;
+      background-image: url('data:image/svg+xml,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.05"/></svg>');
+      opacity: 0.4;
+      mix-blend-mode: overlay;
+    }
+
+    /* Phase system */
+    .phase {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    .phase.active {
+      opacity: 1;
+    }
+
+    /* PHASE 1: Liquid blob transformation */
+    .blob-container {
+      position: relative;
+      width: 800px;
+      height: 800px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .liquid-blob {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+      background: linear-gradient(135deg, hsl(48, 96%, 53%), hsl(220, 70%, 60%));
+      animation: blobMorph 8s ease-in-out infinite, blobRotate 20s linear infinite;
+      filter: blur(1px) drop-shadow(0 0 80px hsla(48, 96%, 53%, 0.8));
+    }
+
+    @keyframes blobMorph {
+      0%, 100% {
+        border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+        transform: scale(1);
+      }
+      25% {
+        border-radius: 70% 30% 50% 50% / 30% 60% 40% 70%;
+        transform: scale(1.1);
+      }
+      50% {
+        border-radius: 50% 50% 30% 70% / 60% 40% 60% 40%;
+        transform: scale(0.95);
+      }
+      75% {
+        border-radius: 30% 70% 70% 30% / 50% 30% 70% 50%;
+        transform: scale(1.05);
+      }
+    }
+
+    @keyframes blobRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .blob-overlay {
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      border-radius: 50% 40% 60% 50% / 50% 60% 40% 50%;
+      background: linear-gradient(225deg, hsl(142, 70%, 45%), hsl(180, 70%, 50%));
+      animation: blobMorph 10s ease-in-out infinite reverse, blobRotate 25s linear infinite reverse;
+      opacity: 0.4;
+      filter: blur(2px);
+    }
+
+    .blob-text {
+      position: relative;
+      z-index: 10;
+      font-size: 120px;
+      font-weight: 900;
+      text-align: center;
+      color: white;
+      text-shadow: 0 0 40px rgba(0,0,0,0.5);
+      animation: textPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes textPulse {
+      0%, 100% { transform: scale(1); filter: brightness(1); }
+      50% { transform: scale(1.05); filter: brightness(1.2); }
+    }
+
+    .subtitle {
+      font-size: 56px;
+      color: rgba(255,255,255,0.8);
+      text-align: center;
+      margin-top: 100px;
+      font-weight: 600;
+      animation: fadeInUp 1s ease 0.5s both;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* PHASE 2: 3D Card Flip Effect */
+    .card-scene {
+      width: 900px;
+      height: 1200px;
+      perspective: 2000px;
+      position: relative;
+    }
+
+    .card-3d {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      animation: cardFlip 6s ease-in-out infinite;
+    }
+
+    @keyframes cardFlip {
+      0%, 30% { transform: rotateY(0deg); }
+      50%, 80% { transform: rotateY(180deg); }
+      100% { transform: rotateY(360deg); }
+    }
+
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 50px;
+      padding: 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 40px 120px rgba(0,0,0,0.6);
+    }
+
+    .card-front {
+      background: linear-gradient(135deg,
+        rgba(255, 100, 100, 0.1) 0%,
+        rgba(200, 50, 50, 0.15) 100%);
+      border: 3px solid rgba(255, 100, 100, 0.3);
+      backdrop-filter: blur(20px);
+    }
+
+    .card-back {
+      background: linear-gradient(135deg,
+        rgba(100, 255, 150, 0.1) 0%,
+        rgba(50, 200, 100, 0.15) 100%);
+      border: 3px solid rgba(100, 255, 150, 0.3);
+      transform: rotateY(180deg);
+      backdrop-filter: blur(20px);
+    }
+
+    .card-icon {
+      font-size: 180px;
+      margin-bottom: 60px;
+      animation: iconFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes iconFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .card-title {
+      font-size: 88px;
+      font-weight: 900;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .card-list {
+      list-style: none;
+      font-size: 48px;
+      line-height: 1.8;
+      color: rgba(255,255,255,0.8);
+    }
+
+    .card-list li {
+      margin: 20px 0;
+      padding-left: 60px;
+      position: relative;
+    }
+
+    .card-list li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      font-weight: bold;
+      animation: arrowPulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes arrowPulse {
+      0%, 100% { transform: translateX(0); opacity: 0.6; }
+      50% { transform: translateX(10px); opacity: 1; }
+    }
+
+    /* PHASE 3: Radial stats reveal */
+    .stats-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 100px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      width: 100%;
+      max-width: 900px;
+      margin: 80px 0;
+    }
+
+    .stat-item {
+      background: rgba(255,255,255,0.03);
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 40px;
+      padding: 60px 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(20px);
+      animation: statReveal 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    .stat-item:nth-child(1) { animation-delay: 0.2s; }
+    .stat-item:nth-child(2) { animation-delay: 0.4s; }
+    .stat-item:nth-child(3) { animation-delay: 0.6s; }
+    .stat-item:nth-child(4) { animation-delay: 0.8s; }
+
+    @keyframes statReveal {
+      from {
+        opacity: 0;
+        transform: scale(0.5) rotate(45deg);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+      }
+    }
+
+    .stat-item::before {
+      content: '';
+      position: absolute;
+      inset: -100%;
+      background: conic-gradient(
+        from 0deg,
+        transparent 0deg,
+        hsla(48, 96%, 53%, 0.2) 180deg,
+        transparent 360deg
+      );
+      animation: rotate 4s linear infinite;
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .stat-number {
+      font-size: 96px;
+      font-weight: 900;
+      background: linear-gradient(135deg, hsl(48, 96%, 53%), hsl(142, 70%, 45%));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      position: relative;
+      z-index: 1;
+    }
+
+    .stat-label {
+      font-size: 36px;
+      color: rgba(255,255,255,0.7);
+      margin-top: 20px;
+      font-weight: 600;
+      position: relative;
+      z-index: 1;
+    }
+
+    .main-heading {
+      font-size: 96px;
+      font-weight: 900;
+      text-align: center;
+      background: linear-gradient(135deg, hsl(48, 96%, 53%), hsl(142, 70%, 45%));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 40px;
+      animation: headingGlow 3s ease-in-out infinite;
+    }
+
+    @keyframes headingGlow {
+      0%, 100% { filter: drop-shadow(0 0 20px hsla(48, 96%, 53%, 0.5)); }
+      50% { filter: drop-shadow(0 0 40px hsla(48, 96%, 53%, 0.8)); }
+    }
+
+    /* PHASE 4: Explosive CTA */
+    .cta-scene {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 100px;
+      position: relative;
+    }
+
+    .cta-rays {
+      position: absolute;
+      inset: 0;
+      background: conic-gradient(
+        from 0deg at 50% 50%,
+        transparent 0deg,
+        hsla(48, 96%, 53%, 0.1) 45deg,
+        transparent 90deg,
+        hsla(142, 70%, 45%, 0.1) 135deg,
+        transparent 180deg,
+        hsla(48, 96%, 53%, 0.1) 225deg,
+        transparent 270deg,
+        hsla(142, 70%, 45%, 0.1) 315deg,
+        transparent 360deg
+      );
+      animation: raysRotate 20s linear infinite;
+    }
+
+    @keyframes raysRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .cta-heading-big {
+      font-size: 120px;
+      font-weight: 900;
+      text-align: center;
+      color: white;
+      margin-bottom: 80px;
+      position: relative;
+      z-index: 10;
+      animation: ctaHeadingPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes ctaHeadingPulse {
+      0%, 100% { transform: scale(1); text-shadow: 0 0 40px rgba(157, 78, 221, 0.5); }
+      50% { transform: scale(1.05); text-shadow: 0 0 80px rgba(157, 78, 221, 0.8); }
+    }
+
+    .cta-button-mega {
+      background: linear-gradient(135deg, hsl(48, 96%, 53%) 0%, hsl(220, 70%, 65%) 100%);
+      color: white;
+      font-size: 80px;
+      font-weight: 900;
+      padding: 70px 140px;
+      border-radius: 50px;
+      border: 4px solid rgba(255,255,255,0.2);
+      cursor: pointer;
+      position: relative;
+      z-index: 10;
+      overflow: hidden;
+      box-shadow:
+        0 0 60px hsla(48, 96%, 53%, 0.6),
+        inset 0 0 60px rgba(255,255,255,0.1);
+      animation: buttonMega 3s ease-in-out infinite;
+    }
+
+    @keyframes buttonMega {
+      0%, 100% {
+        transform: translateY(0) scale(1);
+        box-shadow:
+          0 0 60px hsla(48, 96%, 53%, 0.6),
+          inset 0 0 60px rgba(255,255,255,0.1);
+      }
+      50% {
+        transform: translateY(-20px) scale(1.08);
+        box-shadow:
+          0 0 100px hsla(48, 96%, 53%, 0.9),
+          inset 0 0 80px rgba(255,255,255,0.2);
+      }
+    }
+
+    .cta-button-mega::before {
+      content: '';
+      position: absolute;
+      inset: -200%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,0.4),
+        transparent
+      );
+      animation: buttonSweep 3s linear infinite;
+    }
+
+    @keyframes buttonSweep {
+      0% { transform: translateX(-100%) rotate(45deg); }
+      100% { transform: translateX(200%) rotate(45deg); }
+    }
+
+    .cta-features {
+      margin-top: 80px;
+      display: flex;
+      gap: 50px;
+      font-size: 42px;
+      color: rgba(255,255,255,0.8);
+      position: relative;
+      z-index: 10;
+    }
+
+    .cta-feature-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      animation: featureBounce 2s ease-in-out infinite;
+    }
+
+    .cta-feature-item:nth-child(1) { animation-delay: 0s; }
+    .cta-feature-item:nth-child(2) { animation-delay: 0.3s; }
+    .cta-feature-item:nth-child(3) { animation-delay: 0.6s; }
+
+    @keyframes featureBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .check-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, hsl(142, 70%, 45%), hsl(160, 70%, 50%));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      box-shadow: 0 0 30px hsla(142, 70%, 45%, 0.6);
+    }
+
+    .brand-logo {
+      font-size: 88px;
+      font-weight: 900;
+      background: linear-gradient(135deg, hsl(48, 96%, 53%), hsl(142, 70%, 45%));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -2px;
+      margin-bottom: 40px;
+      position: relative;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="mesh-gradient"></div>
+    <div class="noise"></div>
+
+    <!-- PHASE 1: Liquid blob intro (0-5s) -->
+    <div class="phase phase-1 active">
+      <div class="blob-container">
+        <div class="liquid-blob"></div>
+        <div class="blob-overlay"></div>
+        <div class="blob-text">
+          Spending<br/>Hours?
+        </div>
+      </div>
+      <div class="subtitle">There's a better way...</div>
+    </div>
+
+    <!-- PHASE 2: 3D Card flip problem/solution (5-12s) -->
+    <div class="phase phase-2">
+      <div class="card-scene">
+        <div class="card-3d">
+          <!-- Front: Problem -->
+          <div class="card-face card-front">
+            <div class="card-icon">😰</div>
+            <div class="card-title" style="color: hsl(0, 70%, 60%);">The Old Way</div>
+            <ul class="card-list">
+              <li style="color: rgba(255,150,150,0.9);">Hours writing posts</li>
+              <li style="color: rgba(255,150,150,0.9);">Manual scheduling</li>
+              <li style="color: rgba(255,150,150,0.9);">Constant stress</li>
+              <li style="color: rgba(255,150,150,0.9);">Inconsistent results</li>
+            </ul>
+          </div>
+
+          <!-- Back: Solution -->
+          <div class="card-face card-back">
+            <div class="card-icon">✨</div>
+            <div class="card-title" style="color: hsl(142, 70%, 60%);">The New Way</div>
+            <ul class="card-list">
+              <li style="color: rgba(150,255,200,0.9);">AI creates everything</li>
+              <li style="color: rgba(150,255,200,0.9);">Auto-posts 24/7</li>
+              <li style="color: rgba(150,255,200,0.9);">Set it & forget it</li>
+              <li style="color: rgba(150,255,200,0.9);">Professional quality</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 3: Stats reveal (12-17s) -->
+    <div class="phase phase-3">
+      <div class="stats-container">
+        <h2 class="main-heading">Why POSTAIFY?</h2>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-number">8hrs</div>
+            <div class="stat-label">Time Saved<br/>Per Week</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">100%</div>
+            <div class="stat-label">Automated<br/>Posting</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">24/7</div>
+            <div class="stat-label">AI Agents<br/>Working</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">∞</div>
+            <div class="stat-label">Posts<br/>Generated</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 4: CTA (17-23s) -->
+    <div class="phase phase-4">
+      <div class="cta-scene">
+        <div class="cta-rays"></div>
+        <div class="brand-logo">POSTAIFY</div>
+        <h2 class="cta-heading-big">Start Free Today</h2>
+        <button class="cta-button-mega">Get Started</button>
+        <div class="cta-features">
+          <div class="cta-feature-item">
+            <div class="check-icon">✓</div>
+            <span>No Card</span>
+          </div>
+          <div class="cta-feature-item">
+            <div class="check-icon">✓</div>
+            <span>2 Brands</span>
+          </div>
+          <div class="cta-feature-item">
+            <div class="check-icon">✓</div>
+            <span>Free Forever</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const phases = [
+      { id: 1, duration: 5000 },
+      { id: 2, duration: 7000 },
+      { id: 3, duration: 5000 },
+      { id: 4, duration: 6000 }
+    ];
+
+    let currentPhase = 0;
+    let startTime = Date.now();
+
+    function updatePhase() {
+      const elapsed = Date.now() - startTime;
+      const phaseDuration = phases[currentPhase].duration;
+
+      if (elapsed >= phaseDuration) {
+        document.querySelector(`.phase-${currentPhase + 1}`).classList.remove('active');
+        currentPhase = (currentPhase + 1) % phases.length;
+        document.querySelector(`.phase-${currentPhase + 1}`).classList.add('active');
+        startTime = Date.now();
+      }
+
+      requestAnimationFrame(updatePhase);
+    }
+
+    updatePhase();
+  </script>
+</body>
+</html>
+
+<!--
+VOICEOVER SCRIPT:
+
+[0:00-0:05] HOOK: "Still spending hours every week on social media? Stuck in the cycle of writing, posting, scheduling?"
+[0:05-0:12] PROBLEM/SOLUTION: "The old way: hours of manual work, constant stress, inconsistent results. The new way: AI creates everything, auto-posts 24/7, you set it and forget it."
+[0:12-0:17] PROOF: "Save 8 hours per week. 100% automated posting. AI agents working for you 24/7. Unlimited professional posts generated."
+[0:17-0:23] CTA: "Meet POSTAIFY. Start free today. No credit card. 2 brands, free forever. Get started now."
+
+RECOMMENDED VOICE: "Matilda" (dynamic, modern) or "Brian" (energetic, professional)
+-->

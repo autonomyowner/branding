@@ -30,9 +30,9 @@ export function Logo({ size = "md", useRouterLink = false }: LogoProps) {
           animate={{
             opacity: [1, 0.4, 1],
             textShadow: [
-              "0 0 0px rgba(139, 92, 246, 0)",
-              "0 0 20px rgba(139, 92, 246, 0.8)",
-              "0 0 0px rgba(139, 92, 246, 0)"
+              "0 0 0px rgba(234, 179, 8, 0)",
+              "0 0 20px rgba(234, 179, 8, 0.8)",
+              "0 0 0px rgba(234, 179, 8, 0)"
             ]
           }}
           transition={{

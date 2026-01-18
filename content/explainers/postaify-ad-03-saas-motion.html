@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>POSTAIFY - Professional SaaS Motion</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 100vw;
+      height: 100vh;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+    }
+
+    .container {
+      width: 1080px;
+      height: 1920px;
+      transform: scale(0.5);
+      transform-origin: center;
+      background: linear-gradient(180deg, #0a0a0e 0%, #14141f 50%, #0a0a0e 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Glassmorphism background cards */
+    .glass-bg {
+      position: absolute;
+      background: rgba(255,255,255,0.02);
+      backdrop-filter: blur(40px);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 40px;
+      animation: glassFloat 15s ease-in-out infinite;
+    }
+
+    .glass-1 {
+      width: 600px;
+      height: 800px;
+      top: 10%;
+      left: -10%;
+      transform: rotate(-15deg);
+      animation-delay: 0s;
+    }
+
+    .glass-2 {
+      width: 500px;
+      height: 700px;
+      bottom: 5%;
+      right: -5%;
+      transform: rotate(20deg);
+      animation-delay: 5s;
+    }
+
+    @keyframes glassFloat {
+      0%, 100% { transform: translateY(0) rotate(var(--rotation, 0deg)); }
+      50% { transform: translateY(-50px) rotate(calc(var(--rotation, 0deg) + 5deg)); }
+    }
+
+    /* Glow orbs with bloom effect */
+    .glow-orb {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, hsla(48, 96%, 53%, 0.6) 0%, transparent 70%);
+      filter: blur(60px) brightness(1.5);
+      animation: bloomPulse 8s ease-in-out infinite;
+    }
+
+    .glow-1 {
+      width: 400px;
+      height: 400px;
+      top: 15%;
+      left: 20%;
+      animation-delay: 0s;
+    }
+
+    .glow-2 {
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, hsla(142, 70%, 45%, 0.6) 0%, transparent 70%);
+      bottom: 20%;
+      right: 15%;
+      animation-delay: 4s;
+    }
+
+    @keyframes bloomPulse {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.2); }
+    }
+
+    /* Phase system */
+    .phase {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .phase.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* PHASE 1: Deep Zoom into Interface */
+    .zoom-scene {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      perspective: 2000px;
+    }
+
+    .zoom-layer {
+      position: absolute;
+      background: rgba(20, 20, 30, 0.95);
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 30px;
+      backdrop-filter: blur(20px);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.05),
+        0 20px 60px rgba(0,0,0,0.5);
+      animation: deepZoom 8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      transform-style: preserve-3d;
+    }
+
+    .zoom-1 {
+      width: 900px;
+      height: 1400px;
+      z-index: 1;
+    }
+
+    .zoom-2 {
+      width: 700px;
+      height: 1000px;
+      z-index: 2;
+      animation-delay: 2s;
+    }
+
+    .zoom-3 {
+      width: 500px;
+      height: 700px;
+      z-index: 3;
+      animation-delay: 4s;
+    }
+
+    @keyframes deepZoom {
+      0%, 20% {
+        transform: translateZ(0) scale(1);
+        opacity: 1;
+      }
+      40%, 100% {
+        transform: translateZ(-800px) scale(0.3);
+        opacity: 0;
+      }
+    }
+
+    /* UI Elements inside zoom layers */
+    .ui-header {
+      background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 30px 40px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .ui-circle {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: rgba(255,100,100,0.6);
+    }
+
+    .ui-circle:nth-child(2) { background: rgba(255,200,100,0.6); }
+    .ui-circle:nth-child(3) { background: rgba(100,255,150,0.6); }
+
+    .ui-content {
+      padding: 50px 40px;
+    }
+
+    .skeleton-bar {
+      height: 30px;
+      background: linear-gradient(90deg,
+        rgba(255,255,255,0.03) 0%,
+        rgba(255,255,255,0.08) 50%,
+        rgba(255,255,255,0.03) 100%);
+      background-size: 200% 100%;
+      border-radius: 8px;
+      margin: 20px 0;
+      animation: skeletonPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes skeletonPulse {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* PHASE 2: Isometric Dashboard with Cursor Tracking */
+    .iso-scene {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      perspective: 2000px;
+    }
+
+    .iso-dashboard {
+      width: 900px;
+      height: 1200px;
+      background: rgba(20,20,30,0.95);
+      border: 3px solid rgba(255,255,255,0.15);
+      border-radius: 40px;
+      backdrop-filter: blur(30px);
+      transform: rotateX(20deg) rotateY(-15deg);
+      box-shadow:
+        0 60px 120px rgba(0,0,0,0.6),
+        0 0 0 1px rgba(255,255,255,0.08);
+      animation: isoFloat 6s ease-in-out infinite;
+      position: relative;
+      overflow: hidden;
+    }
+
+    @keyframes isoFloat {
+      0%, 100% { transform: rotateX(20deg) rotateY(-15deg) translateY(0); }
+      50% { transform: rotateX(25deg) rotateY(-10deg) translateY(-30px); }
+    }
+
+    /* Abstract UI cards inside dashboard */
+    .abstract-card {
+      position: absolute;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 24px;
+      padding: 30px;
+      backdrop-filter: blur(10px);
+      animation: cardLift 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+
+    .card-1 {
+      top: 100px;
+      left: 60px;
+      width: 350px;
+      height: 200px;
+      animation-delay: 0s;
+    }
+
+    .card-2 {
+      top: 100px;
+      right: 60px;
+      width: 350px;
+      height: 200px;
+      animation-delay: 0.5s;
+    }
+
+    .card-3 {
+      top: 350px;
+      left: 60px;
+      width: 780px;
+      height: 300px;
+      animation-delay: 1s;
+    }
+
+    @keyframes cardLift {
+      0%, 100% {
+        transform: translateY(0);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      }
+      50% {
+        transform: translateY(-10px);
+        box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+      }
+    }
+
+    .card-bar {
+      height: 12px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 6px;
+      margin: 15px 0;
+    }
+
+    .card-bar.filled {
+      background: linear-gradient(90deg, hsl(48, 96%, 53%), hsl(142, 70%, 45%));
+      animation: barFill 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+
+    @keyframes barFill {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
+
+    /* Cursor with motion blur */
+    .cursor {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      pointer-events: none;
+      z-index: 1000;
+      filter: drop-shadow(0 0 20px rgba(255,255,255,0.8));
+    }
+
+    .cursor-dot {
+      width: 100%;
+      height: 100%;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgba(255,255,255,0.8);
+      animation: cursorMove 8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+
+    @keyframes cursorMove {
+      0% { transform: translate(100px, 200px); }
+      25% { transform: translate(700px, 300px); }
+      50% { transform: translate(400px, 800px); }
+      75% { transform: translate(200px, 600px); }
+      100% { transform: translate(100px, 200px); }
+    }
+
+    /* PHASE 3: Kinetic Typography */
+    .kinetic-scene {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 100px;
+    }
+
+    .kinetic-word {
+      font-size: 140px;
+      font-weight: 900;
+      text-align: center;
+      opacity: 0;
+      transform: scale(0.5) rotate(-10deg);
+      animation: kineticPop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    .word-1 { animation-delay: 0.2s; color: white; }
+    .word-2 {
+      animation-delay: 0.8s;
+      background: linear-gradient(135deg, hsl(48, 96%, 53%), hsl(142, 70%, 45%));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .word-3 { animation-delay: 1.4s; color: white; }
+
+    @keyframes kineticPop {
+      0% {
+        opacity: 0;
+        transform: scale(0.5) rotate(-10deg);
+      }
+      60% {
+        opacity: 1;
+        transform: scale(1.1) rotate(2deg);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+      }
+    }
+
+    /* Feature Pills with Ripple Effect */
+    .feature-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      justify-content: center;
+      margin-top: 100px;
+      max-width: 900px;
+    }
+
+    .pill {
+      background: rgba(255,255,255,0.05);
+      border: 2px solid rgba(255,255,255,0.15);
+      border-radius: 60px;
+      padding: 35px 50px;
+      font-size: 42px;
+      color: white;
+      font-weight: 600;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      animation: pillReveal 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    .pill:nth-child(1) { animation-delay: 2s; }
+    .pill:nth-child(2) { animation-delay: 2.2s; }
+    .pill:nth-child(3) { animation-delay: 2.4s; }
+    .pill:nth-child(4) { animation-delay: 2.6s; }
+
+    @keyframes pillReveal {
+      from {
+        opacity: 0;
+        transform: translateY(50px) scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .pill::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      transform: translate(-50%, -50%);
+      animation: ripple 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+
+    @keyframes ripple {
+      0% {
+        width: 0;
+        height: 0;
+        opacity: 0.5;
+      }
+      100% {
+        width: 400px;
+        height: 400px;
+        opacity: 0;
+      }
+    }
+
+    /* PHASE 4: Morphing Button CTA */
+    .morph-scene {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 100px;
+    }
+
+    .brand-morph {
+      font-size: 120px;
+      font-weight: 900;
+      background: linear-gradient(135deg, hsl(48, 96%, 53%), hsl(142, 70%, 45%));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 80px;
+      filter: drop-shadow(0 0 40px hsla(48, 96%, 53%, 0.6));
+      animation: brandGlow 3s ease-in-out infinite;
+    }
+
+    @keyframes brandGlow {
+      0%, 100% { filter: drop-shadow(0 0 40px hsla(48, 96%, 53%, 0.6)); }
+      50% { filter: drop-shadow(0 0 80px hsla(48, 96%, 53%, 0.9)); }
+    }
+
+    .morph-button {
+      background: linear-gradient(135deg, hsl(48, 96%, 53%), hsl(220, 70%, 65%));
+      color: white;
+      font-size: 72px;
+      font-weight: 800;
+      padding: 70px 130px;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 40px 100px hsla(48, 96%, 53%, 0.6);
+      animation: buttonMorph 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+
+    @keyframes buttonMorph {
+      0%, 100% {
+        border-radius: 50px;
+        transform: scale(1);
+      }
+      25% {
+        border-radius: 80px 40px 80px 40px;
+        transform: scale(1.05);
+      }
+      50% {
+        border-radius: 40px 80px 40px 80px;
+        transform: scale(1.08);
+      }
+      75% {
+        border-radius: 60px 50px 70px 50px;
+        transform: scale(1.05);
+      }
+    }
+
+    .morph-button::after {
+      content: '';
+      position: absolute;
+      inset: -300%;
+      background: conic-gradient(
+        from 0deg,
+        transparent 0deg,
+        rgba(255,255,255,0.4) 90deg,
+        transparent 180deg
+      );
+      animation: conicSpin 3s linear infinite;
+    }
+
+    @keyframes conicSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+      margin-top: 90px;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .feature-item {
+      background: rgba(255,255,255,0.03);
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 30px;
+      padding: 40px 30px;
+      text-align: center;
+      backdrop-filter: blur(20px);
+      position: relative;
+      overflow: hidden;
+      animation: itemFloat 3s ease-in-out infinite;
+    }
+
+    .feature-item:nth-child(1) { animation-delay: 0s; }
+    .feature-item:nth-child(2) { animation-delay: 0.3s; }
+    .feature-item:nth-child(3) { animation-delay: 0.6s; }
+
+    @keyframes itemFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    .feature-item::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg,
+        transparent 30%,
+        rgba(255,255,255,0.1) 50%,
+        transparent 70%);
+      animation: sheen 3s linear infinite;
+    }
+
+    @keyframes sheen {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+
+    .feature-icon {
+      font-size: 50px;
+      margin-bottom: 20px;
+    }
+
+    .feature-text {
+      font-size: 32px;
+      color: rgba(255,255,255,0.9);
+      font-weight: 600;
+    }
+
+    .feature-subtext {
+      font-size: 24px;
+      color: rgba(255,255,255,0.5);
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Background elements -->
+    <div class="glass-bg glass-1" style="--rotation: -15deg;"></div>
+    <div class="glass-bg glass-2" style="--rotation: 20deg;"></div>
+    <div class="glow-orb glow-1"></div>
+    <div class="glow-orb glow-2"></div>
+
+    <!-- PHASE 1: Deep Zoom Interface (0-6s) -->
+    <div class="phase phase-1 active">
+      <div class="zoom-scene">
+        <div class="zoom-layer zoom-1">
+          <div class="ui-header">
+            <div class="ui-circle"></div>
+            <div class="ui-circle"></div>
+            <div class="ui-circle"></div>
+          </div>
+          <div class="ui-content">
+            <div class="skeleton-bar" style="width: 80%;"></div>
+            <div class="skeleton-bar" style="width: 95%;"></div>
+            <div class="skeleton-bar" style="width: 70%;"></div>
+            <div class="skeleton-bar" style="width: 90%;"></div>
+          </div>
+        </div>
+        <div class="zoom-layer zoom-2">
+          <div class="ui-header">
+            <div class="ui-circle"></div>
+            <div class="ui-circle"></div>
+            <div class="ui-circle"></div>
+          </div>
+          <div class="ui-content">
+            <div class="skeleton-bar" style="width: 75%;"></div>
+            <div class="skeleton-bar" style="width: 85%;"></div>
+            <div class="skeleton-bar" style="width: 60%;"></div>
+          </div>
+        </div>
+        <div class="zoom-layer zoom-3">
+          <div class="ui-header">
+            <div class="ui-circle"></div>
+            <div class="ui-circle"></div>
+            <div class="ui-circle"></div>
+          </div>
+          <div class="ui-content">
+            <div class="skeleton-bar" style="width: 70%;"></div>
+            <div class="skeleton-bar" style="width: 80%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 2: Isometric Dashboard with Cursor (6-12s) -->
+    <div class="phase phase-2">
+      <div class="iso-scene">
+        <div class="iso-dashboard">
+          <!-- Abstract UI cards -->
+          <div class="abstract-card card-1">
+            <div class="card-bar" style="width: 60%;"></div>
+            <div class="card-bar" style="width: 80%;"></div>
+            <div class="card-bar filled" style="width: 90%;"></div>
+          </div>
+          <div class="abstract-card card-2">
+            <div class="card-bar" style="width: 70%;"></div>
+            <div class="card-bar filled" style="width: 85%;"></div>
+            <div class="card-bar" style="width: 50%;"></div>
+          </div>
+          <div class="abstract-card card-3">
+            <div class="card-bar" style="width: 90%;"></div>
+            <div class="card-bar filled" style="width: 95%;"></div>
+            <div class="card-bar" style="width: 75%;"></div>
+            <div class="card-bar" style="width: 85%;"></div>
+            <div class="card-bar filled" style="width: 70%;"></div>
+          </div>
+
+          <!-- Cursor with motion blur -->
+          <div class="cursor">
+            <div class="cursor-dot"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 3: Kinetic Typography (12-17s) -->
+    <div class="phase phase-3">
+      <div class="kinetic-scene">
+        <div class="kinetic-word word-1">Stop</div>
+        <div class="kinetic-word word-2">Wasting Time</div>
+        <div class="kinetic-word word-3">Automate It</div>
+
+        <div class="feature-pills">
+          <div class="pill">AI Content</div>
+          <div class="pill">Auto-Schedule</div>
+          <div class="pill">24/7 Posting</div>
+          <div class="pill">Multi-Platform</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 4: Morphing CTA (17-23s) -->
+    <div class="phase phase-4">
+      <div class="morph-scene">
+        <div class="brand-morph">POSTAIFY</div>
+        <button class="morph-button">Start Free Now</button>
+
+        <div class="feature-grid">
+          <div class="feature-item">
+            <div class="feature-icon">✓</div>
+            <div class="feature-text">No Card</div>
+            <div class="feature-subtext">Required</div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">2</div>
+            <div class="feature-text">Brands</div>
+            <div class="feature-subtext">Free</div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">∞</div>
+            <div class="feature-text">Posts</div>
+            <div class="feature-subtext">Forever</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const phases = [
+      { duration: 6000 },
+      { duration: 6000 },
+      { duration: 5000 },
+      { duration: 6000 }
+    ];
+
+    let currentPhase = 0;
+    let startTime = Date.now();
+
+    function updatePhase() {
+      const elapsed = Date.now() - startTime;
+
+      if (elapsed >= phases[currentPhase].duration) {
+        document.querySelectorAll('.phase').forEach(p => p.classList.remove('active'));
+        currentPhase = (currentPhase + 1) % phases.length;
+        document.querySelectorAll('.phase')[currentPhase].classList.add('active');
+        startTime = Date.now();
+      }
+
+      requestAnimationFrame(updatePhase);
+    }
+
+    updatePhase();
+  </script>
+</body>
+</html>
+
+<!--
+VOICEOVER SCRIPT (with SaaS Motion Graphics):
+
+[0:00-0:06] HOOK (Deep Zoom): "Dive into the world of social media automation. Layer by layer, we're simplifying your workflow."
+
+[0:06-0:12] PROBLEM (Isometric View + Cursor Tracking): "Watch how traditional posting works. Manual clicks, constant monitoring, endless repetition. Exhausting, right?"
+
+[0:12-0:17] SOLUTION (Kinetic Typography): "Stop wasting time. Automate it. AI content, auto-scheduling, 24/7 posting, multi-platform support."
+
+[0:17-0:23] CTA (Morphing Button): "Meet POSTAIFY. Start free now. No credit card. 2 brands free. Unlimited posts forever."
+
+MOTION DESIGN TECHNIQUES USED:
+✓ Deep Zoom (infinite zoom through UI layers)
+✓ Isometric Rotation (3D dashboard view)
+✓ Cursor Tracking (smooth cursor path animation)
+✓ Skeleton Loading (pulsing content bars)
+✓ Glassmorphism (frosted glass backgrounds)
+✓ Glow/Bloom (neon light effects)
+✓ Motion Blur (on moving cursor)
+✓ Elastic Easing (overshoot on kinetic text)
+✓ Ripple Effect (expanding circles on pills)
+✓ Morphing (button shape transformations)
+✓ Abstract UI (grey bars representing interface)
+✓ Kinetic Typography (text pops with energy)
+✓ Drop Shadow Separation (card lift animations)
+✓ Conic Gradient Spin (rotating shine effect)
+
+RECOMMENDED VOICE: "Matthew" (energetic, tech-forward) or "Matilda" (modern, professional)
+-->

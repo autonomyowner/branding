@@ -29,7 +29,7 @@
       left: 50%;
       width: 800px;
       height: 800px;
-      background: radial-gradient(circle, rgba(167, 139, 250, 0.08) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(234, 179, 8, 0.08) 0%, transparent 70%);
       transform: translate(-50%, -50%);
       animation: pulse-bg 4s ease-in-out infinite;
     }
@@ -65,9 +65,9 @@
       background: conic-gradient(
         from 0deg,
         transparent,
-        rgba(167, 139, 250, 0.3),
-        rgba(124, 58, 237, 0.5),
-        rgba(167, 139, 250, 0.3),
+        rgba(234, 179, 8, 0.3),
+        rgba(202, 138, 4, 0.5),
+        rgba(234, 179, 8, 0.3),
         transparent
       );
       animation: rotate-glow 8s linear infinite;
@@ -82,7 +82,7 @@
     .logo-svg {
       width: 240px;
       height: 240px;
-      filter: drop-shadow(0 0 40px rgba(167, 139, 250, 0.4));
+      filter: drop-shadow(0 0 40px rgba(234, 179, 8, 0.4));
       position: relative;
       z-index: 1;
     }
@@ -111,7 +111,7 @@
       font-family: system-ui, -apple-system, sans-serif;
       font-size: 48px;
       font-weight: 700;
-      background: linear-gradient(135deg, #A78BFA 0%, #7C3AED 50%, #A78BFA 100%);
+      background: linear-gradient(135deg, #FACC15 0%, #EAB308 50%, #FACC15 100%);
       background-size: 200% 200%;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -128,7 +128,7 @@
     .brand-tagline {
       font-family: system-ui, -apple-system, sans-serif;
       font-size: 16px;
-      color: rgba(167, 139, 250, 0.6);
+      color: rgba(234, 179, 8, 0.6);
       margin-top: 12px;
       letter-spacing: 4px;
       text-transform: uppercase;
@@ -139,7 +139,7 @@
       position: absolute;
       width: 4px;
       height: 4px;
-      background: rgba(167, 139, 250, 0.6);
+      background: rgba(234, 179, 8, 0.6);
       border-radius: 50%;
       animation: float-particle 6s ease-in-out infinite;
     }
@@ -170,8 +170,8 @@
       <svg class="logo-svg" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" style="stop-color:#A78BFA"/>
-            <stop offset="100%" style="stop-color:#7C3AED"/>
+            <stop offset="0%" style="stop-color:#FACC15"/>
+            <stop offset="100%" style="stop-color:#EAB308"/>
           </linearGradient>
         </defs>
         <rect class="bar bar-1" x="4" y="6" width="16" height="3" rx="1.5" fill="url(#grad)"/>

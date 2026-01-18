@@ -880,7 +880,7 @@ export function RoadmapPage() {
                   <span className="text-sm text-primary">$21-56</span>
                 </div>
                 <div className="h-2 bg-white/10 rounded-full overflow-hidden">
-                  <div className="h-full bg-purple-500 w-[10%]" />
+                  <div className="h-full bg-yellow-500 w-[10%]" />
                 </div>
               </div>
               <div>
@@ -919,7 +919,7 @@ export function RoadmapPage() {
                     <span className="text-sm text-primary">$52-84</span>
                   </div>
                   <div className="h-2 bg-white/10 rounded-full overflow-hidden">
-                    <div className="h-full bg-purple-500 w-[15%]" />
+                    <div className="h-full bg-yellow-500 w-[15%]" />
                   </div>
                 </div>
                 <div>
@@ -953,7 +953,7 @@ export function RoadmapPage() {
             transition={{ delay: 0.35 }}
             className="mb-8"
           >
-            <Card className="p-6 border-purple-500/50">
+            <Card className="p-6 border-yellow-500/50">
               <h2 className="text-xl font-semibold mb-2">10 Micro-Influencer Partnership Strategy</h2>
               <p className="text-sm text-muted-foreground mb-6">Offer: $50 upfront + 20% of MRR from their referrals</p>
 
@@ -1009,8 +1009,8 @@ export function RoadmapPage() {
                     <p className="text-2xl font-bold">$50</p>
                     <p className="text-xs text-muted-foreground">Per influencer</p>
                   </div>
-                  <div className="bg-purple-500/10 rounded-lg p-4 border border-purple-500/30">
-                    <p className="font-semibold mb-2 text-purple-400">Recurring</p>
+                  <div className="bg-yellow-500/10 rounded-lg p-4 border border-yellow-500/30">
+                    <p className="font-semibold mb-2 text-yellow-400">Recurring</p>
                     <p className="text-2xl font-bold">20% MRR</p>
                     <p className="text-xs text-muted-foreground">From referrals</p>
                   </div>

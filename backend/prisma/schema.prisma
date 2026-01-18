@@ -60,7 +60,7 @@ model Brand {
   id          String   @id @default(cuid())
   name        String
   description String?
-  color       String   @default("#8b5cf6")
+  color       String   @default("#EAB308")
   initials    String   @default("BR")
   voice       String   @default("professional")
   topics      String[]

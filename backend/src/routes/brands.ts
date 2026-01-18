@@ -61,7 +61,7 @@ router.post('/', checkBrandQuota(), validateBody(createBrandSchema), async (req,
       data: {
         name,
         description,
-        color: color || '#8b5cf6',
+        color: color || '#EAB308',
         initials: brandInitials,
         voice: voice || 'professional',
         topics: topics || [],

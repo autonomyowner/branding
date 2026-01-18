@@ -20,7 +20,7 @@ export function QuickActions({ onGenerateContent, onAddBrand, onRepurpose, onVoi
       description: "Create new posts with AI",
       buttonText: "Start Creating",
       primary: true,
-      gradient: "from-primary/20 to-purple-500/20"
+      gradient: "from-primary/20 to-yellow-500/20"
     },
     {
       id: 'image',
@@ -36,7 +36,7 @@ export function QuickActions({ onGenerateContent, onAddBrand, onRepurpose, onVoi
       description: t('quickActions.voiceoverDesc'),
       buttonText: t('quickActions.voiceoverButton'),
       primary: false,
-      gradient: "from-purple-500/10 to-pink-500/10"
+      gradient: "from-yellow-500/10 to-amber-500/10"
     },
     {
       id: 'repurpose',

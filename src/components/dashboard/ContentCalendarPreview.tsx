@@ -85,7 +85,7 @@ export function ContentCalendarPreview({ onSchedulePost }: ContentCalendarPrevie
                     {Array.from({ length: Math.min(day.count, 3) }).map((_, i) => (
                       <div
                         key={i}
-                        className="w-3 h-3 sm:w-5 sm:h-5 rounded-full bg-gradient-to-br from-primary to-purple-500 border border-card"
+                        className="w-3 h-3 sm:w-5 sm:h-5 rounded-full bg-gradient-to-br from-primary to-yellow-500 border border-card"
                       />
                     ))}
                   </div>

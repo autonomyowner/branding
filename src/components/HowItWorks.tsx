@@ -77,7 +77,7 @@ function PulsingNode({ cx, cy, isActive, label, delay }: {
         cy={cy}
         r="20"
         fill="none"
-        stroke="hsl(262, 83%, 58%)"
+        stroke="hsl(48, 96%, 53%)"
         strokeWidth="1"
         initial={{ scale: 0.8, opacity: 0 }}
         animate={isActive ? {
@@ -91,7 +91,7 @@ function PulsingNode({ cx, cy, isActive, label, delay }: {
         cy={cy}
         r="30"
         fill="none"
-        stroke="hsl(262, 83%, 58%)"
+        stroke="hsl(48, 96%, 53%)"
         strokeWidth="0.5"
         initial={{ scale: 0.8, opacity: 0 }}
         animate={isActive ? {
@@ -106,12 +106,12 @@ function PulsingNode({ cx, cy, isActive, label, delay }: {
         cx={cx}
         cy={cy}
         r="12"
-        fill={isActive ? "hsl(262, 83%, 58%)" : "hsl(262, 30%, 20%)"}
+        fill={isActive ? "hsl(48, 96%, 53%)" : "hsl(48, 30%, 20%)"}
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ duration: 0.5, delay: delay * 0.2 }}
         style={{
-          filter: isActive ? "drop-shadow(0 0 15px hsl(262, 83%, 58%))" : "none"
+          filter: isActive ? "drop-shadow(0 0 15px hsl(48, 96%, 53%))" : "none"
         }}
       />
 
@@ -184,7 +184,7 @@ function DataVisualization({ activeStep }: { activeStep: number }) {
       <div
         className="absolute inset-0 opacity-30"
         style={{
-          background: `radial-gradient(ellipse at ${30 + activeStep * 20}% 50%, hsl(262, 83%, 40%) 0%, transparent 50%)`
+          background: `radial-gradient(ellipse at ${30 + activeStep * 20}% 50%, hsl(48, 96%, 40%) 0%, transparent 50%)`
         }}
       />
 
@@ -197,7 +197,7 @@ function DataVisualization({ activeStep }: { activeStep: number }) {
           {/* Gradient for particles */}
           <radialGradient id="particleGradient">
             <stop offset="0%" stopColor="white" />
-            <stop offset="100%" stopColor="hsl(262, 83%, 58%)" />
+            <stop offset="100%" stopColor="hsl(48, 96%, 53%)" />
           </radialGradient>
 
           {/* Glow filter */}
@@ -226,7 +226,7 @@ function DataVisualization({ activeStep }: { activeStep: number }) {
             y1={y}
             x2="480"
             y2={y}
-            stroke="hsl(262, 83%, 58%)"
+            stroke="hsl(48, 96%, 53%)"
             strokeWidth="0.5"
             strokeOpacity="0.1"
             initial={{ pathLength: 0 }}
@@ -242,7 +242,7 @@ function DataVisualization({ activeStep }: { activeStep: number }) {
               key={i}
               d={path.d}
               delay={path.delay}
-              color={i <= activeStep ? "hsl(262, 83%, 58%)" : "hsl(262, 30%, 30%)"}
+              color={i <= activeStep ? "hsl(48, 96%, 53%)" : "hsl(48, 30%, 30%)"}
             />
           ))}
         </g>
@@ -281,11 +281,11 @@ function DataVisualization({ activeStep }: { activeStep: number }) {
           width="80"
           height="3"
           rx="1.5"
-          fill="hsl(262, 83%, 58%)"
+          fill="hsl(48, 96%, 53%)"
           initial={{ scaleX: 0, opacity: 0 }}
           animate={{ scaleX: 1, opacity: 1 }}
           transition={{ duration: 0.3 }}
-          style={{ filter: "drop-shadow(0 0 10px hsl(262, 83%, 58%))" }}
+          style={{ filter: "drop-shadow(0 0 10px hsl(48, 96%, 53%))" }}
         />
 
         {/* Step progress bar */}
@@ -296,11 +296,11 @@ function DataVisualization({ activeStep }: { activeStep: number }) {
             y="250"
             height="4"
             rx="2"
-            fill="hsl(262, 83%, 58%)"
+            fill="hsl(48, 96%, 53%)"
             initial={{ width: 0 }}
             animate={{ width: 90 * (activeStep + 1) }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            style={{ filter: "drop-shadow(0 0 8px hsl(262, 83%, 58%))" }}
+            style={{ filter: "drop-shadow(0 0 8px hsl(48, 96%, 53%))" }}
           />
         </g>
 
@@ -320,11 +320,11 @@ function DataVisualization({ activeStep }: { activeStep: number }) {
               height="40"
               rx="6"
               fill="hsl(262, 30%, 10%)"
-              stroke="hsl(262, 83%, 58%)"
+              stroke="hsl(48, 96%, 53%)"
               strokeWidth="1"
               strokeOpacity="0.3"
             />
-            <text x="350" y="218" fill="hsl(262, 83%, 70%)" fontSize="8" fontFamily="monospace">
+            <text x="350" y="218" fill="hsl(48, 96%, 70%)" fontSize="8" fontFamily="monospace">
               STEP {String(activeStep + 1).padStart(2, '0')}
             </text>
             <text x="350" y="232" fill="white" fontSize="10" fontWeight="600">
@@ -337,7 +337,7 @@ function DataVisualization({ activeStep }: { activeStep: number }) {
               y="222"
               width="8"
               height="12"
-              fill="hsl(262, 83%, 58%)"
+              fill="hsl(48, 96%, 53%)"
               animate={{ opacity: [1, 0, 1] }}
               transition={{ duration: 1, repeat: Infinity }}
             />
@@ -345,7 +345,7 @@ function DataVisualization({ activeStep }: { activeStep: number }) {
         </AnimatePresence>
 
         {/* Corner decorations */}
-        <g stroke="hsl(262, 83%, 58%)" strokeWidth="1" strokeOpacity="0.5" fill="none">
+        <g stroke="hsl(48, 96%, 53%)" strokeWidth="1" strokeOpacity="0.5" fill="none">
           <path d="M 10 25 L 10 10 L 25 10" />
           <path d="M 455 10 L 470 10 L 470 25" />
           <path d="M 470 255 L 470 270 L 455 270" />
@@ -357,7 +357,7 @@ function DataVisualization({ activeStep }: { activeStep: number }) {
       <motion.div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: "linear-gradient(to bottom, transparent 0%, hsl(262, 83%, 58%) 50%, transparent 100%)",
+          background: "linear-gradient(to bottom, transparent 0%, hsl(48, 96%, 53%) 50%, transparent 100%)",
           height: "2px"
         }}
         animate={{ top: ["0%", "100%", "0%"] }}
@@ -414,9 +414,9 @@ export function HowItWorks() {
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-card/30 to-transparent" />
 
       {/* Ambient glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-primary/5 rounded-full blur-[150px]" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[300px] md:w-[800px] md:h-[600px] bg-primary/5 rounded-full blur-[100px] md:blur-[150px]" />
 
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -457,8 +457,8 @@ export function HowItWorks() {
                 {activeStep === index && (
                   <motion.div
                     layoutId="activeIndicator"
-                    className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-12 bg-primary rounded-r-full"
-                    style={{ filter: "drop-shadow(0 0 8px hsl(262, 83%, 58%))" }}
+                    className="absolute start-0 top-1/2 -translate-y-1/2 w-1 h-12 bg-primary rounded-e-full"
+                    style={{ filter: "drop-shadow(0 0 8px hsl(48, 96%, 53%))" }}
                   />
                 )}
 
@@ -513,7 +513,7 @@ export function HowItWorks() {
                 <div className="w-3 h-3 rounded-full bg-red-500/50" />
                 <div className="w-3 h-3 rounded-full bg-yellow-500/50" />
                 <div className="w-3 h-3 rounded-full bg-green-500/50" />
-                <span className="ml-3 text-xs text-muted-foreground font-mono">ai_pipeline.viz</span>
+                <span className="ms-3 text-xs text-muted-foreground font-mono">ai_pipeline.viz</span>
               </div>
 
               {/* Visualization */}
@@ -539,7 +539,7 @@ export function HowItWorks() {
 
             {/* Decorative elements */}
             <div className="absolute -top-4 -right-4 w-24 h-24 bg-primary/20 rounded-full blur-xl" />
-            <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-purple-500/10 rounded-full blur-xl" />
+            <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-yellow-500/10 rounded-full blur-xl" />
           </motion.div>
         </div>
 

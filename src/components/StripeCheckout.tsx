@@ -165,14 +165,14 @@ export function StripeCheckout({ isOpen, onClose, planName, planPrice, isYearly 
           >
             <Card className="w-full max-w-md p-0 overflow-hidden">
               {/* Header */}
-              <div className="bg-gradient-to-r from-violet-600/20 to-purple-600/20 border-b border-white/10 p-6">
+              <div className="bg-gradient-to-r from-yellow-600/20 to-amber-600/20 border-b border-white/10 p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
                     {/* Stripe Logo Mockup */}
                     <div className="flex items-center gap-1">
-                      <div className="w-2 h-5 bg-violet-500 rounded-sm" />
-                      <div className="w-2 h-5 bg-violet-400 rounded-sm" />
-                      <div className="w-2 h-5 bg-violet-300 rounded-sm" />
+                      <div className="w-2 h-5 bg-yellow-500 rounded-sm" />
+                      <div className="w-2 h-5 bg-yellow-400 rounded-sm" />
+                      <div className="w-2 h-5 bg-yellow-300 rounded-sm" />
                     </div>
                     <span className="text-sm font-medium text-muted-foreground">Secure Checkout</span>
                   </div>
@@ -239,9 +239,9 @@ export function StripeCheckout({ isOpen, onClose, planName, planPrice, isYearly 
                             onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
                             placeholder="1234 1234 1234 1234"
                             maxLength={19}
-                            className="w-full h-11 px-4 pr-12 rounded-lg bg-white/5 border border-white/10 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-foreground placeholder:text-muted-foreground"
+                            className="w-full h-11 px-4 pe-12 rounded-lg bg-white/5 border border-white/10 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-foreground placeholder:text-muted-foreground"
                           />
-                          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-1">
+                          <div className="absolute end-3 top-1/2 -translate-y-1/2 flex gap-1">
                             <div className="w-8 h-5 rounded bg-gradient-to-r from-blue-600 to-blue-400 flex items-center justify-center text-[8px] text-white font-bold">VISA</div>
                           </div>
                         </div>

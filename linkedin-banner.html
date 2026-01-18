@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LinkedIn Banner - Postaify</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #1a1a2e;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .banner {
+      width: 1584px;
+      height: 396px;
+      background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #0f0f1a 100%);
+      position: relative;
+      overflow: hidden;
+      border-radius: 8px;
+    }
+
+    /* Animated gradient orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+    }
+
+    .orb-1 {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(234, 179, 8, 0.4) 0%, transparent 70%);
+      top: -200px;
+      left: -100px;
+    }
+
+    .orb-2 {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(250, 204, 21, 0.3) 0%, transparent 70%);
+      bottom: -150px;
+      right: 200px;
+    }
+
+    .orb-3 {
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(234, 179, 8, 0.25) 0%, transparent 70%);
+      top: 50px;
+      right: -50px;
+    }
+
+    /* Grid pattern overlay */
+    .grid-pattern {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    /* Content container */
+    .content {
+      position: relative;
+      z-index: 10;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 80px;
+      padding-left: 30%;
+    }
+
+    /* Left side - Main text */
+    .left {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .logo-text {
+      font-size: 56px;
+      font-weight: 800;
+      letter-spacing: -2px;
+      background: linear-gradient(135deg, #fff 0%, #FACC15 50%, #EAB308 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .tagline {
+      font-size: 24px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.7);
+      max-width: 500px;
+      line-height: 1.4;
+    }
+
+    .tagline span {
+      color: #FACC15;
+      font-weight: 600;
+    }
+
+    /* Right side - Features */
+    .right {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      align-items: flex-end;
+    }
+
+    .feature {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 12px 24px;
+      border-radius: 100px;
+      backdrop-filter: blur(10px);
+    }
+
+    .feature-dot {
+      width: 8px;
+      height: 8px;
+      background: #EAB308;
+      border-radius: 50%;
+      box-shadow: 0 0 12px #EAB308;
+    }
+
+    .feature-text {
+      font-size: 16px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    /* URL badge */
+    .url-badge {
+      position: absolute;
+      bottom: 30px;
+      left: 30%;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(234, 179, 8, 0.2);
+      border: 1px solid rgba(234, 179, 8, 0.4);
+      padding: 10px 20px;
+      border-radius: 100px;
+    }
+
+    .url-badge-dot {
+      width: 10px;
+      height: 10px;
+      background: #22c55e;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #22c55e;
+    }
+
+    .url-text {
+      font-size: 18px;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: 0.5px;
+    }
+
+    /* Decorative lines */
+    .line {
+      position: absolute;
+      background: linear-gradient(90deg, transparent, rgba(234, 179, 8, 0.3), transparent);
+      height: 1px;
+    }
+
+    .line-1 {
+      width: 300px;
+      top: 80px;
+      right: 100px;
+      transform: rotate(-15deg);
+    }
+
+    .line-2 {
+      width: 200px;
+      bottom: 100px;
+      left: 400px;
+      transform: rotate(10deg);
+    }
+
+    /* Corner accents */
+    .corner {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border: 2px solid rgba(234, 179, 8, 0.2);
+    }
+
+    .corner-tl {
+      top: 20px;
+      left: 20px;
+      border-right: none;
+      border-bottom: none;
+    }
+
+    .corner-br {
+      bottom: 20px;
+      right: 20px;
+      border-left: none;
+      border-top: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="banner">
+    <!-- Background effects -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="grid-pattern"></div>
+    <div class="line line-1"></div>
+    <div class="line line-2"></div>
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-br"></div>
+
+    <!-- Main content -->
+    <div class="content">
+      <div class="left">
+        <div class="logo-text">Postaify</div>
+        <div class="tagline">
+          The First <span>Fully Automated</span><br>Content Platform
+        </div>
+      </div>
+
+      <div class="right">
+        <div class="feature">
+          <div class="feature-dot"></div>
+          <span class="feature-text">AI Content Generation</span>
+        </div>
+        <div class="feature">
+          <div class="feature-dot"></div>
+          <span class="feature-text">AI Image Creation</span>
+        </div>
+        <div class="feature">
+          <div class="feature-dot"></div>
+          <span class="feature-text">Auto Scheduling</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- URL badge -->
+    <div class="url-badge">
+      <div class="url-badge-dot"></div>
+      <span class="url-text">postaify.com</span>
+    </div>
+  </div>
+</body>
+</html>

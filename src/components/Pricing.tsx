@@ -1,6 +1,17 @@
-import { useRef, useState, type MouseEvent } from "react"
+import { useRef, useState, useEffect, type MouseEvent } from "react"
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion"
 import { useInView } from "framer-motion"
+
+// Hook to detect touch/mobile devices
+const useIsTouchDevice = () => {
+  const [isTouch, setIsTouch] = useState(false)
+
+  useEffect(() => {
+    setIsTouch('ontouchstart' in window || navigator.maxTouchPoints > 0 || window.innerWidth < 768)
+  }, [])
+
+  return isTouch
+}
 import { useTranslation } from "react-i18next"
 import { Button } from "./ui/button"
 import { Card } from "./ui/card"
@@ -28,6 +39,7 @@ interface TiltCardProps {
 
 function TiltCard({ children, className, popular }: TiltCardProps) {
   const cardRef = useRef<HTMLDivElement>(null)
+  const isTouch = useIsTouchDevice()
 
   const x = useMotionValue(0)
   const y = useMotionValue(0)
@@ -35,11 +47,11 @@ function TiltCard({ children, className, popular }: TiltCardProps) {
   const mouseXSpring = useSpring(x, { stiffness: 300, damping: 30 })
   const mouseYSpring = useSpring(y, { stiffness: 300, damping: 30 })
 
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["12deg", "-12deg"])
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-12deg", "12deg"])
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], isTouch ? ["0deg", "0deg"] : ["12deg", "-12deg"])
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], isTouch ? ["0deg", "0deg"] : ["-12deg", "12deg"])
 
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return
+    if (!cardRef.current || isTouch) return
 
     const rect = cardRef.current.getBoundingClientRect()
     const width = rect.width
@@ -62,32 +74,35 @@ function TiltCard({ children, className, popular }: TiltCardProps) {
   return (
     <motion.div
       ref={cardRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      onMouseMove={isTouch ? undefined : handleMouseMove}
+      onMouseLeave={isTouch ? undefined : handleMouseLeave}
       style={{
-        rotateX,
-        rotateY,
-        transformStyle: "preserve-3d",
+        rotateX: isTouch ? 0 : rotateX,
+        rotateY: isTouch ? 0 : rotateY,
+        transformStyle: isTouch ? undefined : "preserve-3d",
       }}
       className="relative"
     >
-      {/* Glow effect that follows cursor */}
-      <motion.div
-        className="absolute -inset-px rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-        style={{
-          background: popular
-            ? "radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(139, 92, 246, 0.15), transparent 40%)"
-            : "radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.06), transparent 40%)",
-        }}
-      />
+      {/* Glow effect that follows cursor - hidden on touch */}
+      {!isTouch && (
+        <motion.div
+          className="absolute -inset-px rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          style={{
+            background: popular
+              ? "radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(234, 179, 8, 0.15), transparent 40%)"
+              : "radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.06), transparent 40%)",
+          }}
+        />
+      )}
       <Card
         className={cn(
           "h-full p-6 relative transition-all duration-200",
-          "hover:border-white/20",
-          popular && "border-primary glow-purple",
+          !isTouch && "hover:border-white/20",
+          isTouch && "active:scale-[0.98]",
+          popular && "border-primary glow-yellow",
           className
         )}
-        style={{
+        style={isTouch ? undefined : {
           transform: "translateZ(50px)",
           transformStyle: "preserve-3d",
         }}
@@ -121,7 +136,9 @@ export function Pricing() {
 
   const handleEmailCaptured = () => {
     setEmailCaptureOpen(false)
-    setCheckoutOpen(true)
+    // Only proceed to checkout if not a beta waitlist (free plan checkout, if ever needed)
+    // For paid plans in beta, the modal handles the success state
+    // setCheckoutOpen(true)
   }
 
   const plans: Plan[] = [
@@ -175,7 +192,7 @@ export function Pricing() {
 
   return (
     <section id="pricing" ref={ref} className="py-24 relative" style={{ perspective: "1000px" }}>
-      <div className="max-w-6xl mx-auto px-6">
+      <div className="max-w-6xl mx-auto px-4 md:px-6">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -221,7 +238,7 @@ export function Pricing() {
               {t('pricing.yearlyLabel')}
             </span>
             {isYearly && (
-              <Badge variant="secondary" className="ml-2 bg-green-500/20 text-green-400 border-green-500/30">
+              <Badge variant="secondary" className="ms-2 bg-green-500/20 text-green-400 border-green-500/30">
                 {t('pricing.savePercentage')}
               </Badge>
             )}
@@ -262,6 +279,14 @@ export function Pricing() {
                   {isYearly && plan.saveAmount && (
                     <p className="text-sm text-green-400 mt-1">{plan.saveAmount}</p>
                   )}
+                  {/* Beta badge for paid plans */}
+                  {plan.price !== '£0' && plan.price !== '$0' && (
+                    <div className="mt-2 inline-block px-2 py-1 rounded-full bg-amber-500/20 border border-amber-500/30">
+                      <span className="text-xs font-medium text-amber-400">
+                        Beta - Paid plans coming soon
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 <Button
@@ -270,7 +295,7 @@ export function Pricing() {
                   style={{ transform: "translateZ(50px)" }}
                   onClick={() => handleSelectPlan(plan)}
                 >
-                  {plan.cta}
+                  {plan.price === '£0' || plan.price === '$0' ? plan.cta : 'Join Waitlist'}
                 </Button>
 
                 <ul className="space-y-3" style={{ transform: "translateZ(20px)" }}>
@@ -369,6 +394,7 @@ export function Pricing() {
         onContinue={handleEmailCaptured}
         planName={selectedPlan?.name || ""}
         planPrice={selectedPlan?.price || ""}
+        isBetaWaitlist={true}
       />
 
       {/* Stripe Checkout Modal */}

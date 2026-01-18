@@ -376,7 +376,7 @@ export function VideoToPostsModal({ isOpen, onClose }: VideoToPostsModalProps) {
                 <div>
                   <label className="block text-sm font-medium mb-2">{t('generateModal.selectBrand')}</label>
                   <div className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border">
-                    <div className="w-8 h-8 rounded-md flex items-center justify-center text-sm font-bold text-white" style={{ backgroundColor: selectedBrand?.color || '#8b5cf6' }}>
+                    <div className="w-8 h-8 rounded-md flex items-center justify-center text-sm font-bold text-white" style={{ backgroundColor: selectedBrand?.color || '#EAB308' }}>
                       {selectedBrand?.initials || '?'}
                     </div>
                     <span>{selectedBrand?.name || t('generateModal.selectBrand')}</span>
@@ -489,7 +489,7 @@ export function VideoToPostsModal({ isOpen, onClose }: VideoToPostsModalProps) {
                   </Button>
                 </div>
 
-                <div className="flex-1 overflow-y-auto space-y-3 pr-2">
+                <div className="flex-1 overflow-y-auto space-y-3 pe-2">
                   {generatedPosts.map((post, index) => {
                     const selection = postSelections[index]
                     if (!selection) return null
@@ -579,7 +579,7 @@ export function VideoToPostsModal({ isOpen, onClose }: VideoToPostsModalProps) {
                                     <Button size="sm" variant="outline" onClick={() => handleSavePost(index)}>Save Now</Button>
                                   </>
                                 )}
-                                <Button size="sm" variant="outline" onClick={() => handleOpenVoiceover(post)} className="text-purple-400 border-purple-500/30 hover:bg-purple-500/10">
+                                <Button size="sm" variant="outline" onClick={() => handleOpenVoiceover(post)} className="text-yellow-400 border-yellow-500/30 hover:bg-yellow-500/10">
                                   Voiceover
                                 </Button>
                               </div>
