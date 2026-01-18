@@ -136,7 +136,7 @@ export function Dashboard() {
         </motion.div>
 
         {/* Two Column Layout */}
-        <div className="grid lg:grid-cols-3 gap-8 mt-8">
+        <div className="grid lg:grid-cols-3 gap-4 sm:gap-8 mt-6 sm:mt-8">
           {/* Recent Posts - Takes 2 columns */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}

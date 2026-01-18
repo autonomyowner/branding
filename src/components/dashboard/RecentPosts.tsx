@@ -57,30 +57,30 @@ export function RecentPosts() {
 
   if (recentPosts.length === 0) {
     return (
-      <Card className="p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-semibold">{t('dashboard.recentPosts')}</h2>
+      <Card className="p-3 sm:p-6">
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
+          <h2 className="text-base sm:text-lg font-semibold">{t('dashboard.recentPosts')}</h2>
         </div>
-        <div className="text-center py-12">
-          <p className="text-muted-foreground mb-2">{t('dashboard.noPosts')}</p>
-          <p className="text-sm text-muted-foreground">{t('dashboard.createFirst')}</p>
+        <div className="text-center py-8 sm:py-12">
+          <p className="text-muted-foreground mb-2 text-sm">{t('dashboard.noPosts')}</p>
+          <p className="text-xs sm:text-sm text-muted-foreground">{t('dashboard.createFirst')}</p>
         </div>
       </Card>
     )
   }
 
   return (
-    <Card className="p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-semibold">{t('dashboard.recentPosts')}</h2>
-        <span className="text-sm text-muted-foreground">{posts.length} total</span>
+    <Card className="p-3 sm:p-6 overflow-hidden">
+      <div className="flex items-center justify-between mb-4 sm:mb-6">
+        <h2 className="text-base sm:text-lg font-semibold">{t('dashboard.recentPosts')}</h2>
+        <span className="text-xs sm:text-sm text-muted-foreground">{posts.length} total</span>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-2 sm:space-y-4">
         {recentPosts.map((post) => (
           <div
             key={post.id}
-            className="flex gap-4 p-3 rounded-lg hover:bg-white/5 transition-colors group"
+            className="flex gap-2 sm:gap-4 p-2 sm:p-3 rounded-lg hover:bg-white/5 transition-colors group"
           >
             {/* Platform Color Bar */}
             <div
@@ -95,20 +95,20 @@ export function RecentPosts() {
             />
 
             {/* Content */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <Badge variant="outline" className={`text-xs ${platformColors[post.platform]}`}>
+            <div className="flex-1 min-w-0 overflow-hidden">
+              <div className="flex items-center gap-1 sm:gap-2 mb-1 flex-wrap">
+                <Badge variant="outline" className={`text-[10px] sm:text-xs ${platformColors[post.platform]}`}>
                   {t(`posts.platform.${post.platform.toLowerCase()}`)}
                 </Badge>
-                <Badge variant="secondary" className={`text-xs ${statusColors[post.status]}`}>
+                <Badge variant="secondary" className={`text-[10px] sm:text-xs ${statusColors[post.status]}`}>
                   {t(`posts.status.${post.status}`)}
                 </Badge>
-                <span className="text-xs text-muted-foreground">{getBrandName(post.brandId)}</span>
+                <span className="text-[10px] sm:text-xs text-muted-foreground truncate hidden sm:inline">{getBrandName(post.brandId)}</span>
               </div>
-              <p className="text-sm text-foreground line-clamp-2 mb-1">
+              <p className="text-xs sm:text-sm text-foreground line-clamp-2 mb-1">
                 {post.content}
               </p>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-[10px] sm:text-xs text-muted-foreground">
                 {post.status === 'scheduled'
                   ? formatScheduledTime(post.scheduledFor)
                   : post.status === 'published'
@@ -118,20 +118,12 @@ export function RecentPosts() {
               </p>
             </div>
 
-            {/* Actions */}
-            <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-              {post.status === 'draft' && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handlePublish(post.id)}
-                >
-                  Publish
-                </Button>
-              )}
+            {/* Actions - visible on mobile, hover on desktop */}
+            <div className="flex items-center gap-1 sm:gap-2 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity flex-shrink-0">
               <Button
                 variant="ghost"
                 size="sm"
+                className="h-7 px-2 text-xs"
                 onClick={() => navigator.clipboard.writeText(post.content)}
               >
                 Copy
@@ -139,7 +131,7 @@ export function RecentPosts() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-red-400 hover:text-red-300"
+                className="text-red-400 hover:text-red-300 h-7 px-2 text-xs hidden sm:inline-flex"
                 onClick={() => deletePost(post.id)}
               >
                 Delete
