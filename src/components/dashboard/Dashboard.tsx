@@ -13,7 +13,6 @@ import { VoiceoverModal } from "./VoiceoverModal"
 import { ImageGeneratorModal } from "./ImageGeneratorModal"
 import { BrandModal } from "./BrandModal"
 import { SettingsModal } from "./SettingsModal"
-import { WelcomeModal } from "./WelcomeModal"
 import { MobileNav } from "./MobileNav"
 import { Link } from "react-router-dom"
 import { useData } from "../../context/DataContext"
@@ -45,9 +44,6 @@ export function Dashboard() {
     setIsGenerateModalOpen(false)
     setPendingImageUrl(undefined)
   }
-
-  // Show welcome modal for first-time visitors
-  const [isWelcomeModalOpen, setIsWelcomeModalOpen] = useState(!subscription.hasSeenWelcome)
 
   const userName = user?.name || user?.email?.split('@')[0] || 'User'
 
@@ -191,10 +187,6 @@ export function Dashboard() {
       <SettingsModal
         isOpen={isSettingsModalOpen}
         onClose={() => setIsSettingsModalOpen(false)}
-      />
-      <WelcomeModal
-        isOpen={isWelcomeModalOpen}
-        onClose={() => setIsWelcomeModalOpen(false)}
       />
 
       {/* Mobile Navigation - hide when any modal is open */}
