@@ -89,8 +89,8 @@ export function FAQ() {
           <p className="text-muted-foreground mb-2">{t('faq.stillHaveQuestions')}</p>
           <p className="text-white font-medium">
             {t('faq.contactUs')}{" "}
-            <a href="mailto:support@postaify.ai" className="text-primary hover:underline">
-              support@postaify.ai
+            <a href="mailto:support@postaify.com" className="text-primary hover:underline">
+              support@postaify.com
             </a>
           </p>
         </motion.div>

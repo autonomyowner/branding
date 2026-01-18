@@ -316,73 +316,90 @@ export function Pricing() {
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="mt-16"
+          className="mt-20 pt-16 border-t border-border/30"
         >
-          <h3 className="text-2xl font-bold text-center mb-8">
-            {t('pricing.compare') || 'Compare Plans'}
-          </h3>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left py-4 px-4 font-medium text-muted-foreground">Feature</th>
-                  <th className="text-center py-4 px-4 font-medium">Free</th>
-                  <th className="text-center py-4 px-4 font-medium bg-primary/5 rounded-t-lg">Pro</th>
-                  <th className="text-center py-4 px-4 font-medium">Business</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b border-border/50">
-                  <td className="py-3 px-4 text-muted-foreground">Brands</td>
-                  <td className="py-3 px-4 text-center">2</td>
-                  <td className="py-3 px-4 text-center bg-primary/5">5</td>
-                  <td className="py-3 px-4 text-center">Unlimited</td>
-                </tr>
-                <tr className="border-b border-border/50">
-                  <td className="py-3 px-4 text-muted-foreground">Posts per month</td>
-                  <td className="py-3 px-4 text-center">20</td>
-                  <td className="py-3 px-4 text-center bg-primary/5">1,000</td>
-                  <td className="py-3 px-4 text-center">90,000</td>
-                </tr>
-                <tr className="border-b border-border/50">
-                  <td className="py-3 px-4 text-muted-foreground">AI Image Generation</td>
-                  <td className="py-3 px-4 text-center text-muted-foreground">-</td>
-                  <td className="py-3 px-4 text-center bg-primary/5 text-primary">✓</td>
-                  <td className="py-3 px-4 text-center text-primary">✓</td>
-                </tr>
-                <tr className="border-b border-border/50">
-                  <td className="py-3 px-4 text-muted-foreground">AI Voiceover</td>
-                  <td className="py-3 px-4 text-center text-muted-foreground">-</td>
-                  <td className="py-3 px-4 text-center bg-primary/5 text-primary">✓</td>
-                  <td className="py-3 px-4 text-center text-primary">✓</td>
-                </tr>
-                <tr className="border-b border-border/50">
-                  <td className="py-3 px-4 text-muted-foreground">YouTube Repurposing</td>
-                  <td className="py-3 px-4 text-center text-muted-foreground">-</td>
-                  <td className="py-3 px-4 text-center bg-primary/5 text-primary">✓</td>
-                  <td className="py-3 px-4 text-center text-primary">✓</td>
-                </tr>
-                <tr className="border-b border-border/50">
-                  <td className="py-3 px-4 text-muted-foreground">Team Collaboration</td>
-                  <td className="py-3 px-4 text-center text-muted-foreground">-</td>
-                  <td className="py-3 px-4 text-center bg-primary/5 text-muted-foreground">-</td>
-                  <td className="py-3 px-4 text-center text-primary">✓</td>
-                </tr>
-                <tr className="border-b border-border/50">
-                  <td className="py-3 px-4 text-muted-foreground">API Access</td>
-                  <td className="py-3 px-4 text-center text-muted-foreground">-</td>
-                  <td className="py-3 px-4 text-center bg-primary/5 text-muted-foreground">-</td>
-                  <td className="py-3 px-4 text-center text-primary">✓</td>
-                </tr>
-                <tr>
-                  <td className="py-3 px-4 text-muted-foreground">Support</td>
-                  <td className="py-3 px-4 text-center">Community</td>
-                  <td className="py-3 px-4 text-center bg-primary/5 rounded-b-lg">Priority</td>
-                  <td className="py-3 px-4 text-center">Dedicated</td>
-                </tr>
-              </tbody>
-            </table>
+          {/* Section Header */}
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 text-sm text-muted-foreground mb-3">
+              <span className="text-primary font-medium">Pricing</span>
+              <span className="text-border">/</span>
+              <span>Compare</span>
+            </div>
+            <p className="text-muted-foreground mt-1">
+              See exactly what you get with each plan
+            </p>
           </div>
+
+          {/* Table Container */}
+          <Card className="overflow-hidden border-border/50">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-muted/30">
+                    <th className="text-left py-4 px-6 font-semibold text-foreground">Features</th>
+                    <th className="text-center py-4 px-6 font-semibold w-[120px]">Free</th>
+                    <th className="text-center py-4 px-6 font-semibold w-[120px] bg-primary/10 border-x border-primary/20">
+                      <div className="flex flex-col items-center gap-1">
+                        <span>Pro</span>
+                        <span className="text-[10px] font-normal text-primary">Popular</span>
+                      </div>
+                    </th>
+                    <th className="text-center py-4 px-6 font-semibold w-[120px]">Business</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/30">
+                  <tr className="hover:bg-muted/20 transition-colors">
+                    <td className="py-4 px-6 text-muted-foreground">Brands</td>
+                    <td className="py-4 px-6 text-center font-medium">2</td>
+                    <td className="py-4 px-6 text-center font-medium bg-primary/5 border-x border-primary/10">5</td>
+                    <td className="py-4 px-6 text-center font-medium">Unlimited</td>
+                  </tr>
+                  <tr className="hover:bg-muted/20 transition-colors">
+                    <td className="py-4 px-6 text-muted-foreground">Posts per month</td>
+                    <td className="py-4 px-6 text-center font-medium">20</td>
+                    <td className="py-4 px-6 text-center font-medium bg-primary/5 border-x border-primary/10">1,000</td>
+                    <td className="py-4 px-6 text-center font-medium">90,000</td>
+                  </tr>
+                  <tr className="hover:bg-muted/20 transition-colors">
+                    <td className="py-4 px-6 text-muted-foreground">AI Image Generation</td>
+                    <td className="py-4 px-6 text-center text-muted-foreground/50">—</td>
+                    <td className="py-4 px-6 text-center bg-primary/5 border-x border-primary/10 text-primary font-medium">✓</td>
+                    <td className="py-4 px-6 text-center text-primary font-medium">✓</td>
+                  </tr>
+                  <tr className="hover:bg-muted/20 transition-colors">
+                    <td className="py-4 px-6 text-muted-foreground">AI Voiceover</td>
+                    <td className="py-4 px-6 text-center text-muted-foreground/50">—</td>
+                    <td className="py-4 px-6 text-center bg-primary/5 border-x border-primary/10 text-primary font-medium">✓</td>
+                    <td className="py-4 px-6 text-center text-primary font-medium">✓</td>
+                  </tr>
+                  <tr className="hover:bg-muted/20 transition-colors">
+                    <td className="py-4 px-6 text-muted-foreground">YouTube Repurposing</td>
+                    <td className="py-4 px-6 text-center text-muted-foreground/50">—</td>
+                    <td className="py-4 px-6 text-center bg-primary/5 border-x border-primary/10 text-primary font-medium">✓</td>
+                    <td className="py-4 px-6 text-center text-primary font-medium">✓</td>
+                  </tr>
+                  <tr className="hover:bg-muted/20 transition-colors">
+                    <td className="py-4 px-6 text-muted-foreground">Team Collaboration</td>
+                    <td className="py-4 px-6 text-center text-muted-foreground/50">—</td>
+                    <td className="py-4 px-6 text-center bg-primary/5 border-x border-primary/10 text-muted-foreground/50">—</td>
+                    <td className="py-4 px-6 text-center text-primary font-medium">✓</td>
+                  </tr>
+                  <tr className="hover:bg-muted/20 transition-colors">
+                    <td className="py-4 px-6 text-muted-foreground">API Access</td>
+                    <td className="py-4 px-6 text-center text-muted-foreground/50">—</td>
+                    <td className="py-4 px-6 text-center bg-primary/5 border-x border-primary/10 text-muted-foreground/50">—</td>
+                    <td className="py-4 px-6 text-center text-primary font-medium">✓</td>
+                  </tr>
+                  <tr className="hover:bg-muted/20 transition-colors">
+                    <td className="py-4 px-6 text-muted-foreground">Support</td>
+                    <td className="py-4 px-6 text-center text-muted-foreground">Community</td>
+                    <td className="py-4 px-6 text-center bg-primary/5 border-x border-primary/10 text-foreground">Priority</td>
+                    <td className="py-4 px-6 text-center text-foreground">Dedicated</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </Card>
         </motion.div>
 
       </div>
