@@ -218,7 +218,7 @@ export function CalendarPage() {
   }, [posts])
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background overflow-x-hidden">
       {/* Ambient background effects */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-amber-500/5 rounded-full blur-[150px]" />
@@ -228,7 +228,7 @@ export function CalendarPage() {
       {/* Header */}
       <header className="border-b border-white/5 bg-black/40 backdrop-blur-2xl sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-4 sm:gap-8">
             <Logo />
             <nav className="hidden md:flex items-center gap-6">
               <Link to="/dashboard" className="text-sm text-white/50 hover:text-white transition-colors">{t('nav.dashboard')}</Link>
