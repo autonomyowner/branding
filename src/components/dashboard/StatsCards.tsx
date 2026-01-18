@@ -6,13 +6,11 @@ import { useSubscription } from "../../context/SubscriptionContext"
 export function StatsCards() {
   const { t } = useTranslation()
   const { getStats, brands } = useData()
-  const { subscription, currentLimits, getUsagePercentage, getRemainingCount, openUpgradeModal } = useSubscription()
+  const { subscription, currentLimits, getUsagePercentage, openUpgradeModal } = useSubscription()
   const stats = getStats()
 
   const postsPercentage = getUsagePercentage('posts', 0)
   const brandsPercentage = getUsagePercentage('brands', brands.length)
-  const postsRemaining = getRemainingCount('posts', 0)
-  const brandsRemaining = getRemainingCount('brands', brands.length)
 
   const getStatusColor = (percentage: number) => {
     if (percentage >= 100) return { bar: 'bg-red-500', text: 'text-red-400', glow: 'shadow-red-500/20' }
