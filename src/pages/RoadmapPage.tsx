@@ -146,232 +146,312 @@ const initialOutreachSections: Section[] = [
 
 const initialAdsSections: Section[] = [
   {
-    id: "daily-ads",
-    title: "Daily 4-6 Hour Schedule",
-    subtitle: "Paid Ads + Organic Content Strategy",
+    id: "pre-launch",
+    title: "Before You Spend $1",
+    subtitle: "Critical setup that 3x your results",
     tasks: [
-      { id: "ad1", text: "Hour 1: Create & launch Facebook/Instagram ads (3-5 variations)", completed: false },
-      { id: "ad2", text: "Hour 2: Create organic content (3 Reels, 5 Stories, 2 Posts)", completed: false },
-      { id: "ad3", text: "Hour 3: Monitor ad performance + adjust targeting/budgets", completed: false },
-      { id: "ad4", text: "Hour 4: Engage with ALL comments + DMs (ads + organic)", completed: false },
-      { id: "ad5", text: "Hour 5: Content creation for YouTube, TikTok, Blog", completed: false },
-      { id: "ad6", text: "Hour 6: Analyze metrics + plan next day (CTR, CPA, engagement)", completed: false },
+      { id: "pre-1", text: "REMOVE waitlist - create direct signup flow for ad traffic", completed: false },
+      { id: "pre-2", text: "Add Google SSO to signup (reduces friction 30%)", completed: false },
+      { id: "pre-3", text: "Speed up landing page to under 2 seconds load time", completed: false },
+      { id: "pre-4", text: "Add live user count: '2,847 creators joined this week'", completed: false },
+      { id: "pre-5", text: "Create single-CTA landing page (remove nav menu)", completed: false },
+      { id: "pre-6", text: "Set up 7-day email onboarding sequence (see Email System)", completed: false },
+      { id: "pre-7", text: "Create special offer for ad traffic: 50 free posts (vs 20)", completed: false },
+      { id: "pre-8", text: "Install TikTok Pixel + Meta Pixel with conversion events", completed: false },
+    ]
+  },
+  {
+    id: "ugc-creation",
+    title: "UGC Content Creation",
+    subtitle: "Record these 5 videos before running ads",
+    tasks: [
+      { id: "ugc-1", text: "Hook 1: 'Still spending 8+ hours on social media?' (problem)", completed: false },
+      { id: "ugc-2", text: "Hook 2: 'I manage 5 brands from my phone. Here's how.' (curiosity)", completed: false },
+      { id: "ugc-3", text: "Hook 3: 'POV: You just scheduled 30 days in 5 minutes' (result)", completed: false },
+      { id: "ugc-4", text: "Hook 4: 'This app replaced my $2000/month social media manager' (money)", completed: false },
+      { id: "ugc-5", text: "Hook 5: 'Stop. If you're still posting manually...' (pattern interrupt)", completed: false },
+      { id: "ugc-6", text: "Record on iPhone (authentic > polished), good lighting only", completed: false },
+      { id: "ugc-7", text: "Add captions to all videos (85% watch muted)", completed: false },
+      { id: "ugc-8", text: "Keep videos 21-34 seconds (optimal length)", completed: false },
+      { id: "ugc-9", text: "Change scenes every 2-3 seconds (retain attention)", completed: false },
+      { id: "ugc-10", text: "End with clear CTA card (last 3-5 seconds)", completed: false },
     ]
   },
   {
     id: "week1-ads",
-    title: "Week 1: Foundation",
-    subtitle: "Setup ads + organic content engine",
-    budget: "$200 ad spend",
+    title: "Week 1: Learning Phase",
+    subtitle: "Build pixel data + test creatives",
+    budget: "$300 ad spend",
     tasks: [
-      { id: "w1a-1", text: "Set up Facebook Business Manager + Meta Pixel", completed: false },
-      { id: "w1a-2", text: "Create Instagram & TikTok Business accounts", completed: false },
-      { id: "w1a-3", text: "Install Meta Pixel on T21 landing page", completed: false },
-      { id: "w1a-4", text: "Create 5 ad creative variations (video + image)", completed: false },
-      { id: "w1a-5", text: "Set up conversion tracking (sign-ups + trials)", completed: false },
-      { id: "w1a-6", text: "Define target audiences (5 different segments)", completed: false },
-      { id: "w1a-7", text: "Launch first campaign: $100 budget, broad targeting", completed: false },
-      { id: "w1a-8", text: "Post 2-3 Reels per day (product demos, tips, before/after)", completed: false },
-      { id: "w1a-9", text: "Post 3-5 Stories per day (behind-the-scenes, features)", completed: false },
-      { id: "w1a-10", text: "Start YouTube channel - upload first demo video", completed: false },
-      { id: "w1a-11", text: "Create lookalike audience from website visitors", completed: false },
-      { id: "w1a-12", text: "Write 2 blog posts for SEO (organic search traffic)", completed: false },
+      { id: "w1a-1", text: "Set up TikTok Ads Manager + Business Center", completed: false },
+      { id: "w1a-2", text: "Campaign 1: Video Views objective (build audience)", completed: false },
+      { id: "w1a-3", text: "Budget: $20-30/day, BROAD targeting (10M+ audience)", completed: false },
+      { id: "w1a-4", text: "Age: 25-44, Location: US/UK/CA/AU", completed: false },
+      { id: "w1a-5", text: "Enable Smart Targeting (improves CPA 5%)", completed: false },
+      { id: "w1a-6", text: "Upload all 5 UGC videos as separate ad creatives", completed: false },
+      { id: "w1a-7", text: "DO NOT touch ads for 3-4 days (let algorithm learn)", completed: false },
+      { id: "w1a-8", text: "Track: 3-sec view rate (target >50%), CTR (target >1%)", completed: false },
+      { id: "w1a-9", text: "Post UGC organically on TikTok too (test hooks free)", completed: false },
+      { id: "w1a-10", text: "Respond to ALL comments on ads within 1 hour", completed: false },
     ]
   },
   {
     id: "week2-ads",
-    title: "Week 2: Optimize",
-    subtitle: "Scale ads + grow organic reach",
-    budget: "$300 ad spend",
+    title: "Week 2: Interest Targeting",
+    subtitle: "Drive traffic + test audiences",
+    budget: "$400 ad spend",
     tasks: [
-      { id: "w2a-1", text: "Analyze Week 1 data (CPA, CTR, conversion rate)", completed: false },
-      { id: "w2a-2", text: "Kill underperforming ad sets (CPA > $15)", completed: false },
-      { id: "w2a-3", text: "Double budget on best-performing ads ($150)", completed: false },
-      { id: "w2a-4", text: "Create retargeting campaign for website visitors ($80)", completed: false },
-      { id: "w2a-5", text: "Launch Instagram Story ads ($70)", completed: false },
-      { id: "w2a-6", text: "Post 3 Reels per day (use trending audio + hashtags)", completed: false },
-      { id: "w2a-7", text: "Post 5 Stories per day + engage with followers", completed: false },
-      { id: "w2a-8", text: "Upload 2 YouTube videos (tutorials, case studies)", completed: false },
-      { id: "w2a-9", text: "Write 3 blog posts + share on social media", completed: false },
-      { id: "w2a-10", text: "Test carousel ads vs single image vs video", completed: false },
-      { id: "w2a-11", text: "Partner with 2 micro-influencers for shoutouts", completed: false },
-      { id: "w2a-12", text: "Start TikTok - post 2 videos per day", completed: false },
+      { id: "w2a-1", text: "Analyze Week 1: Kill ads with CTR <0.5%", completed: false },
+      { id: "w2a-2", text: "Campaign 2: Traffic objective (drive clicks)", completed: false },
+      { id: "w2a-3", text: "Interest targeting: Entrepreneurship + Small Business", completed: false },
+      { id: "w2a-4", text: "Interest targeting: Social Media Marketing + Content Creation", completed: false },
+      { id: "w2a-5", text: "Behavior targeting: Followed business/marketing creators (7 days)", completed: false },
+      { id: "w2a-6", text: "Budget: $30-50/day across 3 ad sets", completed: false },
+      { id: "w2a-7", text: "Create Custom Audience: Video viewers 50%+ watched", completed: false },
+      { id: "w2a-8", text: "Create Custom Audience: Website visitors (last 14 days)", completed: false },
+      { id: "w2a-9", text: "Record 2 more UGC videos based on best-performing hooks", completed: false },
+      { id: "w2a-10", text: "Track: CPC (target <$1.50), Landing page CVR (target >7%)", completed: false },
+      { id: "w2a-11", text: "A/B test landing page headline if CVR <5%", completed: false },
     ]
   },
   {
     id: "week3-ads",
-    title: "Week 3: Scale",
-    subtitle: "Maximize paid + organic growth",
-    budget: "$500 ad spend",
+    title: "Week 3: Retargeting",
+    subtitle: "Convert warm audiences (highest ROI)",
+    budget: "$600 ad spend",
     tasks: [
-      { id: "w3a-1", text: "Scale best ad sets to $250 total budget", completed: false },
-      { id: "w3a-2", text: "Launch conversion campaign targeting lookalikes ($150)", completed: false },
-      { id: "w3a-3", text: "Create testimonial-based ads from trial users", completed: false },
-      { id: "w3a-4", text: "Run Instagram Reels ads ($100 budget)", completed: false },
-      { id: "w3a-5", text: "Post 4 Reels per day across Instagram + TikTok", completed: false },
-      { id: "w3a-6", text: "Post 2 YouTube videos (long-form tutorials)", completed: false },
-      { id: "w3a-7", text: "Write 4 blog posts targeting high-intent keywords", completed: false },
-      { id: "w3a-8", text: "Run organic giveaway (follow + tag friends)", completed: false },
-      { id: "w3a-9", text: "Collaborate with 3 micro-influencers (content trades)", completed: false },
-      { id: "w3a-10", text: "Create Pinterest account + pin all blog posts", completed: false },
-      { id: "w3a-11", text: "Optimize best-performing organic content (repost/repurpose)", completed: false },
+      { id: "w3a-1", text: "Campaign 3: Conversions objective (signups)", completed: false },
+      { id: "w3a-2", text: "Retarget: Video viewers 50%+ (warmest audience)", completed: false },
+      { id: "w3a-3", text: "Retarget: Website visitors who didn't sign up", completed: false },
+      { id: "w3a-4", text: "Retarget: TikTok profile visitors + engagers", completed: false },
+      { id: "w3a-5", text: "Allocate 50% of budget to retargeting ($300)", completed: false },
+      { id: "w3a-6", text: "Create 1% Lookalike audience from converters", completed: false },
+      { id: "w3a-7", text: "Test Spark Ads: Boost best organic TikTok post", completed: false },
+      { id: "w3a-8", text: "Add urgency to retargeting ads: 'Limited beta spots'", completed: false },
+      { id: "w3a-9", text: "Collect first testimonials from trial users", completed: false },
+      { id: "w3a-10", text: "Track: CAC (target <$25), Trial→Paid rate (target >20%)", completed: false },
     ]
   },
   {
     id: "week4-ads",
-    title: "Week 4: Maximize",
-    subtitle: "Peak paid + organic performance",
-    budget: "$800 ad spend",
+    title: "Week 4: Scale Winners",
+    subtitle: "Double down on what works",
+    budget: "$700 ad spend",
     tasks: [
-      { id: "w4a-1", text: "Allocate $560 to proven winning ad sets", completed: false },
-      { id: "w4a-2", text: "Test $240 on new audiences/creatives", completed: false },
-      { id: "w4a-3", text: "Launch urgency-based ads (limited time offer)", completed: false },
-      { id: "w4a-4", text: "Create case study video ads from customers", completed: false },
-      { id: "w4a-5", text: "Run retargeting to video viewers (50%+ watched)", completed: false },
-      { id: "w4a-6", text: "Post 5 Reels per day (comparison, results, tutorials)", completed: false },
-      { id: "w4a-7", text: "Upload 3 YouTube videos (SEO-optimized)", completed: false },
-      { id: "w4a-8", text: "Write 5 blog posts + optimize old posts", completed: false },
-      { id: "w4a-9", text: "Create organic referral program (share = bonus)", completed: false },
-      { id: "w4a-10", text: "Repurpose top content across all platforms", completed: false },
-      { id: "w4a-11", text: "Document what worked for Month 2 playbook", completed: false },
-      { id: "w4a-12", text: "Hit 50-80 paying customers & $500-800 MRR", completed: false },
+      { id: "w4a-1", text: "Increase winning ad sets by 20% every 3 days", completed: false },
+      { id: "w4a-2", text: "Kill any ad with CAC 2x target (>$50)", completed: false },
+      { id: "w4a-3", text: "Duplicate winners with new Lookalike audiences", completed: false },
+      { id: "w4a-4", text: "Create testimonial-based UGC from first customers", completed: false },
+      { id: "w4a-5", text: "Test Instagram Reels ads with best TikTok creatives", completed: false },
+      { id: "w4a-6", text: "Launch monthly→annual upgrade campaign to existing users", completed: false },
+      { id: "w4a-7", text: "Offer $5 first month to hesitant trial users", completed: false },
+      { id: "w4a-8", text: "Document winning: hooks, audiences, CTAs for Month 2", completed: false },
+      { id: "w4a-9", text: "Target: 100-180 paid customers from $2K spend", completed: false },
+      { id: "w4a-10", text: "Target: $900-1,620 MRR (at $9 avg)", completed: false },
     ]
   },
   {
-    id: "facebook-ads",
-    title: "Facebook Ads Strategy",
-    subtitle: "Campaign structure",
+    id: "tiktok-strategy",
+    title: "TikTok Ads Strategy",
+    subtitle: "47% cheaper than Meta, better for creators",
     tasks: [
-      { id: "fb-1", text: "Campaign objective: Conversions (not traffic)", completed: false },
-      { id: "fb-2", text: "Target: Social media managers, content creators, 25-45", completed: false },
-      { id: "fb-3", text: "Placements: Facebook Feed + Instagram Feed + Stories", completed: false },
-      { id: "fb-4", text: "Budget: Start $20-30/day, scale to $100-200/day", completed: false },
-      { id: "fb-5", text: "Creative: Short video demos (15-30 sec)", completed: false },
-      { id: "fb-6", text: "Copy: Problem → Solution → CTA format", completed: false },
-      { id: "fb-7", text: "Test 5 ad variations per week", completed: false },
-      { id: "fb-8", text: "Target CPA: Under $10 per trial sign-up", completed: false },
+      { id: "tt-1", text: "Rule: 'Don't make ads, make TikToks' (native content wins)", completed: false },
+      { id: "tt-2", text: "UGC > Polished: iPhone footage outperforms studio ads", completed: false },
+      { id: "tt-3", text: "Hook in first 3 seconds or lose 75% of viewers", completed: false },
+      { id: "tt-4", text: "Add movement + text overlay to hook (both required)", completed: false },
+      { id: "tt-5", text: "Structure: Hook (3s) → Problem (5s) → Solution (10s) → CTA (5s)", completed: false },
+      { id: "tt-6", text: "Use Spark Ads to boost organic posts (2-3x better performance)", completed: false },
+      { id: "tt-7", text: "Start broad (10M+), let algorithm find converters", completed: false },
+      { id: "tt-8", text: "Refresh creatives every 7 days (performance drops 37%)", completed: false },
+      { id: "tt-9", text: "Test 3-5 creatives per ad group minimum", completed: false },
+      { id: "tt-10", text: "Benchmark: CTR >1%, CVR >0.5%, CPC <$1", completed: false },
     ]
   },
   {
-    id: "instagram-growth",
-    title: "Instagram Organic Growth",
-    subtitle: "Build following + engagement (no outreach)",
+    id: "email-sequence",
+    title: "7-Day Email Onboarding",
+    subtitle: "Converts 21.4% of trials to paid (critical!)",
     tasks: [
-      { id: "ig-1", text: "Post 3-5 Reels per day (trending audio + viral hooks)", completed: false },
-      { id: "ig-2", text: "Create 5-7 Stories per day (behind-the-scenes, tips, polls)", completed: false },
-      { id: "ig-3", text: "Use 25-30 relevant hashtags per post", completed: false },
-      { id: "ig-4", text: "Engage with 50-100 posts in your niche daily", completed: false },
-      { id: "ig-5", text: "Reply to ALL comments within 1 hour", completed: false },
-      { id: "ig-6", text: "Create content in trending formats (transformations, tutorials)", completed: false },
-      { id: "ig-7", text: "Collaborate with other creators (duets/shares)", completed: false },
-      { id: "ig-8", text: "Post user testimonials, results, case studies", completed: false },
+      { id: "em-1", text: "Day 0: Welcome + 60-second quick win tutorial", completed: false },
+      { id: "em-2", text: "Day 1: 'Did you try AI image generation?' (feature discovery)", completed: false },
+      { id: "em-3", text: "Day 2: 'Your posts can talk now' (voiceover feature)", completed: false },
+      { id: "em-4", text: "Day 3: Customer success story (social proof)", completed: false },
+      { id: "em-5", text: "Day 4: 'But will it sound like me?' (objection handler)", completed: false },
+      { id: "em-6", text: "Day 5: Usage review + personalized suggestions", completed: false },
+      { id: "em-7", text: "Day 6: 'Your trial ends tomorrow' (urgency)", completed: false },
+      { id: "em-8", text: "Day 7: '$5 first month' special offer (final push)", completed: false },
+      { id: "em-9", text: "Single CTA per email, keep under 150 words", completed: false },
+      { id: "em-10", text: "Personalize by usage: active vs inactive users", completed: false },
     ]
   },
   {
-    id: "content-seo",
-    title: "Content Creation & Organic Traffic",
-    subtitle: "Long-term SEO + YouTube strategy",
+    id: "micro-influencers",
+    title: "Micro-Influencer Strategy",
+    subtitle: "Cheapest CAC, authentic content",
     tasks: [
-      { id: "seo-1", text: "YouTube: Upload 2-3 videos per week (tutorials, demos)", completed: false },
-      { id: "seo-2", text: "Blog: Write 3-5 SEO-optimized posts per week", completed: false },
-      { id: "seo-3", text: "TikTok: Post 2-3 short videos daily", completed: false },
-      { id: "seo-4", text: "Pinterest: Pin all blog posts + infographics", completed: false },
-      { id: "seo-5", text: "Reddit: Share valuable content (no spam) in relevant subs", completed: false },
-      { id: "seo-6", text: "Quora: Answer questions with helpful content", completed: false },
-      { id: "seo-7", text: "Repurpose content: 1 YouTube video → 5 TikToks → 1 blog post", completed: false },
-      { id: "seo-8", text: "Build email list from all organic channels", completed: false },
+      { id: "mi-1", text: "Find 10 creators (5K-50K followers) in productivity/business niche", completed: false },
+      { id: "mi-2", text: "Offer: Free Pro forever + $50 per video", completed: false },
+      { id: "mi-3", text: "Get 10 authentic review videos for $500 total", completed: false },
+      { id: "mi-4", text: "Use best 3 videos as Spark Ads ($500 boost budget)", completed: false },
+      { id: "mi-5", text: "Expected: 200K-500K views, 3-5x better conversion than brand ads", completed: false },
+      { id: "mi-6", text: "Retarget all video viewers with conversion campaign", completed: false },
+      { id: "mi-7", text: "Ask creators for affiliate partnership (10% commission)", completed: false },
+    ]
+  },
+  {
+    id: "landing-optimization",
+    title: "Landing Page Optimization",
+    subtitle: "3.8% → 10%+ conversion rate",
+    tasks: [
+      { id: "lp-1", text: "Hero: Single benefit headline 'Schedule 30 days in 5 minutes'", completed: false },
+      { id: "lp-2", text: "Remove navigation menu (loses 20-30% of visitors)", completed: false },
+      { id: "lp-3", text: "Single CTA repeated 3x: hero, mid-page, footer", completed: false },
+      { id: "lp-4", text: "Add 30-sec demo video (autoplaying, muted)", completed: false },
+      { id: "lp-5", text: "Social proof: Live user count + star rating + testimonials", completed: false },
+      { id: "lp-6", text: "Form: Email only (or Google SSO button)", completed: false },
+      { id: "lp-7", text: "Load time under 2 seconds (every second = -7% conversion)", completed: false },
+      { id: "lp-8", text: "Mobile-first design (60% of traffic is mobile)", completed: false },
+      { id: "lp-9", text: "Add urgency: 'Limited beta spots remaining'", completed: false },
+      { id: "lp-10", text: "FAQ section: Handle top 4 objections", completed: false },
+    ]
+  },
+  {
+    id: "metrics-tracking",
+    title: "Weekly Metrics Review",
+    subtitle: "Track these every week",
+    tasks: [
+      { id: "mt-1", text: "CTR by creative - kill anything below 0.5%", completed: false },
+      { id: "mt-2", text: "CPC by audience - reallocate budget to winners", completed: false },
+      { id: "mt-3", text: "Landing page CVR - A/B test if below 5%", completed: false },
+      { id: "mt-4", text: "Email open rates - test subject lines if below 40%", completed: false },
+      { id: "mt-5", text: "Trial→Paid rate - improve onboarding if below 15%", completed: false },
+      { id: "mt-6", text: "CAC calculation - must be under $30 for profitability", completed: false },
+      { id: "mt-7", text: "3-sec view rate on videos - fix hooks if below 50%", completed: false },
+      { id: "mt-8", text: "Hook performance drops 37% after 7 days - refresh weekly", completed: false },
     ]
   },
 ]
 
 const initialQuick10Sections: Section[] = [
   {
-    id: "week1-quick",
-    title: "Week 1: Low-Hanging Fruit",
-    subtitle: "Get first 3-5 customers from personal network",
+    id: "day1-setup",
+    title: "Day 1: Critical Setup",
+    subtitle: "Do these BEFORE anything else",
     budget: "$0",
     tasks: [
-      { id: "q1-1", text: "Message 20 friends/family/colleagues about T21", completed: false },
-      { id: "q1-2", text: "Offer free 3-month Pro trial to first 5 who try it", completed: false },
-      { id: "q1-3", text: "Post about T21 on your personal social media", completed: false },
-      { id: "q1-4", text: "DM everyone who likes/comments with trial offer", completed: false },
-      { id: "q1-5", text: "Convert 3-5 trials to paid (offer 50% lifetime discount)", completed: false },
-      { id: "q1-6", text: "Post in 5 Facebook groups (provide value first)", completed: false },
-      { id: "q1-7", text: "Post in 5 Reddit communities (helpful, not spam)", completed: false },
-      { id: "q1-8", text: "Join 3 Slack/Discord communities for creators", completed: false },
+      { id: "d1-1", text: "REMOVE waitlist - enable direct free signup", completed: false },
+      { id: "d1-2", text: "Add Google SSO button (reduces friction 30%)", completed: false },
+      { id: "d1-3", text: "Create special offer: 50 free posts for first 100 users", completed: false },
+      { id: "d1-4", text: "Set up basic 3-email welcome sequence", completed: false },
+      { id: "d1-5", text: "Add urgency to landing: 'Only 47 beta spots left'", completed: false },
+      { id: "d1-6", text: "Prepare $5 first month offer for conversions", completed: false },
+    ]
+  },
+  {
+    id: "week1-quick",
+    title: "Week 1: Personal Network + UGC",
+    subtitle: "Get first 3-4 customers (free)",
+    budget: "$0",
+    tasks: [
+      { id: "q1-1", text: "List 30 people you know who create content/run business", completed: false },
+      { id: "q1-2", text: "Send personalized voice message (not text) on WhatsApp/IG", completed: false },
+      { id: "q1-3", text: "Offer: Free Pro forever if they record 30-sec testimonial", completed: false },
+      { id: "q1-4", text: "Record 3 UGC videos yourself (hooks from Ads roadmap)", completed: false },
+      { id: "q1-5", text: "Post UGC on TikTok + Instagram Reels (test hooks free)", completed: false },
+      { id: "q1-6", text: "DM everyone who engages with your videos", completed: false },
+      { id: "q1-7", text: "Convert 2-3 friends to paid with 50% lifetime discount", completed: false },
+      { id: "q1-8", text: "Ask each paying customer to refer 2 friends (offer bonus)", completed: false },
+      { id: "q1-9", text: "Post in r/SocialMediaMarketing, r/Entrepreneur (value first)", completed: false },
+      { id: "q1-10", text: "Join 3 Discord/Slack communities for creators", completed: false },
     ]
   },
   {
     id: "week2-quick",
-    title: "Week 2: Product Hunt + Communities",
-    subtitle: "Launch + get 3-5 more customers",
-    budget: "$0-50",
+    title: "Week 2: Micro-Influencers + Communities",
+    subtitle: "Get 4-5 more customers",
+    budget: "$50-100",
     tasks: [
-      { id: "q2-1", text: "Prepare Product Hunt launch (screenshots, video)", completed: false },
-      { id: "q2-2", text: "Schedule launch for Tuesday/Wednesday", completed: false },
-      { id: "q2-3", text: "Message 50 people to upvote on launch day", completed: false },
-      { id: "q2-4", text: "Reply to EVERY Product Hunt comment within 5 minutes", completed: false },
-      { id: "q2-5", text: "Offer PH exclusive: 50% off forever for first 20", completed: false },
-      { id: "q2-6", text: "Convert 3-5 Product Hunt users to paid", completed: false },
-      { id: "q2-7", text: "Post in 10 more Facebook groups (different ones)", completed: false },
-      { id: "q2-8", text: "DM 20 warm leads from communities with demo", completed: false },
+      { id: "q2-1", text: "Find 5 micro-influencers (5K-20K followers) in your niche", completed: false },
+      { id: "q2-2", text: "DM offer: Free Pro forever + $20 if they post about it", completed: false },
+      { id: "q2-3", text: "Get 3-5 authentic review videos/posts from influencers", completed: false },
+      { id: "q2-4", text: "Share influencer content on your social (social proof)", completed: false },
+      { id: "q2-5", text: "Post in 10 Facebook groups (answer questions, soft pitch)", completed: false },
+      { id: "q2-6", text: "Answer 20 Quora questions about social media scheduling", completed: false },
+      { id: "q2-7", text: "Create Twitter/X thread: 'How I schedule 30 days in 5 min'", completed: false },
+      { id: "q2-8", text: "Run $50 TikTok boost on best-performing UGC video", completed: false },
+      { id: "q2-9", text: "Retarget video viewers with signup offer (if budget allows)", completed: false },
+      { id: "q2-10", text: "Convert 3-4 from influencer traffic + communities", completed: false },
     ]
   },
   {
     id: "week3-quick",
-    title: "Week 3: Direct Outreach + Deals",
-    subtitle: "Final push to hit 10 customers",
-    budget: "$0-100",
+    title: "Week 3: Product Hunt + Final Push",
+    subtitle: "Get final 3-4 customers to hit 10",
+    budget: "$0-50",
     tasks: [
-      { id: "q3-1", text: "DM 50 Instagram creators (10k-50k followers)", completed: false },
-      { id: "q3-2", text: "DM 50 TikTok creators offering free Pro trial", completed: false },
-      { id: "q3-3", text: "Send 100 personalized LinkedIn messages", completed: false },
-      { id: "q3-4", text: "Offer lifetime deal: $99 one-time (if desperate)", completed: false },
-      { id: "q3-5", text: "Submit to AppSumo/DealMirror (may take time)", completed: false },
-      { id: "q3-6", text: "Post testimonials from first customers everywhere", completed: false },
-      { id: "q3-7", text: "Run small $50 Facebook ad to retarget visitors", completed: false },
-      { id: "q3-8", text: "Hit 10 paying customers → STOP and run for 3 months", completed: false },
+      { id: "q3-1", text: "Prepare Product Hunt launch (use testimonials from Week 1-2)", completed: false },
+      { id: "q3-2", text: "Create 30-sec demo video showing the 'aha moment'", completed: false },
+      { id: "q3-3", text: "Launch Tuesday-Thursday 12:01 AM PST", completed: false },
+      { id: "q3-4", text: "Message 50 people to support on launch day", completed: false },
+      { id: "q3-5", text: "Reply to EVERY PH comment within 5 minutes", completed: false },
+      { id: "q3-6", text: "PH exclusive: First month free for all PH users", completed: false },
+      { id: "q3-7", text: "Follow up with all trial users who haven't converted", completed: false },
+      { id: "q3-8", text: "Offer $5 first month to hesitant users (time-limited)", completed: false },
+      { id: "q3-9", text: "Post case study from first customers on LinkedIn", completed: false },
+      { id: "q3-10", text: "Hit 10 paying customers - CELEBRATE then optimize", completed: false },
     ]
   },
   {
-    id: "personal-network",
-    title: "Personal Network Strategy",
-    subtitle: "Easiest first customers",
+    id: "ugc-scripts",
+    title: "UGC Video Scripts (Record These)",
+    subtitle: "5 proven hooks - film on iPhone",
     tasks: [
-      { id: "pn-1", text: "List 50 people you know who create content", completed: false },
-      { id: "pn-2", text: "Send personalized message (not copy-paste)", completed: false },
-      { id: "pn-3", text: "Offer: Free Pro for 3 months, then 50% off forever", completed: false },
-      { id: "pn-4", text: "Follow up with demo call if interested", completed: false },
-      { id: "pn-5", text: "Ask them to refer friends (offer referral bonus)", completed: false },
-      { id: "pn-6", text: "Convert at least 2-3 from personal network", completed: false },
+      { id: "ugc-1", text: "Script 1: 'Still spending 8+ hours on social media every week?'", completed: false },
+      { id: "ugc-2", text: "Script 2: 'I manage 5 brands. Here's my secret.'", completed: false },
+      { id: "ugc-3", text: "Script 3: 'POV: You just scheduled 30 days of content'", completed: false },
+      { id: "ugc-4", text: "Script 4: 'This replaced my $2000/month social media manager'", completed: false },
+      { id: "ugc-5", text: "Script 5: 'Stop. If you're still posting manually...'", completed: false },
+      { id: "ugc-6", text: "Keep videos 21-34 seconds, scene change every 2-3 sec", completed: false },
+      { id: "ugc-7", text: "Add captions (85% watch muted)", completed: false },
+      { id: "ugc-8", text: "End with clear CTA: 'Link in bio - it's free'", completed: false },
     ]
   },
   {
-    id: "product-hunt",
-    title: "Product Hunt Launch",
-    subtitle: "Get 2-5 customers in 1 day",
+    id: "referral-program",
+    title: "Referral Program Setup",
+    subtitle: "$0 CAC when it works",
     tasks: [
-      { id: "ph-1", text: "Create compelling tagline + description", completed: false },
-      { id: "ph-2", text: "Make 30-second demo video (screen recording)", completed: false },
-      { id: "ph-3", text: "Prepare 5 screenshots showing key features", completed: false },
-      { id: "ph-4", text: "Launch Tuesday-Thursday (best days)", completed: false },
-      { id: "ph-5", text: "Reply to every comment within 5 minutes", completed: false },
-      { id: "ph-6", text: "Offer Product Hunt exclusive deal in comments", completed: false },
-      { id: "ph-7", text: "Message top hunters to try product before launch", completed: false },
-      { id: "ph-8", text: "Post launch on Twitter, LinkedIn, communities", completed: false },
+      { id: "ref-1", text: "Create simple referral: Give 1 month free, Get 1 month free", completed: false },
+      { id: "ref-2", text: "Generate unique referral links for each user", completed: false },
+      { id: "ref-3", text: "Email all users about referral program", completed: false },
+      { id: "ref-4", text: "Add referral prompt after user generates first content", completed: false },
+      { id: "ref-5", text: "Track referrals - reward top referrers publicly", completed: false },
+      { id: "ref-6", text: "Target: Each customer refers 0.5-1 new customers", completed: false },
     ]
   },
   {
-    id: "communities",
-    title: "Reddit + Facebook Groups",
-    subtitle: "Free traffic from communities",
+    id: "email-basics",
+    title: "Basic Email Sequence",
+    subtitle: "Minimum emails to convert trials",
     tasks: [
-      { id: "com-1", text: "Join 10 Facebook groups (social media managers)", completed: false },
-      { id: "com-2", text: "Join 10 subreddits (r/socialmedia, r/marketing, etc)", completed: false },
-      { id: "com-3", text: "Provide value first - answer questions for 1 week", completed: false },
-      { id: "com-4", text: "Share T21 when relevant (not spam)", completed: false },
-      { id: "com-5", text: "DM people who engage with your posts", completed: false },
-      { id: "com-6", text: "Post case study/results after getting customers", completed: false },
+      { id: "eml-1", text: "Email 1 (Day 0): Welcome + quick win in 60 seconds", completed: false },
+      { id: "eml-2", text: "Email 2 (Day 2): Feature discovery (AI images or voiceover)", completed: false },
+      { id: "eml-3", text: "Email 3 (Day 5): 'Your trial ends soon' + $5 offer", completed: false },
+      { id: "eml-4", text: "Keep emails under 100 words, single CTA button", completed: false },
+      { id: "eml-5", text: "Track open rates (target 40%+) and click rates (target 10%+)", completed: false },
+    ]
+  },
+  {
+    id: "conversion-tactics",
+    title: "Conversion Tactics",
+    subtitle: "Turn trials into paying customers",
+    tasks: [
+      { id: "cv-1", text: "Day 5 popup: 'You've created X posts! Unlock unlimited for $5'", completed: false },
+      { id: "cv-2", text: "Scarcity: 'Only 23 beta spots at this price'", completed: false },
+      { id: "cv-3", text: "Social proof: 'Join 847 creators already using POSTAIFY'", completed: false },
+      { id: "cv-4", text: "Risk reversal: '7-day money-back guarantee'", completed: false },
+      { id: "cv-5", text: "Personal touch: Reply to every support email within 2 hours", completed: false },
+      { id: "cv-6", text: "Offer annual: $59/year (45% off) for committed users", completed: false },
     ]
   },
 ]
@@ -385,20 +465,20 @@ const outreachWeeklyTargets = [
 ]
 
 const adsWeeklyTargets = [
-  { week: 1, reached: "2,000-3,000", adSpend: "$200", impressions: "50k-80k", trials: "30-50", paid: "5-12", revenue: "$35-84" },
-  { week: 2, reached: "5,000-8,000", adSpend: "$300", impressions: "120k-180k", trials: "70-100", paid: "15-25", revenue: "$105-175" },
-  { week: 3, reached: "10,000-15,000", adSpend: "$500", impressions: "250k-350k", trials: "120-160", paid: "30-50", revenue: "$210-350" },
-  { week: 4, reached: "18,000-25,000", adSpend: "$800", impressions: "450k-600k", trials: "180-250", paid: "50-80", revenue: "$350-560" },
+  { week: 1, reached: "50k-100k views", adSpend: "$300", impressions: "100k-150k", trials: "50-80", paid: "10-16", revenue: "$90-144" },
+  { week: 2, reached: "150k-250k views", adSpend: "$400", impressions: "200k-300k", trials: "120-180", paid: "25-40", revenue: "$225-360" },
+  { week: 3, reached: "300k-450k views", adSpend: "$600", impressions: "350k-500k", trials: "200-300", paid: "45-70", revenue: "$405-630" },
+  { week: 4, reached: "500k-700k views", adSpend: "$700", impressions: "500k-700k", trials: "300-450", paid: "70-120", revenue: "$630-1,080" },
 ]
 
 export function RoadmapPage() {
   const [roadmapType, setRoadmapType] = useState<RoadmapType>(() => {
-    const saved = localStorage.getItem("t21-selected-roadmap")
+    const saved = localStorage.getItem("postaify-selected-roadmap")
     return (saved as RoadmapType) || "outreach"
   })
 
   const [outreachSections, setOutreachSections] = useState<Section[]>(() => {
-    const saved = localStorage.getItem("t21-roadmap-outreach-v2")
+    const saved = localStorage.getItem("postaify-roadmap-outreach-v3")
     if (saved) {
       return JSON.parse(saved)
     }
@@ -406,7 +486,7 @@ export function RoadmapPage() {
   })
 
   const [adsSections, setAdsSections] = useState<Section[]>(() => {
-    const saved = localStorage.getItem("t21-roadmap-ads-v2")
+    const saved = localStorage.getItem("postaify-roadmap-ads-v3")
     if (saved) {
       return JSON.parse(saved)
     }
@@ -414,7 +494,7 @@ export function RoadmapPage() {
   })
 
   const [quick10Sections, setQuick10Sections] = useState<Section[]>(() => {
-    const saved = localStorage.getItem("t21-roadmap-quick10-v2")
+    const saved = localStorage.getItem("postaify-roadmap-quick10-v3")
     if (saved) {
       return JSON.parse(saved)
     }
@@ -426,19 +506,19 @@ export function RoadmapPage() {
   const weeklyTargets = roadmapType === "outreach" ? outreachWeeklyTargets : roadmapType === "ads" ? adsWeeklyTargets : []
 
   useEffect(() => {
-    localStorage.setItem("t21-roadmap-outreach-v2", JSON.stringify(outreachSections))
+    localStorage.setItem("postaify-roadmap-outreach-v3", JSON.stringify(outreachSections))
   }, [outreachSections])
 
   useEffect(() => {
-    localStorage.setItem("t21-roadmap-ads-v2", JSON.stringify(adsSections))
+    localStorage.setItem("postaify-roadmap-ads-v3", JSON.stringify(adsSections))
   }, [adsSections])
 
   useEffect(() => {
-    localStorage.setItem("t21-roadmap-quick10-v2", JSON.stringify(quick10Sections))
+    localStorage.setItem("postaify-roadmap-quick10-v3", JSON.stringify(quick10Sections))
   }, [quick10Sections])
 
   useEffect(() => {
-    localStorage.setItem("t21-selected-roadmap", roadmapType)
+    localStorage.setItem("postaify-selected-roadmap", roadmapType)
   }, [roadmapType])
 
   const toggleTask = (sectionId: string, taskId: string) => {
@@ -481,7 +561,7 @@ export function RoadmapPage() {
       <header className="border-b border-white/10 sticky top-0 bg-background/80 backdrop-blur-lg z-50">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <a href="/" className="text-xl font-bold">T21</a>
+            <a href="/" className="text-xl font-bold">POSTAIFY</a>
             <Badge variant="outline">30-Day Revenue Plan</Badge>
           </div>
           <Button variant="outline" size="sm" onClick={resetProgress}>
@@ -513,9 +593,9 @@ export function RoadmapPage() {
                 : "border-white/10 bg-white/5 hover:bg-white/10"
             }`}
           >
-            <h3 className="font-semibold mb-1">Roadmap 2: Ads & Social</h3>
-            <p className="text-sm text-muted-foreground">Facebook + Instagram</p>
-            <p className="text-xs text-muted-foreground mt-1">Target: $350-560 MRR</p>
+            <h3 className="font-semibold mb-1">Roadmap 2: TikTok Ads</h3>
+            <p className="text-sm text-muted-foreground">UGC + Retargeting Strategy</p>
+            <p className="text-xs text-muted-foreground mt-1">Budget: $2K | Target: $630-1,080 MRR</p>
           </button>
           <button
             onClick={() => setRoadmapType("quick10")}
@@ -526,8 +606,8 @@ export function RoadmapPage() {
             }`}
           >
             <h3 className="font-semibold mb-1">Roadmap 3: Quick 10</h3>
-            <p className="text-sm text-muted-foreground">Get 10 customers FAST</p>
-            <p className="text-xs text-emerald-400 mt-1">Budget: $0-100 | 2-3 weeks</p>
+            <p className="text-sm text-muted-foreground">UGC + Influencers + Referrals</p>
+            <p className="text-xs text-emerald-400 mt-1">Budget: $0-100 | Target: 10 customers in 3 weeks</p>
           </button>
         </div>
       </div>
@@ -1038,7 +1118,7 @@ export function RoadmapPage() {
                 <h3 className="text-lg font-semibold mb-3">DM Template:</h3>
                 <div className="bg-white/5 rounded-lg p-4 text-sm">
                   <p className="mb-2">Hey [Name]! Love your content on [topic].</p>
-                  <p className="mb-2">I built T21 - auto-generates social posts for Instagram, TikTok, LinkedIn from one input.</p>
+                  <p className="mb-2">I built POSTAIFY - auto-generates social posts for Instagram, TikTok, LinkedIn from one input.</p>
                   <p className="mb-2 font-semibold">Partnership offer: $50 upfront + 20% monthly recurring from referrals (forever).</p>
                   <p className="mb-2">If 10 followers sign up ($7/mo), you earn $14/month passive + $50 upfront.</p>
                   <p>Interested? I can send demo + custom promo code.</p>
@@ -1120,7 +1200,7 @@ export function RoadmapPage() {
               <div className="bg-white/5 rounded-lg p-4">
                 <p className="text-sm text-primary mb-2">Soft Pitch (After They Reply)</p>
                 <div className="text-sm space-y-2">
-                  <p>Totally get it. That's actually why I built T21 - it generates posts for Instagram, Twitter, LinkedIn, TikTok from a single input in about 60 seconds.</p>
+                  <p>Totally get it. That's actually why I built POSTAIFY - it generates posts for Instagram, Twitter, LinkedIn, TikTok from a single input in about 60 seconds.</p>
                   <p>Would you want to try it free for 2 weeks? No strings.</p>
                   <p>Could save you a few hours per week at minimum.</p>
                 </div>
@@ -1138,13 +1218,13 @@ export function RoadmapPage() {
             <div className="space-y-4">
               <div className="bg-white/5 rounded-lg p-4">
                 <p className="text-sm text-primary mb-2">Headline</p>
-                <p className="text-sm">Helping agencies automate social content | T21</p>
+                <p className="text-sm">Helping agencies automate social content | POSTAIFY</p>
               </div>
               <div className="bg-white/5 rounded-lg p-4">
                 <p className="text-sm text-primary mb-2">About Section</p>
                 <div className="text-sm space-y-2">
                   <p>I help social media managers and agencies save 10+ hours/week on content creation.</p>
-                  <p>Built T21 after spending years manually creating the same post 5 different ways for different platforms.</p>
+                  <p>Built POSTAIFY after spending years manually creating the same post 5 different ways for different platforms.</p>
                   <p>Now one input → posts for Instagram, Twitter, LinkedIn, TikTok in 60 seconds.</p>
                   <p className="text-primary">DM me for free access.</p>
                 </div>
@@ -1169,7 +1249,7 @@ export function RoadmapPage() {
               <div className="bg-white/5 rounded-lg p-4">
                 <p className="text-sm text-primary mb-2">Demo Post</p>
                 <p className="text-sm">POV: You're a content creator who just discovered AI automation</p>
-                <p className="text-sm mt-2 text-muted-foreground">[Attach 30-second screen recording of T21]</p>
+                <p className="text-sm mt-2 text-muted-foreground">[Attach 30-second screen recording of POSTAIFY]</p>
               </div>
             </div>
           </Card>
