@@ -104,6 +104,9 @@ export function SignUpPage() {
         password,
       })
 
+      // Small delay to ensure sign-up is registered on Clerk's servers
+      await new Promise(resolve => setTimeout(resolve, 500))
+
       // Use the result object to prepare verification (not the hook's signUp)
       await result.prepareEmailAddressVerification({ strategy: 'email_code' })
       setPendingVerification(true)
