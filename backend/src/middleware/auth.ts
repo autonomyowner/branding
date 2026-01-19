@@ -44,12 +44,15 @@ export async function loadUser(req: Request, res: Response, next: NextFunction) 
       throw new UnauthorizedError('Not authenticated')
     }
 
+    console.log(`[AUTH] Looking up user with clerkId: ${auth.userId}`)
+
     let user = await prisma.user.findUnique({
       where: { clerkId: auth.userId }
     })
 
     // Auto-create user if not exists (handles case where webhook hasn't fired yet)
     if (!user) {
+      console.log(`[AUTH] User not found by clerkId, fetching from Clerk...`)
       try {
         // Fetch user details from Clerk
         const clerkUser = await clerkClient.users.getUser(auth.userId)
@@ -59,25 +62,41 @@ export async function loadUser(req: Request, res: Response, next: NextFunction) 
           throw new UnauthorizedError('User has no email address')
         }
 
-        // Upsert user - create if new, or update clerkId if email exists (SSO linking)
-        user = await prisma.user.upsert({
-          where: { email },
-          update: {
-            clerkId: auth.userId,
-            name: [clerkUser.firstName, clerkUser.lastName].filter(Boolean).join(' ') || undefined,
-          },
-          create: {
-            clerkId: auth.userId,
-            email,
-            name: [clerkUser.firstName, clerkUser.lastName].filter(Boolean).join(' ') || null,
-          }
+        console.log(`[AUTH] Clerk user email: ${email}, clerkId: ${auth.userId}`)
+
+        // Check if user exists by email first
+        const existingByEmail = await prisma.user.findUnique({
+          where: { email }
         })
 
-        console.log(`User synced: ${email} (clerkId: ${auth.userId})`)
+        if (existingByEmail) {
+          console.log(`[AUTH] Found existing user by email: ${email}, dbId: ${existingByEmail.id}, existingClerkId: ${existingByEmail.clerkId}`)
+          // Update the clerkId to link this Clerk account
+          user = await prisma.user.update({
+            where: { email },
+            data: {
+              clerkId: auth.userId,
+              name: [clerkUser.firstName, clerkUser.lastName].filter(Boolean).join(' ') || undefined,
+            }
+          })
+          console.log(`[AUTH] Updated user clerkId: ${existingByEmail.clerkId} -> ${auth.userId}`)
+        } else {
+          // Create new user
+          user = await prisma.user.create({
+            data: {
+              clerkId: auth.userId,
+              email,
+              name: [clerkUser.firstName, clerkUser.lastName].filter(Boolean).join(' ') || null,
+            }
+          })
+          console.log(`[AUTH] Created new user: ${email}, dbId: ${user.id}, clerkId: ${auth.userId}`)
+        }
       } catch (createError) {
-        console.error('Failed to sync user:', createError)
+        console.error('[AUTH] Failed to sync user:', createError)
         throw new UnauthorizedError('Failed to create user account')
       }
+    } else {
+      console.log(`[AUTH] Found user by clerkId: ${user.email}, dbId: ${user.id}`)
     }
 
     // Check and reset monthly usage if needed (using UTC for consistency across timezones)

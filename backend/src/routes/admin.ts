@@ -131,6 +131,7 @@ router.get('/users', async (req, res, next) => {
 
     const usersWithStats = users.map(user => ({
       id: user.id,
+      clerkId: user.clerkId,
       email: user.email,
       name: user.name,
       plan: user.plan,
