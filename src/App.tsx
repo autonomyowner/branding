@@ -16,7 +16,6 @@ if (!CLERK_PUBLISHABLE_KEY) {
 
 // Lazy load route components for better performance
 const LandingPage = lazy(() => import("./pages/LandingPage").then(m => ({ default: m.LandingPage })))
-const AdLandingPage = lazy(() => import("./pages/AdLandingPage").then(m => ({ default: m.AdLandingPage })))
 const DashboardPage = lazy(() => import("./pages/DashboardPage").then(m => ({ default: m.DashboardPage })))
 const PostsPage = lazy(() => import("./pages/PostsPage").then(m => ({ default: m.PostsPage })))
 const CalendarPage = lazy(() => import("./pages/CalendarPage").then(m => ({ default: m.CalendarPage })))
