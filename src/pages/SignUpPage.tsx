@@ -53,7 +53,6 @@ export function SignUpPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [name, setName] = useState('')
   const [error, setError] = useState('')
   const [errorSuggestion, setErrorSuggestion] = useState<'signin' | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -62,17 +61,16 @@ export function SignUpPage() {
   const [verificationCode, setVerificationCode] = useState(['', '', '', '', '', ''])
   const [resendCountdown, setResendCountdown] = useState(0)
 
-  const nameRef = useRef<HTMLInputElement>(null)
   const emailRef = useRef<HTMLInputElement>(null)
   const passwordRef = useRef<HTMLInputElement>(null)
   const codeRefs = useRef<(HTMLInputElement | null)[]>([])
 
   const passwordStrength = getPasswordStrength(password)
 
-  // Auto-focus name input on mount
+  // Auto-focus email input on mount
   useEffect(() => {
-    if (isLoaded && nameRef.current && !pendingVerification) {
-      nameRef.current.focus()
+    if (isLoaded && emailRef.current && !pendingVerification) {
+      emailRef.current.focus()
     }
   }, [isLoaded, pendingVerification])
 
@@ -103,8 +101,6 @@ export function SignUpPage() {
       await signUp.create({
         emailAddress: email,
         password,
-        firstName: name.split(' ')[0],
-        lastName: name.split(' ').slice(1).join(' ') || undefined,
       })
 
       await signUp.prepareEmailAddressVerification({ strategy: 'email_code' })
@@ -326,22 +322,6 @@ export function SignUpPage() {
                 {/* Form */}
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium mb-2">Full Name</label>
-                    <input
-                      ref={nameRef}
-                      id="name"
-                      type="text"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      onKeyDown={(e) => handleKeyDown(e, emailRef)}
-                      placeholder="John Doe"
-                      className="w-full px-4 py-3 rounded-lg bg-background border border-border text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all"
-                      required
-                      autoComplete="name"
-                    />
-                  </div>
-
-                  <div>
                     <label htmlFor="email" className="block text-sm font-medium mb-2">Email</label>
                     <input
                       ref={emailRef}
@@ -349,7 +329,7 @@ export function SignUpPage() {
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      onKeyDown={(e) => handleKeyDown(e, passwordRef)}
+                      onKeyDown={(e) => e.key === 'Enter' && passwordRef.current?.focus()}
                       placeholder="you@example.com"
                       className="w-full px-4 py-3 rounded-lg bg-background border border-border text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all"
                       required
@@ -439,7 +419,7 @@ export function SignUpPage() {
                   <Button
                     type="submit"
                     className="w-full h-12"
-                    disabled={isLoading || !name || !email || !password || password.length < 8}
+                    disabled={isLoading || !email || !password || password.length < 8}
                   >
                     {isLoading ? (
                       <span className="flex items-center gap-2">
