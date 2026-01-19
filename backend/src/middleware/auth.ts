@@ -52,7 +52,7 @@ export async function loadUser(req: Request, res: Response, next: NextFunction) 
 
     // Auto-create user if not exists (handles case where webhook hasn't fired yet)
     if (!user) {
-      console.log(`[AUTH] User not found by clerkId, fetching from Clerk...`)
+      console.log(`[AUTH] User not found by clerkId: ${auth.userId}, creating new user...`)
       try {
         // Fetch user details from Clerk
         const clerkUser = await clerkClient.users.getUser(auth.userId)
@@ -64,36 +64,47 @@ export async function loadUser(req: Request, res: Response, next: NextFunction) 
 
         console.log(`[AUTH] Clerk user email: ${email}, clerkId: ${auth.userId}`)
 
-        // Check if user exists by email first
+        // IMPORTANT: Always create a NEW user for each Clerk ID
+        // Do NOT merge by email - each Clerk account should have its own data
+        // Generate a unique email if needed to avoid conflicts
+        let uniqueEmail = email
         const existingByEmail = await prisma.user.findUnique({
           where: { email }
         })
 
-        if (existingByEmail) {
-          console.log(`[AUTH] Found existing user by email: ${email}, dbId: ${existingByEmail.id}, existingClerkId: ${existingByEmail.clerkId}`)
-          // Update the clerkId to link this Clerk account
-          user = await prisma.user.update({
-            where: { email },
-            data: {
-              clerkId: auth.userId,
-              name: [clerkUser.firstName, clerkUser.lastName].filter(Boolean).join(' ') || undefined,
-            }
-          })
-          console.log(`[AUTH] Updated user clerkId: ${existingByEmail.clerkId} -> ${auth.userId}`)
-        } else {
-          // Create new user
-          user = await prisma.user.create({
-            data: {
-              clerkId: auth.userId,
-              email,
-              name: [clerkUser.firstName, clerkUser.lastName].filter(Boolean).join(' ') || null,
-            }
-          })
-          console.log(`[AUTH] Created new user: ${email}, dbId: ${user.id}, clerkId: ${auth.userId}`)
+        if (existingByEmail && existingByEmail.clerkId !== auth.userId) {
+          // Different Clerk user with same email exists - make email unique
+          // This can happen if someone creates multiple Clerk accounts with same email
+          uniqueEmail = `${auth.userId}@postaify.user`
+          console.log(`[AUTH] Email ${email} already used by different clerkId ${existingByEmail.clerkId}, using unique email: ${uniqueEmail}`)
         }
-      } catch (createError) {
-        console.error('[AUTH] Failed to sync user:', createError)
-        throw new UnauthorizedError('Failed to create user account')
+
+        // Create new user with this clerkId
+        user = await prisma.user.create({
+          data: {
+            clerkId: auth.userId,
+            email: uniqueEmail,
+            name: [clerkUser.firstName, clerkUser.lastName].filter(Boolean).join(' ') || null,
+          }
+        })
+        console.log(`[AUTH] Created new user: ${uniqueEmail}, dbId: ${user.id}, clerkId: ${auth.userId}`)
+      } catch (createError: any) {
+        // Handle unique constraint violation (race condition)
+        if (createError.code === 'P2002') {
+          // Try to find the user again - might have been created by another request
+          user = await prisma.user.findUnique({
+            where: { clerkId: auth.userId }
+          })
+          if (user) {
+            console.log(`[AUTH] Found user after race condition: ${user.email}, dbId: ${user.id}`)
+          } else {
+            console.error('[AUTH] Failed to sync user after race condition:', createError)
+            throw new UnauthorizedError('Failed to create user account')
+          }
+        } else {
+          console.error('[AUTH] Failed to sync user:', createError)
+          throw new UnauthorizedError('Failed to create user account')
+        }
       }
     } else {
       console.log(`[AUTH] Found user by clerkId: ${user.email}, dbId: ${user.id}`)
