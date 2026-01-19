@@ -40,10 +40,9 @@ export function SignInPage() {
               socialButtonsBlockButtonText: 'text-white',
             }
           }}
-          routing="path"
-          path="/sign-in"
           signUpUrl="/sign-up"
           forceRedirectUrl="/dashboard"
+          fallbackRedirectUrl="/dashboard"
         />
       </div>
     </div>

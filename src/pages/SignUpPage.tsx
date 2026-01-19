@@ -230,7 +230,7 @@ export function SignUpPage() {
     try {
       await signUp.authenticateWithRedirect({
         strategy: 'oauth_google',
-        redirectUrl: '/sso-callback',
+        redirectUrl: '/sign-up/sso-callback',
         redirectUrlComplete: '/dashboard',
       })
     } catch (err: any) {
