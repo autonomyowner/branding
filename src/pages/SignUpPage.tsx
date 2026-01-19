@@ -217,13 +217,6 @@ export function SignUpPage() {
     }
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent, nextRef?: React.RefObject<HTMLInputElement | null>) => {
-    if (e.key === 'Enter' && nextRef?.current) {
-      e.preventDefault()
-      nextRef.current.focus()
-    }
-  }
-
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       {/* Background gradient */}
