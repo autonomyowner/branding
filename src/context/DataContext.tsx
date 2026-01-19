@@ -104,14 +104,21 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
   // Clear all data and cache when user changes (sign out or different user signs in)
   useEffect(() => {
-    if (prevUserIdRef.current !== undefined && prevUserIdRef.current !== userId) {
+    console.log(`[DataContext] userId changed: ${prevUserIdRef.current} -> ${userId}`)
+
+    // Always clear cache when userId changes (including first load)
+    if (prevUserIdRef.current !== userId) {
       // User changed - clear everything
-      console.log('User changed, clearing cache and data')
+      console.log('[DataContext] Clearing all cache and state')
       invalidateCache() // Clear API cache
-      setUser(null)
-      setBrands([])
-      setPosts([])
-      setSelectedBrandId(null)
+
+      // Only clear state if we had a previous user (not first load)
+      if (prevUserIdRef.current !== undefined) {
+        setUser(null)
+        setBrands([])
+        setPosts([])
+        setSelectedBrandId(null)
+      }
     }
     prevUserIdRef.current = userId
   }, [userId])
@@ -129,7 +136,10 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
   // Load data when signed in
   const refreshData = useCallback(async () => {
+    console.log(`[DataContext] refreshData called, isSignedIn: ${isSignedIn}`)
+
     if (!isSignedIn) {
+      console.log('[DataContext] Not signed in, clearing data')
       setUser(null)
       setBrands([])
       setPosts([])
@@ -143,11 +153,14 @@ export function DataProvider({ children }: { children: ReactNode }) {
     try {
       // Fetch user, brands, and posts in parallel
       // Fetch more posts to ensure all scheduled posts appear in calendar
+      console.log('[DataContext] Fetching data from API...')
       const [userData, brandsData, postsData] = await Promise.all([
         api.getMe(),
         api.getBrands(),
         api.getPosts({ limit: 1000 })
       ])
+
+      console.log(`[DataContext] Fetched user: ${userData.email}, brands: ${brandsData.length}, posts: ${postsData.posts.length}`)
 
       setUser({
         id: userData.id,
