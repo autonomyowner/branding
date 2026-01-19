@@ -59,18 +59,23 @@ export async function loadUser(req: Request, res: Response, next: NextFunction) 
           throw new UnauthorizedError('User has no email address')
         }
 
-        // Create user in database
-        user = await prisma.user.create({
-          data: {
+        // Upsert user - create if new, or update clerkId if email exists (SSO linking)
+        user = await prisma.user.upsert({
+          where: { email },
+          update: {
+            clerkId: auth.userId,
+            name: [clerkUser.firstName, clerkUser.lastName].filter(Boolean).join(' ') || undefined,
+          },
+          create: {
             clerkId: auth.userId,
             email,
             name: [clerkUser.firstName, clerkUser.lastName].filter(Boolean).join(' ') || null,
           }
         })
 
-        console.log(`Auto-created user: ${email}`)
+        console.log(`User synced: ${email} (clerkId: ${auth.userId})`)
       } catch (createError) {
-        console.error('Failed to auto-create user:', createError)
+        console.error('Failed to sync user:', createError)
         throw new UnauthorizedError('Failed to create user account')
       }
     }

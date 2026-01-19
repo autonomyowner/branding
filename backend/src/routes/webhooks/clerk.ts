@@ -65,8 +65,15 @@ router.post('/', async (req, res) => {
           .filter(Boolean)
           .join(' ') || null
 
-        await prisma.user.create({
-          data: {
+        // Upsert to handle SSO linking - if email exists, update clerkId
+        await prisma.user.upsert({
+          where: { email },
+          update: {
+            clerkId: userData.id,
+            name,
+            avatarUrl: userData.image_url,
+          },
+          create: {
             clerkId: userData.id,
             email,
             name,
@@ -77,7 +84,7 @@ router.post('/', async (req, res) => {
           },
         })
 
-        console.log(`User created: ${email}`)
+        console.log(`User synced: ${email}`)
         break
       }
 
