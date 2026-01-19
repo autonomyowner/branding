@@ -87,15 +87,15 @@ export function createWorker<T, R>(
     },
   })
 
-  worker.on('completed', (job) => {
+  worker.on('completed', (job: Job<T>) => {
     console.log(`[Queue:${name}] Job ${job.id} completed`)
   })
 
-  worker.on('failed', (job, err) => {
+  worker.on('failed', (job: Job<T> | undefined, err: Error) => {
     console.error(`[Queue:${name}] Job ${job?.id} failed:`, err.message)
   })
 
-  worker.on('error', (err) => {
+  worker.on('error', (err: Error) => {
     console.error(`[Queue:${name}] Worker error:`, err.message)
   })
 
