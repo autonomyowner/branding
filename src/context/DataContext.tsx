@@ -1,6 +1,6 @@
-import { createContext, useContext, type ReactNode, useCallback, useState, useEffect } from 'react'
+import { createContext, useContext, type ReactNode, useCallback, useState, useEffect, useRef } from 'react'
 import { useAuth } from '@clerk/clerk-react'
-import { api } from '../lib/api'
+import { api, invalidateCache } from '../lib/api'
 
 // Types
 export interface Brand {
@@ -90,7 +90,7 @@ interface DataContextType {
 const DataContext = createContext<DataContextType | null>(null)
 
 export function DataProvider({ children }: { children: ReactNode }) {
-  const { getToken, isSignedIn, isLoaded } = useAuth()
+  const { getToken, isSignedIn, isLoaded, userId } = useAuth()
 
   const [user, setUser] = useState<UserProfile | null>(null)
   const [brands, setBrands] = useState<Brand[]>([])
@@ -98,6 +98,23 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const [selectedBrandId, setSelectedBrandId] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
+  // Track previous user ID to detect user changes
+  const prevUserIdRef = useRef<string | null | undefined>(undefined)
+
+  // Clear all data and cache when user changes (sign out or different user signs in)
+  useEffect(() => {
+    if (prevUserIdRef.current !== undefined && prevUserIdRef.current !== userId) {
+      // User changed - clear everything
+      console.log('User changed, clearing cache and data')
+      invalidateCache() // Clear API cache
+      setUser(null)
+      setBrands([])
+      setPosts([])
+      setSelectedBrandId(null)
+    }
+    prevUserIdRef.current = userId
+  }, [userId])
 
   // Set up API token getter
   useEffect(() => {
