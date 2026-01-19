@@ -34,10 +34,10 @@ export function SignInPage() {
               identityPreviewText: 'text-white',
               identityPreviewEditButton: 'text-primary',
               formFieldInputShowPasswordButton: 'text-muted-foreground hover:text-white',
-              dividerLine: 'bg-border',
-              dividerText: 'text-muted-foreground',
-              socialButtonsBlockButton: 'border-border hover:bg-muted',
-              socialButtonsBlockButtonText: 'text-white',
+              dividerLine: 'hidden',
+              dividerText: 'hidden',
+              socialButtonsBlockButton: 'hidden',
+              socialButtonsBlockButtonText: 'hidden',
             }
           }}
           signUpUrl="/sign-up"
