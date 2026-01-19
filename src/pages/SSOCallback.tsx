@@ -21,8 +21,8 @@ export function SSOCallback() {
 
       {/* Clerk's built-in callback handler */}
       <AuthenticateWithRedirectCallback
-        afterSignInUrl="/dashboard"
-        afterSignUpUrl="/dashboard"
+        signInForceRedirectUrl="/dashboard"
+        signUpForceRedirectUrl="/dashboard"
       />
     </div>
   )

@@ -70,7 +70,9 @@ function AppContent() {
 
             {/* Auth routes */}
             <Route path="/sign-in" element={<AuthRoute><SignInPage /></AuthRoute>} />
+            <Route path="/sign-in/sso-callback" element={<SSOCallback />} />
             <Route path="/sign-up" element={<AuthRoute><SignUpPage /></AuthRoute>} />
+            <Route path="/sign-up/sso-callback" element={<SSOCallback />} />
             <Route path="/sso-callback" element={<SSOCallback />} />
 
             {/* Protected routes - require sign in */}
