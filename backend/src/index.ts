@@ -5,11 +5,15 @@ import compression from 'compression'
 import { env } from './config/env.js'
 import { clerkAuth } from './middleware/auth.js'
 import { errorHandler } from './middleware/errorHandler.js'
+import { apiLimiter, webhookLimiter } from './middleware/rateLimit.js'
 import apiRoutes from './routes/index.js'
 import clerkWebhook from './routes/webhooks/clerk.js'
 import stripeWebhook from './routes/webhooks/stripe.js'
 import telegramWebhook from './routes/webhooks/telegram.js'
-import { startScheduler } from './workers/scheduler.js'
+import { startScheduler, stopScheduler } from './workers/scheduler.js'
+import { isRedisAvailable } from './lib/redis.js'
+import { closeQueues } from './lib/queue.js'
+import { prisma } from './lib/prisma.js'
 
 const app = express()
 
@@ -27,12 +31,15 @@ app.use(compression({
   }
 }))
 
-// CORS - allow frontend origin (both www and non-www variants)
+// CORS - allow frontend origin and Clerk authentication subdomains
 const frontendOrigin = env.FRONTEND_URL.replace(/\/$/, '')
+const baseDomain = frontendOrigin.replace(/^https?:\/\/(www\.)?/, '')
 const allowedOrigins = [
   frontendOrigin,
   frontendOrigin.replace('https://', 'https://www.'),
   frontendOrigin.replace('https://www.', 'https://'),
+  `https://accounts.${baseDomain}`,
+  `https://clerk.${baseDomain}`,
 ].filter((v, i, a) => a.indexOf(v) === i) // Remove duplicates
 
 app.use(cors({
@@ -49,11 +56,11 @@ app.use(cors({
 
 // Webhooks need raw body for signature verification
 // IMPORTANT: Must come before express.json()
-app.use('/webhooks/clerk', express.raw({ type: 'application/json' }), clerkWebhook)
-app.use('/webhooks/stripe', express.raw({ type: 'application/json' }), stripeWebhook)
+app.use('/webhooks/clerk', webhookLimiter, express.raw({ type: 'application/json' }), clerkWebhook)
+app.use('/webhooks/stripe', webhookLimiter, express.raw({ type: 'application/json' }), stripeWebhook)
 
 // Telegram webhook (uses JSON body)
-app.use('/webhooks/telegram', express.json(), telegramWebhook)
+app.use('/webhooks/telegram', webhookLimiter, express.json(), telegramWebhook)
 
 // JSON body parser for all other routes
 app.use(express.json({ limit: '10mb' }))
@@ -96,6 +103,9 @@ app.use('/api/v1', (req, res, next) => {
   next()
 })
 
+// Rate limiting for API routes
+app.use('/api/v1', apiLimiter)
+
 // Clerk authentication middleware (adds auth object to request)
 app.use(clerkAuth)
 
@@ -119,13 +129,17 @@ app.use(errorHandler)
 const PORT = parseInt(env.PORT, 10)
 
 app.listen(PORT, () => {
+  // Check Redis availability (optional - for job queues)
+  const redisStatus = isRedisAvailable() ? 'configured' : 'not configured'
+
   console.log(`
 ┌─────────────────────────────────────────┐
 │                                         │
-│   T21 Backend Server                    │
+│   POSTAIFY Backend Server               │
 │                                         │
-│   Port: ${PORT}                           │
-│   Env:  ${env.NODE_ENV.padEnd(11)}               │
+│   Port:  ${String(PORT).padEnd(10)}               │
+│   Env:   ${env.NODE_ENV.padEnd(10)}               │
+│   Redis: ${redisStatus.padEnd(10)}               │
 │                                         │
 │   Ready to accept connections           │
 │                                         │
@@ -135,5 +149,33 @@ app.listen(PORT, () => {
   // Start the scheduler for Telegram delivery
   startScheduler()
 })
+
+// Graceful shutdown
+async function gracefulShutdown(signal: string) {
+  console.log(`[Server] ${signal} received, shutting down gracefully...`)
+
+  try {
+    // Stop accepting new scheduled jobs
+    stopScheduler()
+    console.log('[Server] Scheduler stopped')
+
+    // Close queue connections
+    await closeQueues()
+    console.log('[Server] Queues closed')
+
+    // Close database connection
+    await prisma.$disconnect()
+    console.log('[Server] Database disconnected')
+
+    console.log('[Server] Graceful shutdown complete')
+    process.exit(0)
+  } catch (error) {
+    console.error('[Server] Error during shutdown:', error)
+    process.exit(1)
+  }
+}
+
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'))
+process.on('SIGINT', () => gracefulShutdown('SIGINT'))
 
 export default app
