@@ -104,13 +104,30 @@ export function SignUpPage() {
         password,
       })
 
+      // If sign-up completed immediately (no verification required), go to dashboard
+      if (result.status === 'complete') {
+        await setActive({ session: result.createdSessionId })
+        navigate('/dashboard')
+        return
+      }
+
       // Small delay to ensure sign-up is registered on Clerk's servers
       await new Promise(resolve => setTimeout(resolve, 500))
 
-      // Use the result object to prepare verification (not the hook's signUp)
-      await result.prepareEmailAddressVerification({ strategy: 'email_code' })
-      setPendingVerification(true)
-      setResendCountdown(60)
+      // Try to prepare email verification
+      try {
+        await result.prepareEmailAddressVerification({ strategy: 'email_code' })
+        setPendingVerification(true)
+        setResendCountdown(60)
+      } catch (verifyErr: any) {
+        // If verification fails but we have a session, just go to dashboard
+        if (result.createdSessionId) {
+          await setActive({ session: result.createdSessionId })
+          navigate('/dashboard')
+          return
+        }
+        throw verifyErr
+      }
     } catch (err: any) {
       const errorMessage = getErrorMessage(err)
       setError(errorMessage)
