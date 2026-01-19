@@ -98,12 +98,14 @@ export function SignUpPage() {
     setErrorSuggestion(null)
 
     try {
-      await signUp.create({
+      // Create sign-up and use the returned object directly
+      const result = await signUp.create({
         emailAddress: email,
         password,
       })
 
-      await signUp.prepareEmailAddressVerification({ strategy: 'email_code' })
+      // Use the result object to prepare verification (not the hook's signUp)
+      await result.prepareEmailAddressVerification({ strategy: 'email_code' })
       setPendingVerification(true)
       setResendCountdown(60)
     } catch (err: any) {
