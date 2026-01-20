@@ -306,22 +306,22 @@ export function PostsPage() {
       {/* Schedule Modal */}
       <AnimatePresence>
         {scheduleModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-y-auto">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
               onClick={handleCloseScheduleModal}
             />
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative bg-card border border-border rounded-2xl p-4 sm:p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+              className="relative bg-card border border-border rounded-2xl w-full max-w-4xl my-8 z-[101] max-h-[90vh] flex flex-col"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <div className="flex items-center justify-between p-4 sm:p-6 border-b border-border shrink-0">
                 <h2 className="text-lg sm:text-2xl font-bold">
                   {postToSchedule?.status === 'scheduled' ? 'Reschedule Post' : 'Schedule Post'}
                 </h2>
@@ -333,27 +333,29 @@ export function PostsPage() {
                 </button>
               </div>
 
-              {postToSchedule && (
-                <div className="mb-4 sm:mb-6 p-3 sm:p-4 rounded-lg bg-background/50 border border-border">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Badge variant="outline" className={`text-xs ${platformColors[postToSchedule.platform]}`}>
-                      {postToSchedule.platform}
-                    </Badge>
-                    <span className="text-xs text-muted-foreground">
-                      {getBrandName(postToSchedule.brandId)}
-                    </span>
+              <div className="overflow-y-auto flex-1 p-4 sm:p-6">
+                {postToSchedule && (
+                  <div className="mb-4 sm:mb-6 p-3 sm:p-4 rounded-lg bg-background/50 border border-border">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Badge variant="outline" className={`text-xs ${platformColors[postToSchedule.platform]}`}>
+                        {postToSchedule.platform}
+                      </Badge>
+                      <span className="text-xs text-muted-foreground">
+                        {getBrandName(postToSchedule.brandId)}
+                      </span>
+                    </div>
+                    <p className="text-sm text-foreground line-clamp-3">{postToSchedule.content}</p>
                   </div>
-                  <p className="text-sm text-foreground line-clamp-3">{postToSchedule.content}</p>
-                </div>
-              )}
+                )}
 
-              <DateTimePicker
-                selectedDateTime={scheduledDateTime}
-                onDateTimeSelect={setScheduledDateTime}
-                minDate={new Date()}
-              />
+                <DateTimePicker
+                  selectedDateTime={scheduledDateTime}
+                  onDateTimeSelect={setScheduledDateTime}
+                  minDate={new Date()}
+                />
+              </div>
 
-              <div className="flex gap-2 sm:gap-3 mt-4 sm:mt-6">
+              <div className="flex gap-2 sm:gap-3 p-4 sm:p-6 border-t border-border shrink-0">
                 <Button
                   onClick={handleSchedulePost}
                   disabled={!scheduledDateTime}
