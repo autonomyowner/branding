@@ -88,7 +88,7 @@ export function PostsPage() {
     try {
       await updatePost(postToSchedule.id, {
         status: 'scheduled',
-        scheduledFor: scheduledDateTime.getTime()
+        scheduledFor: scheduledDateTime.toISOString()
       })
       setScheduleModalOpen(false)
       setPostToSchedule(null)
