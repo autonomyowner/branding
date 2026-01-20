@@ -1,4 +1,5 @@
 import { env } from '../config/env.js'
+import { fetchWithTimeout, TIMEOUTS } from '../lib/fetchWithTimeout.js'
 
 type Platform = 'Instagram' | 'Twitter' | 'LinkedIn' | 'TikTok' | 'Facebook'
 type ContentStyle = 'viral' | 'storytelling' | 'educational' | 'controversial' | 'inspirational'
@@ -130,7 +131,7 @@ Ready to copy-paste directly to ${platform}.`
     ? `Create a ${style} ${platform} post about: ${topic}`
     : `Create a ${style} ${platform} post about one of these topics: ${brand.topics.join(', ')}`
 
-  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+  const response = await fetchWithTimeout('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${env.OPENROUTER_API_KEY}`,
@@ -146,7 +147,8 @@ Ready to copy-paste directly to ${platform}.`
       ],
       max_tokens: 1500,
       temperature: 0.85
-    })
+    }),
+    timeout: TIMEOUTS.AI_GENERATION,
   })
 
   if (!response.ok) {
@@ -197,7 +199,7 @@ Create exactly ${numberOfPosts} unique ${platform} posts from this video.
 Return ONLY a JSON array of ${numberOfPosts} posts. No explanations.
 Format: ["post 1 content here", "post 2 content here", ...]`
 
-  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+  const response = await fetchWithTimeout('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${env.OPENROUTER_API_KEY}`,
@@ -213,7 +215,8 @@ Format: ["post 1 content here", "post 2 content here", ...]`
       ],
       max_tokens: 4000,
       temperature: 0.9
-    })
+    }),
+    timeout: TIMEOUTS.AI_GENERATION,
   })
 
   if (!response.ok) {

@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>POSTAIFY TikTok Ad v4 - Consistency</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      cursor: none !important;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #1a1a1a;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .video-container {
+      width: 1080px;
+      height: 1920px;
+      background: #000000;
+      position: relative;
+      overflow: hidden;
+      border: 3px dashed #ff4444;
+      transform-origin: top center;
+    }
+
+    .dimensions-label {
+      color: #888;
+      font-size: 14px;
+      margin-top: 15px;
+      font-family: monospace;
+    }
+
+    .controls {
+      margin-top: 20px;
+      display: flex;
+      gap: 15px;
+    }
+
+    .controls button {
+      padding: 12px 32px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer !important;
+      transition: all 0.2s;
+    }
+
+    .play-btn {
+      background: #ff4444;
+      color: white;
+    }
+
+    .play-btn:hover {
+      background: #ff6666;
+    }
+
+    .restart-btn {
+      background: #333;
+      color: white;
+    }
+
+    .restart-btn:hover {
+      background: #444;
+    }
+
+    .scene {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      padding: 60px;
+    }
+
+    .grid-bg {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(250, 204, 21, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(250, 204, 21, 0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0;
+    }
+
+    .glow-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0;
+    }
+
+    .glow-1 {
+      width: 600px;
+      height: 600px;
+      background: rgba(250, 204, 21, 0.15);
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .glow-2 {
+      width: 400px;
+      height: 400px;
+      background: rgba(250, 204, 21, 0.1);
+      bottom: 200px;
+      right: -100px;
+    }
+
+    .particle {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: #FACC15;
+      border-radius: 50%;
+      opacity: 0;
+    }
+
+    /* Scene 1 - Hook: #1 Reason */
+    .number-one {
+      font-size: 280px;
+      font-weight: 900;
+      background: linear-gradient(135deg, #FACC15 0%, #EAB308 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      opacity: 0;
+      transform: scale(0.5);
+      text-shadow: 0 0 60px rgba(250, 204, 21, 0.3);
+      line-height: 1;
+    }
+
+    .hook-text {
+      font-size: 58px;
+      font-weight: 800;
+      color: white;
+      text-align: center;
+      line-height: 1.2;
+      opacity: 0;
+      transform: translateY(40px);
+    }
+
+    .hook-highlight {
+      color: #FACC15;
+    }
+
+    .hook-small {
+      font-size: 36px;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 20px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    /* Scene 2 - Problem */
+    .problem-container {
+      width: 100%;
+      opacity: 0;
+    }
+
+    .problem-title {
+      font-size: 48px;
+      font-weight: 800;
+      color: white;
+      text-align: center;
+      margin-bottom: 50px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .problem-list {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    .problem-item {
+      background: rgba(255, 68, 68, 0.1);
+      border: 1px solid rgba(255, 68, 68, 0.3);
+      border-radius: 20px;
+      padding: 30px 40px;
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      opacity: 0;
+      transform: translateX(-50px);
+    }
+
+    .problem-x {
+      width: 50px;
+      height: 50px;
+      background: rgba(255, 68, 68, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      color: #ff4444;
+      flex-shrink: 0;
+    }
+
+    .problem-text {
+      font-size: 32px;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    /* Scene 3 - Logo */
+    .logo-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+      opacity: 0;
+      transform: scale(0.8);
+    }
+
+    .logo-svg {
+      width: 160px;
+      height: 160px;
+    }
+
+    .brand-name {
+      font-size: 96px;
+      font-weight: 900;
+      color: white;
+      letter-spacing: -2px;
+    }
+
+    .brand-name span {
+      color: #FACC15;
+    }
+
+    .tagline {
+      font-size: 40px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.7);
+      margin-top: 20px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    /* Scene 4 - Calendar Demo */
+    .calendar-demo {
+      width: 100%;
+      opacity: 0;
+    }
+
+    .feature-label {
+      font-size: 32px;
+      font-weight: 700;
+      color: #FACC15;
+      text-align: center;
+      margin-bottom: 40px;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      opacity: 0;
+    }
+
+    .calendar-container {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(250, 204, 21, 0.2);
+      border-radius: 24px;
+      padding: 30px;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .calendar-month {
+      font-size: 36px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .calendar-nav {
+      display: flex;
+      gap: 15px;
+    }
+
+    .nav-btn {
+      width: 45px;
+      height: 45px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 24px;
+    }
+
+    .calendar-days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .day-label {
+      text-align: center;
+      font-size: 20px;
+      color: rgba(255, 255, 255, 0.4);
+      padding: 10px;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+    }
+
+    .calendar-day {
+      aspect-ratio: 1;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      color: rgba(255, 255, 255, 0.6);
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .calendar-day.scheduled {
+      background: rgba(250, 204, 21, 0.15);
+      border: 2px solid rgba(250, 204, 21, 0.4);
+      color: white;
+    }
+
+    .calendar-day.scheduled::after {
+      content: '';
+      position: absolute;
+      bottom: 8px;
+      width: 8px;
+      height: 8px;
+      background: #22c55e;
+      border-radius: 50%;
+    }
+
+    .calendar-day.today {
+      background: linear-gradient(135deg, #FACC15 0%, #EAB308 100%);
+      color: #000;
+      font-weight: 700;
+    }
+
+    /* Scene 5 - Stats */
+    .stats-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 50px;
+      opacity: 0;
+    }
+
+    .stats-title {
+      font-size: 48px;
+      font-weight: 800;
+      color: white;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .streak-display {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      opacity: 0;
+      transform: scale(0.8);
+    }
+
+    .streak-number {
+      font-size: 180px;
+      font-weight: 900;
+      background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+    }
+
+    .streak-label {
+      font-size: 42px;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .streak-fire {
+      font-size: 80px;
+      opacity: 0;
+    }
+
+    .consistency-bars {
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+      height: 200px;
+      opacity: 0;
+    }
+
+    .consistency-bar {
+      width: 60px;
+      background: linear-gradient(180deg, #FACC15 0%, #EAB308 100%);
+      border-radius: 8px 8px 0 0;
+      opacity: 0;
+      transform: scaleY(0);
+      transform-origin: bottom;
+    }
+
+    /* Scene 6 - CTA */
+    .cta-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 45px;
+      opacity: 0;
+    }
+
+    .cta-title {
+      font-size: 56px;
+      font-weight: 800;
+      color: white;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .cta-subtitle {
+      font-size: 34px;
+      color: rgba(255, 255, 255, 0.6);
+      text-align: center;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .cta-button {
+      background: linear-gradient(135deg, #FACC15 0%, #EAB308 100%);
+      color: #000;
+      font-size: 48px;
+      font-weight: 800;
+      padding: 40px 80px;
+      border-radius: 20px;
+      opacity: 0;
+      transform: scale(0.8);
+      box-shadow: 0 0 60px rgba(250, 204, 21, 0.4);
+    }
+
+    .cta-subtext {
+      font-size: 30px;
+      color: rgba(255, 255, 255, 0.5);
+      opacity: 0;
+    }
+
+    .free-badge {
+      background: rgba(34, 197, 94, 0.2);
+      border: 2px solid #22c55e;
+      color: #22c55e;
+      font-size: 28px;
+      font-weight: 700;
+      padding: 16px 40px;
+      border-radius: 50px;
+      opacity: 0;
+      transform: scale(0.8);
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 60px rgba(250, 204, 21, 0.4); }
+      50% { transform: scale(1.05); box-shadow: 0 0 80px rgba(250, 204, 21, 0.6); }
+    }
+
+    @keyframes floatUp {
+      0%, 100% { transform: translateY(0) scale(1); opacity: 0.6; }
+      50% { transform: translateY(-30px) scale(1.2); opacity: 0.9; }
+    }
+
+    @keyframes floatDown {
+      0%, 100% { transform: translateY(0) scale(1); opacity: 0.6; }
+      50% { transform: translateY(30px) scale(0.8); opacity: 0.4; }
+    }
+
+    @keyframes fireGlow {
+      0%, 100% { transform: scale(1); filter: brightness(1); }
+      50% { transform: scale(1.1); filter: brightness(1.2); }
+    }
+  </style>
+</head>
+<body>
+  <div class="video-container" id="video">
+    <div class="grid-bg" id="gridBg"></div>
+    <div class="glow-orb glow-1" id="glow1"></div>
+    <div class="glow-orb glow-2" id="glow2"></div>
+
+    <div class="particle" id="p1" style="left: 10%; top: 20%;"></div>
+    <div class="particle" id="p2" style="left: 85%; top: 30%;"></div>
+    <div class="particle" id="p3" style="left: 15%; top: 70%;"></div>
+    <div class="particle" id="p4" style="left: 90%; top: 80%;"></div>
+    <div class="particle" id="p5" style="left: 50%; top: 15%;"></div>
+
+    <!-- Scene 1: Hook - #1 Reason -->
+    <div class="scene" id="scene1">
+      <div class="hook-text" id="hookText1">The <span class="hook-highlight">#1 reason</span> for<br>social media success?</div>
+      <div class="number-one" id="numberOne">#1</div>
+      <div class="hook-text" id="hookText2"><span class="hook-highlight">CONSISTENCY</span></div>
+    </div>
+
+    <!-- Scene 2: Problem -->
+    <div class="scene" id="scene2">
+      <div class="problem-container" id="problemContainer">
+        <div class="problem-title" id="problemTitle">But staying consistent is HARD</div>
+        <div class="problem-list">
+          <div class="problem-item" id="prob1">
+            <div class="problem-x">✕</div>
+            <div class="problem-text">Forgetting to post</div>
+          </div>
+          <div class="problem-item" id="prob2">
+            <div class="problem-x">✕</div>
+            <div class="problem-text">Running out of ideas</div>
+          </div>
+          <div class="problem-item" id="prob3">
+            <div class="problem-x">✕</div>
+            <div class="problem-text">No time to create content</div>
+          </div>
+          <div class="problem-item" id="prob4">
+            <div class="problem-x">✕</div>
+            <div class="problem-text">Managing multiple platforms</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scene 3: Logo Reveal -->
+    <div class="scene" id="scene3">
+      <div class="logo-container" id="logoContainer">
+        <svg class="logo-svg" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#FACC15"/>
+              <stop offset="100%" style="stop-color:#EAB308"/>
+            </linearGradient>
+          </defs>
+          <rect x="4" y="6" width="16" height="3" rx="1.5" fill="url(#logoGrad)"/>
+          <rect x="4" y="12" width="24" height="3" rx="1.5" fill="url(#logoGrad)" opacity="0.8"/>
+          <rect x="4" y="18" width="20" height="3" rx="1.5" fill="url(#logoGrad)" opacity="0.6"/>
+          <rect x="4" y="24" width="12" height="3" rx="1.5" fill="url(#logoGrad)" opacity="0.4"/>
+        </svg>
+        <div class="brand-name">POST<span>AIFY</span></div>
+      </div>
+      <div class="tagline" id="tagline">Never Miss a Post Again</div>
+    </div>
+
+    <!-- Scene 4: Calendar Demo -->
+    <div class="scene" id="scene4">
+      <div class="calendar-demo" id="calendarDemo">
+        <div class="feature-label" id="calendarLabel">Auto-Schedule Your Content</div>
+        <div class="calendar-container" id="calendarContainer">
+          <div class="calendar-header">
+            <div class="calendar-month">January 2025</div>
+            <div class="calendar-nav">
+              <div class="nav-btn">&lt;</div>
+              <div class="nav-btn">&gt;</div>
+            </div>
+          </div>
+          <div class="calendar-days">
+            <div class="day-label">Sun</div>
+            <div class="day-label">Mon</div>
+            <div class="day-label">Tue</div>
+            <div class="day-label">Wed</div>
+            <div class="day-label">Thu</div>
+            <div class="day-label">Fri</div>
+            <div class="day-label">Sat</div>
+          </div>
+          <div class="calendar-grid" id="calendarGrid">
+            <div class="calendar-day"></div>
+            <div class="calendar-day"></div>
+            <div class="calendar-day"></div>
+            <div class="calendar-day" id="day1">1</div>
+            <div class="calendar-day" id="day2">2</div>
+            <div class="calendar-day" id="day3">3</div>
+            <div class="calendar-day" id="day4">4</div>
+            <div class="calendar-day" id="day5">5</div>
+            <div class="calendar-day" id="day6">6</div>
+            <div class="calendar-day" id="day7">7</div>
+            <div class="calendar-day" id="day8">8</div>
+            <div class="calendar-day" id="day9">9</div>
+            <div class="calendar-day" id="day10">10</div>
+            <div class="calendar-day" id="day11">11</div>
+            <div class="calendar-day" id="day12">12</div>
+            <div class="calendar-day" id="day13">13</div>
+            <div class="calendar-day" id="day14">14</div>
+            <div class="calendar-day" id="day15">15</div>
+            <div class="calendar-day" id="day16">16</div>
+            <div class="calendar-day" id="day17">17</div>
+            <div class="calendar-day" id="day18">18</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scene 5: Stats / Streak -->
+    <div class="scene" id="scene5">
+      <div class="stats-container" id="statsContainer">
+        <div class="stats-title" id="statsTitle">Build Your Streak</div>
+        <div class="streak-display" id="streakDisplay">
+          <div class="streak-fire" id="streakFire">🔥</div>
+          <div class="streak-number" id="streakNumber">30</div>
+          <div class="streak-label">Days Consistent</div>
+        </div>
+        <div class="consistency-bars" id="consistencyBars">
+          <div class="consistency-bar" id="bar1" style="height: 60px;"></div>
+          <div class="consistency-bar" id="bar2" style="height: 90px;"></div>
+          <div class="consistency-bar" id="bar3" style="height: 75px;"></div>
+          <div class="consistency-bar" id="bar4" style="height: 120px;"></div>
+          <div class="consistency-bar" id="bar5" style="height: 100px;"></div>
+          <div class="consistency-bar" id="bar6" style="height: 150px;"></div>
+          <div class="consistency-bar" id="bar7" style="height: 180px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scene 6: CTA -->
+    <div class="scene" id="scene6">
+      <div class="cta-container" id="ctaContainer">
+        <div class="cta-title">Be consistent.<br><span style="color: #FACC15;">Without the effort.</span></div>
+        <div class="cta-subtitle" id="ctaSubtitle">AI creates. Auto schedules. You grow.</div>
+        <div class="cta-button" id="ctaButton">Try POSTAIFY</div>
+        <div class="free-badge" id="freeBadge">FREE to Start</div>
+        <div class="cta-subtext" id="ctaSubtext">No credit card required</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dimensions-label">1080 x 1920 px (9:16 TikTok)</div>
+
+  <div class="controls">
+    <button class="play-btn" onclick="playVideo()">Play</button>
+    <button class="restart-btn" onclick="restartVideo()">Restart</button>
+  </div>
+
+  <script>
+    let isPlaying = false;
+    let animationTimeouts = [];
+
+    function clearAnimations() {
+      animationTimeouts.forEach(t => clearTimeout(t));
+      animationTimeouts = [];
+    }
+
+    function animate(element, styles, duration = 500, delay = 0) {
+      return new Promise(resolve => {
+        const timeout = setTimeout(() => {
+          if (typeof element === 'string') {
+            element = document.getElementById(element);
+          }
+          if (!element) return resolve();
+
+          element.style.transition = `all ${duration}ms cubic-bezier(0.16, 1, 0.3, 1)`;
+          Object.assign(element.style, styles);
+
+          setTimeout(resolve, duration);
+        }, delay);
+        animationTimeouts.push(timeout);
+      });
+    }
+
+    async function playVideo() {
+      if (isPlaying) return;
+      isPlaying = true;
+
+      document.querySelectorAll('.scene').forEach(s => s.style.opacity = '0');
+
+      // Background
+      animate('gridBg', { opacity: '1' }, 1000);
+      animate('glow1', { opacity: '1' }, 1500);
+      animate('glow2', { opacity: '1' }, 1500, 500);
+
+      ['p1', 'p2', 'p3', 'p4', 'p5'].forEach((p, i) => {
+        const el = document.getElementById(p);
+        el.style.opacity = '0.6';
+        el.style.animation = `float${i % 2 === 0 ? 'Up' : 'Down'} ${3 + i * 0.5}s ease-in-out infinite`;
+      });
+
+      // SCENE 1: Hook (0-4s)
+      await animate('scene1', { opacity: '1' }, 500);
+      await animate('hookText1', { opacity: '1', transform: 'translateY(0)' }, 600);
+      await animate('numberOne', { opacity: '1', transform: 'scale(1)' }, 800, 300);
+      await animate('hookText2', { opacity: '1', transform: 'translateY(0)' }, 600, 200);
+
+      await new Promise(r => setTimeout(r, 1500));
+      await animate('scene1', { opacity: '0' }, 400);
+
+      // SCENE 2: Problem (4-8s)
+      await animate('scene2', { opacity: '1' }, 500);
+      await animate('problemContainer', { opacity: '1' }, 300);
+      await animate('problemTitle', { opacity: '1', transform: 'translateY(0)' }, 500);
+
+      await animate('prob1', { opacity: '1', transform: 'translateX(0)' }, 400, 200);
+      await animate('prob2', { opacity: '1', transform: 'translateX(0)' }, 400, 150);
+      await animate('prob3', { opacity: '1', transform: 'translateX(0)' }, 400, 150);
+      await animate('prob4', { opacity: '1', transform: 'translateX(0)' }, 400, 150);
+
+      await new Promise(r => setTimeout(r, 1200));
+      await animate('scene2', { opacity: '0' }, 400);
+
+      // SCENE 3: Logo (8-10.5s)
+      await animate('scene3', { opacity: '1' }, 500);
+      await animate('logoContainer', { opacity: '1', transform: 'scale(1)' }, 800);
+      await animate('tagline', { opacity: '1', transform: 'translateY(0)' }, 600, 400);
+
+      await new Promise(r => setTimeout(r, 1500));
+      await animate('scene3', { opacity: '0' }, 400);
+
+      // SCENE 4: Calendar (10.5-15s)
+      await animate('scene4', { opacity: '1' }, 500);
+      await animate('calendarDemo', { opacity: '1' }, 300);
+      await animate('calendarLabel', { opacity: '1' }, 400);
+      await animate('calendarContainer', { opacity: '1', transform: 'translateY(0)' }, 600);
+
+      // Animate days getting scheduled
+      const scheduledDays = [1, 3, 5, 6, 8, 10, 12, 13, 15, 17, 18];
+      for (let i = 0; i < scheduledDays.length; i++) {
+        await new Promise(r => setTimeout(r, 120));
+        const day = document.getElementById('day' + scheduledDays[i]);
+        if (day) {
+          day.classList.add('scheduled');
+        }
+      }
+
+      // Mark today
+      await new Promise(r => setTimeout(r, 200));
+      document.getElementById('day15').classList.add('today');
+      document.getElementById('day15').classList.remove('scheduled');
+
+      await new Promise(r => setTimeout(r, 1000));
+      await animate('scene4', { opacity: '0' }, 400);
+
+      // SCENE 5: Stats (15-19s)
+      await animate('scene5', { opacity: '1' }, 500);
+      await animate('statsContainer', { opacity: '1' }, 300);
+      await animate('statsTitle', { opacity: '1', transform: 'translateY(0)' }, 500);
+      await animate('streakDisplay', { opacity: '1', transform: 'scale(1)' }, 700);
+
+      // Fire animation
+      await animate('streakFire', { opacity: '1' }, 400);
+      document.getElementById('streakFire').style.animation = 'fireGlow 0.5s ease-in-out infinite';
+
+      // Consistency bars
+      await animate('consistencyBars', { opacity: '1' }, 300);
+      for (let i = 1; i <= 7; i++) {
+        await animate('bar' + i, { opacity: '1', transform: 'scaleY(1)' }, 300, 50);
+      }
+
+      await new Promise(r => setTimeout(r, 1200));
+      await animate('scene5', { opacity: '0' }, 400);
+
+      // SCENE 6: CTA (19-23s)
+      await animate('scene6', { opacity: '1' }, 500);
+      await animate('ctaContainer', { opacity: '1' }, 300);
+      await animate('ctaSubtitle', { opacity: '1', transform: 'translateY(0)' }, 500, 200);
+      await animate('ctaButton', { opacity: '1', transform: 'scale(1)' }, 600, 300);
+
+      const btn = document.getElementById('ctaButton');
+      btn.style.animation = 'pulse 1.5s ease-in-out infinite';
+
+      await animate('freeBadge', { opacity: '1', transform: 'scale(1)' }, 500, 400);
+      await animate('ctaSubtext', { opacity: '1' }, 500, 300);
+
+      isPlaying = false;
+    }
+
+    function restartVideo() {
+      clearAnimations();
+      isPlaying = false;
+
+      const elements = [
+        'gridBg', 'glow1', 'glow2',
+        'scene1', 'scene2', 'scene3', 'scene4', 'scene5', 'scene6',
+        'hookText1', 'hookText2', 'numberOne',
+        'problemContainer', 'problemTitle', 'prob1', 'prob2', 'prob3', 'prob4',
+        'logoContainer', 'tagline',
+        'calendarDemo', 'calendarLabel', 'calendarContainer',
+        'statsContainer', 'statsTitle', 'streakDisplay', 'streakFire', 'consistencyBars',
+        'bar1', 'bar2', 'bar3', 'bar4', 'bar5', 'bar6', 'bar7',
+        'ctaContainer', 'ctaSubtitle', 'ctaButton', 'freeBadge', 'ctaSubtext'
+      ];
+
+      elements.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.style.transition = 'none';
+          el.style.opacity = '0';
+          el.style.transform = '';
+          el.style.animation = '';
+        }
+      });
+
+      // Reset transforms
+      document.getElementById('hookText1').style.transform = 'translateY(40px)';
+      document.getElementById('hookText2').style.transform = 'translateY(40px)';
+      document.getElementById('numberOne').style.transform = 'scale(0.5)';
+      document.getElementById('problemTitle').style.transform = 'translateY(20px)';
+      ['prob1', 'prob2', 'prob3', 'prob4'].forEach(id => {
+        document.getElementById(id).style.transform = 'translateX(-50px)';
+      });
+      document.getElementById('logoContainer').style.transform = 'scale(0.8)';
+      document.getElementById('tagline').style.transform = 'translateY(20px)';
+      document.getElementById('calendarContainer').style.transform = 'translateY(30px)';
+      document.getElementById('statsTitle').style.transform = 'translateY(20px)';
+      document.getElementById('streakDisplay').style.transform = 'scale(0.8)';
+      ['bar1', 'bar2', 'bar3', 'bar4', 'bar5', 'bar6', 'bar7'].forEach(id => {
+        document.getElementById(id).style.transform = 'scaleY(0)';
+      });
+      document.getElementById('ctaSubtitle').style.transform = 'translateY(20px)';
+      document.getElementById('ctaButton').style.transform = 'scale(0.8)';
+      document.getElementById('freeBadge').style.transform = 'scale(0.8)';
+
+      // Reset calendar
+      for (let i = 1; i <= 18; i++) {
+        const day = document.getElementById('day' + i);
+        if (day) {
+          day.classList.remove('scheduled', 'today');
+        }
+      }
+
+      // Reset particles
+      ['p1', 'p2', 'p3', 'p4', 'p5'].forEach(p => {
+        const el = document.getElementById(p);
+        el.style.opacity = '0';
+        el.style.animation = '';
+      });
+    }
+
+    restartVideo();
+  </script>
+</body>
+</html>

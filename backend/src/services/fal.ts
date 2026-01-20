@@ -1,4 +1,5 @@
 import { env } from '../config/env.js'
+import { fetchWithTimeout, TIMEOUTS } from '../lib/fetchWithTimeout.js'
 
 interface GenerationOptions {
   model: string
@@ -53,7 +54,7 @@ export async function generateImage(
   const enhancedPrompt = enhancePrompt(prompt, finalOptions.style || 'none')
   const imageSize = getImageSize(finalOptions.aspectRatio)
 
-  const response = await fetch(`https://fal.run/${finalOptions.model}`, {
+  const response = await fetchWithTimeout(`https://fal.run/${finalOptions.model}`, {
     method: 'POST',
     headers: {
       'Authorization': `Key ${apiKey}`,
@@ -65,7 +66,8 @@ export async function generateImage(
       num_images: 1,
       enable_safety_checker: true,
       ...(finalOptions.negativePrompt && { negative_prompt: finalOptions.negativePrompt })
-    })
+    }),
+    timeout: TIMEOUTS.IMAGE_GENERATION,
   })
 
   if (!response.ok) {
@@ -88,7 +90,9 @@ export async function generateImage(
   const imageUrl = result.images[0].url
 
   // Download the image to return as buffer (for R2 upload)
-  const imageResponse = await fetch(imageUrl)
+  const imageResponse = await fetchWithTimeout(imageUrl, {
+    timeout: TIMEOUTS.DEFAULT,
+  })
   if (!imageResponse.ok) {
     throw new Error('Failed to download generated image')
   }

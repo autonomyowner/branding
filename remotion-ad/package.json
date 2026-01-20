@@ -1,0 +1,26 @@
+{
+  "name": "postaify-ad",
+  "version": "1.0.0",
+  "description": "POSTAIFY SaaS Motion Graphics Ad",
+  "scripts": {
+    "start": "remotion studio",
+    "build": "remotion render PostaifyAd out/postaify-ad.mp4",
+    "build:gif": "remotion render PostaifyAd out/postaify-ad.gif --image-format=png",
+    "build:tiktok": "remotion render TikTokAd out/postaify-tiktok-telegram-ad.mp4",
+    "build:tiktok:gif": "remotion render TikTokAd out/postaify-tiktok-telegram-ad.gif --image-format=png",
+    "build:pro": "remotion render ProTikTokAd out/postaify-pro-tiktok-ad.mp4 --codec=h264",
+    "build:pro:hq": "remotion render ProTikTokAd out/postaify-pro-tiktok-ad-hq.mp4 --codec=h264 --crf=18",
+    "build:pro:gif": "remotion render ProTikTokAd out/postaify-pro-tiktok-ad.gif --image-format=png"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.0",
+    "@remotion/player": "^4.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "remotion": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "typescript": "^5.0.0"
+  }
+}

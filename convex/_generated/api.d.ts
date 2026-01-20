@@ -21,6 +21,7 @@ import type * as posts from "../posts.js";
 import type * as subscriptions from "../subscriptions.js";
 import type * as subscriptionsAction from "../subscriptionsAction.js";
 import type * as telegram from "../telegram.js";
+import type * as telegramAction from "../telegramAction.js";
 import type * as users from "../users.js";
 import type * as voice from "../voice.js";
 
@@ -44,6 +45,7 @@ declare const fullApi: ApiFromModules<{
   subscriptions: typeof subscriptions;
   subscriptionsAction: typeof subscriptionsAction;
   telegram: typeof telegram;
+  telegramAction: typeof telegramAction;
   users: typeof users;
   voice: typeof voice;
 }>;

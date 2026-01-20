@@ -2,6 +2,7 @@ import { Router } from 'express'
 import { requireAuthentication, loadUser } from '../middleware/auth.js'
 import { validateBody } from '../middleware/validate.js'
 import { checkFeature } from '../middleware/quota.js'
+import { imageGenerationLimiter } from '../middleware/rateLimit.js'
 import { generateImageSchema } from '../schemas/ai.js'
 import { generateImage, AVAILABLE_MODELS, ASPECT_RATIOS } from '../services/fal.js'
 import { uploadImage } from '../services/storage.js'
@@ -10,6 +11,9 @@ const router = Router()
 
 // All routes require authentication
 router.use(requireAuthentication, loadUser)
+
+// Apply stricter rate limiting for image generation endpoints
+router.use(imageGenerationLimiter)
 
 // GET /api/v1/images/models - Get available image models
 router.get('/models', (req, res) => {

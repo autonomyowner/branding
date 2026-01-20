@@ -32,7 +32,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     convexApi.telegram.getStatus,
     clerkId ? { clerkId } : "skip"
   )
-  const connectTelegramAction = useAction(convexApi.telegram.connect)
+  const connectTelegramAction = useAction(convexApi.telegramAction.connect)
   const disconnectTelegramMutation = useMutation(convexApi.telegram.disconnect)
   const toggleTelegramMutation = useMutation(convexApi.telegram.toggle)
 
@@ -47,7 +47,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     try {
       const result = await connectTelegramAction({ clerkId })
       // Open the Telegram connect link in a new window
-      window.open(result.connectLink, '_blank')
+      window.open(result.connectUrl, '_blank')
       // Polling not needed - Convex query is reactive
       // Just wait a bit then stop loading
       setTimeout(() => {

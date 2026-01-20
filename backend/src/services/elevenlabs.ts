@@ -1,4 +1,5 @@
 import { env } from '../config/env.js'
+import { fetchWithTimeout, TIMEOUTS } from '../lib/fetchWithTimeout.js'
 
 export interface Voice {
   voice_id: string
@@ -38,11 +39,12 @@ export async function getVoices(): Promise<Voice[]> {
     throw new Error('ElevenLabs API key not configured')
   }
 
-  const response = await fetch('https://api.elevenlabs.io/v1/voices', {
+  const response = await fetchWithTimeout('https://api.elevenlabs.io/v1/voices', {
     method: 'GET',
     headers: {
       'xi-api-key': apiKey
-    }
+    },
+    timeout: TIMEOUTS.DEFAULT,
   })
 
   if (!response.ok) {
@@ -66,7 +68,7 @@ export async function generateSpeech(
     throw new Error('ElevenLabs API key not configured')
   }
 
-  const response = await fetch(
+  const response = await fetchWithTimeout(
     `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
     {
       method: 'POST',
@@ -84,7 +86,8 @@ export async function generateSpeech(
           style: settings.style,
           use_speaker_boost: settings.use_speaker_boost
         }
-      })
+      }),
+      timeout: TIMEOUTS.VOICE_GENERATION,
     }
   )
 
@@ -117,7 +120,7 @@ export async function optimizeForVoiceover(
     calm: "Soothing, measured, and relaxed. Perfect for educational or meditative content."
   }
 
-  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+  const response = await fetchWithTimeout('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${envConfig.OPENROUTER_API_KEY}`,
@@ -148,7 +151,8 @@ Output ONLY the voiceover script.`
       ],
       max_tokens: 1000,
       temperature: 0.7
-    })
+    }),
+    timeout: TIMEOUTS.AI_GENERATION,
   })
 
   if (!response.ok) {

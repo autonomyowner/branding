@@ -2,11 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=1080, height=1920">
-  <title>Postaify TikTok Ad</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>POSTAIFY TikTok Ad</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -17,7 +15,7 @@
 
     body {
       font-family: 'Inter', sans-serif;
-      background: #0a0a0f;
+      background: #1a1a1a;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -32,21 +30,21 @@
       background: #000000;
       position: relative;
       overflow: hidden;
-      border: 3px dashed #ef4444;
-      flex-shrink: 0;
+      border: 3px dashed #ff4444;
+      transform-origin: top center;
     }
 
     .dimensions-label {
-      color: #666;
+      color: #888;
       font-size: 14px;
-      margin-top: 10px;
-      text-align: center;
+      margin-top: 15px;
+      font-family: monospace;
     }
 
     .controls {
-      display: flex;
-      gap: 12px;
       margin-top: 20px;
+      display: flex;
+      gap: 15px;
     }
 
     .controls button {
@@ -56,16 +54,16 @@
       border: none;
       border-radius: 8px;
       cursor: pointer !important;
-      transition: transform 0.2s, opacity 0.2s;
-    }
-
-    .controls button:hover {
-      transform: scale(1.05);
+      transition: all 0.2s;
     }
 
     .play-btn {
-      background: #ef4444;
+      background: #ff4444;
       color: white;
+    }
+
+    .play-btn:hover {
+      background: #ff6666;
     }
 
     .restart-btn {
@@ -73,40 +71,11 @@
       color: white;
     }
 
-    /* Video content styles */
-    .grid-pattern {
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
-      background-size: 40px 40px;
+    .restart-btn:hover {
+      background: #444;
     }
 
-    .glow-orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(100px);
-      opacity: 0;
-    }
-
-    .glow-orb-1 {
-      width: 700px;
-      height: 700px;
-      background: radial-gradient(circle, rgba(202, 138, 4, 0.5) 0%, transparent 70%);
-      top: 25%;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .glow-orb-2 {
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, rgba(250, 204, 21, 0.3) 0%, transparent 70%);
-      bottom: 20%;
-      right: -100px;
-    }
-
+    /* Video Content Styles */
     .scene {
       position: absolute;
       inset: 0;
@@ -115,226 +84,347 @@
       align-items: center;
       justify-content: center;
       opacity: 0;
-      padding: 80px;
+      padding: 60px;
     }
 
-    /* Scene 1: Hook */
-    .scene-1 .hook-text {
-      font-size: 78px;
-      font-weight: 800;
-      color: white;
-      text-align: center;
-      line-height: 1.15;
+    /* Grid background */
+    .grid-bg {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(250, 204, 21, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(250, 204, 21, 0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
       opacity: 0;
-      transform: translateY(50px);
     }
 
-    .scene-1 .hook-highlight {
-      background: linear-gradient(135deg, #FACC15 0%, #CA8A04 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .scene-1 .pain-point {
-      font-size: 44px;
-      color: rgba(255,255,255,0.5);
-      margin-top: 50px;
+    /* Ambient glow */
+    .glow-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
       opacity: 0;
-      transform: translateY(30px);
     }
 
-    /* Scene 2: Solution reveal */
-    .scene-2 .logo-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 40px;
-      opacity: 0;
-      transform: scale(0.7);
+    .glow-1 {
+      width: 600px;
+      height: 600px;
+      background: rgba(250, 204, 21, 0.15);
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
     }
 
-    .scene-2 .logo-svg {
-      width: 200px;
-      height: 200px;
+    .glow-2 {
+      width: 400px;
+      height: 400px;
+      background: rgba(250, 204, 21, 0.1);
+      bottom: 200px;
+      right: -100px;
     }
 
-    .scene-2 .brand-name {
-      font-size: 108px;
-      font-weight: 800;
-      background: linear-gradient(135deg, #FDE047 0%, #FACC15 50%, #CA8A04 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .scene-2 .tagline {
-      font-size: 40px;
-      color: rgba(255,255,255,0.7);
-      text-align: center;
-      margin-top: 30px;
-      opacity: 0;
-      transform: translateY(30px);
-    }
-
-    /* Scene 3: Features demo */
-    .scene-3 {
-      justify-content: flex-start;
-      padding-top: 180px;
-    }
-
-    .scene-3 .feature-title {
-      font-size: 60px;
-      font-weight: 700;
-      color: white;
-      text-align: center;
-      margin-bottom: 100px;
-      opacity: 0;
-      transform: translateY(40px);
-    }
-
-    .scene-3 .features-list {
-      display: flex;
-      flex-direction: column;
-      gap: 60px;
-      width: 100%;
-    }
-
-    .scene-3 .feature-item {
-      display: flex;
-      align-items: center;
-      gap: 50px;
-      padding: 60px 70px;
-      background: linear-gradient(135deg, rgba(202, 138, 4, 0.15) 0%, rgba(250, 204, 21, 0.08) 100%);
-      border: 1px solid rgba(250, 204, 21, 0.25);
-      border-radius: 28px;
-      opacity: 0;
-      transform: translateX(-80px);
-    }
-
-    .scene-3 .feature-number {
-      font-size: 56px;
-      font-weight: 800;
-      background: linear-gradient(135deg, #FACC15 0%, #CA8A04 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      min-width: 70px;
-    }
-
-    .scene-3 .feature-text {
-      font-size: 46px;
-      font-weight: 600;
-      color: white;
-    }
-
-    /* Scene 4: CTA */
-    .scene-4 .cta-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 60px;
-    }
-
-    .scene-4 .cta-headline {
+    /* Scene 1 - Hook */
+    .hook-text {
       font-size: 72px;
       font-weight: 800;
       color: white;
       text-align: center;
-      line-height: 1.25;
+      line-height: 1.1;
       opacity: 0;
-      transform: translateY(50px);
+      transform: translateY(40px);
     }
 
-    .scene-4 .cta-button {
-      padding: 50px 100px;
-      background: linear-gradient(135deg, #FACC15 0%, #CA8A04 100%);
-      border-radius: 100px;
+    .hook-highlight {
+      color: #FACC15;
+    }
+
+    .time-display {
+      font-size: 180px;
+      font-weight: 900;
+      color: #ff4444;
       opacity: 0;
-      transform: scale(0.7);
-      box-shadow: 0 20px 80px rgba(202, 138, 4, 0.5);
+      transform: scale(0.5);
+      margin: 40px 0;
+      text-shadow: 0 0 60px rgba(255, 68, 68, 0.5);
+      position: relative;
     }
 
-    .scene-4 .cta-button-text {
-      font-size: 52px;
-      font-weight: 700;
-      color: white;
-    }
-
-    .scene-4 .cta-subtext {
-      font-size: 36px;
-      color: rgba(255,255,255,0.5);
-      text-align: center;
-      opacity: 0;
-      transform: translateY(25px);
-    }
-
-    .scene-4 .logo-small {
+    .cross-line {
       position: absolute;
-      bottom: 120px;
+      left: -20px;
+      right: -20px;
+      top: 50%;
+      height: 12px;
+      background: #ff4444;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease-out;
+    }
+
+    .cross-line.active {
+      transform: scaleX(1);
+    }
+
+    /* Scene 2 - Solution */
+    .logo-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+      opacity: 0;
+      transform: scale(0.8);
+    }
+
+    .logo-svg {
+      width: 160px;
+      height: 160px;
+    }
+
+    .brand-name {
+      font-size: 96px;
+      font-weight: 900;
+      color: white;
+      letter-spacing: -2px;
+    }
+
+    .brand-name span {
+      color: #FACC15;
+    }
+
+    .tagline {
+      font-size: 42px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.7);
+      margin-top: 20px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    /* Scene 3 - Features Demo */
+    .feature-demo {
+      width: 100%;
+      opacity: 0;
+    }
+
+    .demo-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(250, 204, 21, 0.2);
+      border-radius: 24px;
+      padding: 50px;
+      margin-bottom: 40px;
+      opacity: 0;
+      transform: translateX(-100px);
+    }
+
+    .demo-card-title {
+      font-size: 36px;
+      font-weight: 700;
+      color: #FACC15;
+      margin-bottom: 20px;
+    }
+
+    .typing-text {
+      font-size: 32px;
+      color: white;
+      font-weight: 500;
+      min-height: 80px;
+    }
+
+    .cursor-blink {
+      display: inline-block;
+      width: 3px;
+      height: 36px;
+      background: #FACC15;
+      margin-left: 4px;
+      animation: blink 0.8s infinite;
+      vertical-align: middle;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    .generated-posts {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+      margin-top: 40px;
+    }
+
+    .post-card {
+      background: rgba(250, 204, 21, 0.1);
+      border: 1px solid rgba(250, 204, 21, 0.3);
+      border-radius: 16px;
+      padding: 30px;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .post-platform {
+      font-size: 24px;
+      color: #FACC15;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .post-preview {
+      font-size: 28px;
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.4;
+    }
+
+    /* Scene 4 - Stats */
+    .stats-container {
+      display: flex;
+      flex-direction: column;
+      gap: 60px;
+      width: 100%;
+      opacity: 0;
+    }
+
+    .stat-row {
       display: flex;
       align-items: center;
-      gap: 24px;
+      justify-content: center;
+      gap: 40px;
+      opacity: 0;
+      transform: translateX(-50px);
+    }
+
+    .stat-before {
+      font-size: 80px;
+      font-weight: 800;
+      color: #ff4444;
+      text-decoration: line-through;
+      text-decoration-thickness: 6px;
+    }
+
+    .stat-arrow {
+      font-size: 60px;
+      color: #FACC15;
+    }
+
+    .stat-after {
+      font-size: 100px;
+      font-weight: 900;
+      color: #22c55e;
+      text-shadow: 0 0 40px rgba(34, 197, 94, 0.5);
+    }
+
+    .stat-label {
+      font-size: 36px;
+      color: rgba(255, 255, 255, 0.6);
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    /* Scene 5 - CTA */
+    .cta-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 50px;
       opacity: 0;
     }
 
-    .scene-4 .logo-small svg {
-      width: 70px;
-      height: 70px;
+    .cta-title {
+      font-size: 64px;
+      font-weight: 800;
+      color: white;
+      text-align: center;
+      line-height: 1.2;
     }
 
-    .scene-4 .logo-small-text {
-      font-size: 40px;
+    .cta-button {
+      background: linear-gradient(135deg, #FACC15 0%, #EAB308 100%);
+      color: #000;
+      font-size: 48px;
+      font-weight: 800;
+      padding: 40px 80px;
+      border-radius: 20px;
+      opacity: 0;
+      transform: scale(0.8);
+      box-shadow: 0 0 60px rgba(250, 204, 21, 0.4);
+    }
+
+    .cta-subtext {
+      font-size: 32px;
+      color: rgba(255, 255, 255, 0.6);
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .free-badge {
+      background: rgba(34, 197, 94, 0.2);
+      border: 2px solid #22c55e;
+      color: #22c55e;
+      font-size: 28px;
       font-weight: 700;
-      color: rgba(255,255,255,0.7);
+      padding: 16px 40px;
+      border-radius: 50px;
+      opacity: 0;
+      transform: scale(0.8);
     }
 
-    /* Particle effects */
+    /* Floating particles */
     .particle {
       position: absolute;
-      width: 10px;
-      height: 10px;
+      width: 8px;
+      height: 8px;
       background: #FACC15;
       border-radius: 50%;
       opacity: 0;
-      filter: blur(2px);
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 60px rgba(250, 204, 21, 0.4); }
+      50% { transform: scale(1.05); box-shadow: 0 0 80px rgba(250, 204, 21, 0.6); }
+    }
+
+    @keyframes floatUp {
+      0%, 100% { transform: translateY(0) scale(1); opacity: 0.6; }
+      50% { transform: translateY(-30px) scale(1.2); opacity: 0.9; }
+    }
+
+    @keyframes floatDown {
+      0%, 100% { transform: translateY(0) scale(1); opacity: 0.6; }
+      50% { transform: translateY(30px) scale(0.8); opacity: 0.4; }
     }
   </style>
 </head>
 <body>
   <div class="video-container" id="video">
-    <!-- Background -->
-    <div class="grid-pattern"></div>
-    <div class="glow-orb glow-orb-1" id="glow1"></div>
-    <div class="glow-orb glow-orb-2" id="glow2"></div>
+    <!-- Background elements -->
+    <div class="grid-bg" id="gridBg"></div>
+    <div class="glow-orb glow-1" id="glow1"></div>
+    <div class="glow-orb glow-2" id="glow2"></div>
 
     <!-- Particles -->
     <div class="particle" id="p1" style="left: 10%; top: 20%;"></div>
-    <div class="particle" id="p2" style="left: 85%; top: 25%;"></div>
-    <div class="particle" id="p3" style="left: 12%; top: 55%;"></div>
-    <div class="particle" id="p4" style="left: 88%; top: 65%;"></div>
-    <div class="particle" id="p5" style="left: 50%; top: 12%;"></div>
-    <div class="particle" id="p6" style="left: 25%; top: 82%;"></div>
-    <div class="particle" id="p7" style="left: 75%; top: 88%;"></div>
-    <div class="particle" id="p8" style="left: 5%; top: 75%;"></div>
+    <div class="particle" id="p2" style="left: 85%; top: 30%;"></div>
+    <div class="particle" id="p3" style="left: 15%; top: 70%;"></div>
+    <div class="particle" id="p4" style="left: 90%; top: 80%;"></div>
+    <div class="particle" id="p5" style="left: 50%; top: 15%;"></div>
 
     <!-- Scene 1: Hook -->
-    <div class="scene scene-1" id="scene1">
-      <div class="hook-text" id="hookText">
-        Still posting<br><span class="hook-highlight">manually?</span>
+    <div class="scene" id="scene1">
+      <div class="hook-text" id="hookText1">Still spending</div>
+      <div class="time-display" id="timeDisplay">
+        8+ HOURS
+        <div class="cross-line" id="crossLine"></div>
       </div>
-      <div class="pain-point" id="painPoint">There's a smarter way...</div>
+      <div class="hook-text" id="hookText2">on <span class="hook-highlight">social media</span><br>every week?</div>
     </div>
 
-    <!-- Scene 2: Solution -->
-    <div class="scene scene-2" id="scene2">
+    <!-- Scene 2: Solution Reveal -->
+    <div class="scene" id="scene2">
       <div class="logo-container" id="logoContainer">
-        <!-- Actual Postaify logo SVG -->
-        <svg class="logo-svg" viewBox="0 0 32 32">
+        <svg class="logo-svg" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" style="stop-color:#FACC15"/>
-              <stop offset="100%" style="stop-color:#CA8A04"/>
+              <stop offset="100%" style="stop-color:#EAB308"/>
             </linearGradient>
           </defs>
           <rect x="4" y="6" width="16" height="3" rx="1.5" fill="url(#logoGrad)"/>
@@ -342,151 +432,130 @@
           <rect x="4" y="18" width="20" height="3" rx="1.5" fill="url(#logoGrad)" opacity="0.6"/>
           <rect x="4" y="24" width="12" height="3" rx="1.5" fill="url(#logoGrad)" opacity="0.4"/>
         </svg>
-        <div class="brand-name">Postaify</div>
+        <div class="brand-name">POST<span>AIFY</span></div>
       </div>
-      <div class="tagline" id="tagline">The first automated content platform</div>
+      <div class="tagline" id="tagline">AI-Powered Content Automation</div>
     </div>
 
-    <!-- Scene 3: Features -->
-    <div class="scene scene-3" id="scene3">
-      <div class="feature-title" id="featureTitle">What you get</div>
-      <div class="features-list">
-        <div class="feature-item" id="feature1">
-          <span class="feature-number">1</span>
-          <span class="feature-text">Create unlimited brands</span>
+    <!-- Scene 3: Feature Demo -->
+    <div class="scene" id="scene3">
+      <div class="feature-demo" id="featureDemo">
+        <div class="demo-card" id="demoCard">
+          <div class="demo-card-title">Describe your content</div>
+          <div class="typing-text" id="typingText"><span class="cursor-blink"></span></div>
         </div>
-        <div class="feature-item" id="feature2">
-          <span class="feature-number">2</span>
-          <span class="feature-text">AI-generated content</span>
-        </div>
-        <div class="feature-item" id="feature3">
-          <span class="feature-number">3</span>
-          <span class="feature-text">Auto-schedule posts</span>
+        <div class="generated-posts" id="generatedPosts">
+          <div class="post-card" id="post1">
+            <div class="post-platform">LinkedIn</div>
+            <div class="post-preview">Professional post about productivity tips...</div>
+          </div>
+          <div class="post-card" id="post2">
+            <div class="post-platform">Twitter / X</div>
+            <div class="post-preview">Engaging thread with key insights...</div>
+          </div>
+          <div class="post-card" id="post3">
+            <div class="post-platform">Instagram</div>
+            <div class="post-preview">Visual caption with trending hashtags...</div>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Scene 4: CTA -->
-    <div class="scene scene-4" id="scene4">
-      <div class="cta-container">
-        <div class="cta-headline" id="ctaHeadline">
-          Start free.<br>No credit card.
+    <!-- Scene 4: Stats Transformation -->
+    <div class="scene" id="scene4">
+      <div class="stats-container" id="statsContainer">
+        <div>
+          <div class="stat-row" id="statRow1">
+            <span class="stat-before">8+ hrs</span>
+            <span class="stat-arrow">→</span>
+            <span class="stat-after">5 min</span>
+          </div>
+          <div class="stat-label">Content Creation Time</div>
         </div>
-        <div class="cta-button" id="ctaButton">
-          <span class="cta-button-text">Try Postaify Free</span>
+        <div>
+          <div class="stat-row" id="statRow2">
+            <span class="stat-before">Manual</span>
+            <span class="stat-arrow">→</span>
+            <span class="stat-after">Auto</span>
+          </div>
+          <div class="stat-label">Scheduling & Posting</div>
         </div>
-        <div class="cta-subtext" id="ctaSubtext">2 brands + 20 posts/month included</div>
+        <div>
+          <div class="stat-row" id="statRow3">
+            <span class="stat-before">1 platform</span>
+            <span class="stat-arrow">→</span>
+            <span class="stat-after">All</span>
+          </div>
+          <div class="stat-label">Multi-Platform Support</div>
+        </div>
       </div>
-      <div class="logo-small" id="logoSmall">
-        <svg viewBox="0 0 32 32">
-          <defs>
-            <linearGradient id="logoGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:#FACC15"/>
-              <stop offset="100%" style="stop-color:#CA8A04"/>
-            </linearGradient>
-          </defs>
-          <rect x="4" y="6" width="16" height="3" rx="1.5" fill="url(#logoGrad2)"/>
-          <rect x="4" y="12" width="24" height="3" rx="1.5" fill="url(#logoGrad2)" opacity="0.8"/>
-          <rect x="4" y="18" width="20" height="3" rx="1.5" fill="url(#logoGrad2)" opacity="0.6"/>
-          <rect x="4" y="24" width="12" height="3" rx="1.5" fill="url(#logoGrad2)" opacity="0.4"/>
-        </svg>
-        <span class="logo-small-text">postaify.com</span>
+    </div>
+
+    <!-- Scene 5: CTA -->
+    <div class="scene" id="scene5">
+      <div class="cta-container" id="ctaContainer">
+        <div class="cta-title">Stop wasting time.<br>Start <span style="color: #FACC15;">automating.</span></div>
+        <div class="cta-button" id="ctaButton">Try POSTAIFY</div>
+        <div class="free-badge" id="freeBadge">FREE to Start</div>
+        <div class="cta-subtext" id="ctaSubtext">No credit card required</div>
       </div>
     </div>
   </div>
 
-  <div class="dimensions-label">1080 x 1920 px (TikTok / Vertical)</div>
+  <div class="dimensions-label">1080 x 1920 px (9:16 TikTok)</div>
 
   <div class="controls">
-    <button class="play-btn" id="playBtn">Play</button>
-    <button class="restart-btn" id="restartBtn">Restart</button>
+    <button class="play-btn" onclick="playVideo()">Play</button>
+    <button class="restart-btn" onclick="restartVideo()">Restart</button>
   </div>
 
   <script>
-    // Animation utilities
-    const ease = {
-      out: t => 1 - Math.pow(1 - t, 3),
-      outBack: t => {
-        const c1 = 1.70158;
-        const c3 = c1 + 1;
-        return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
-      },
-      inOut: t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
-    };
-
-    function animate(element, properties, duration, easing = ease.out, delay = 0) {
-      return new Promise(resolve => {
-        setTimeout(() => {
-          const start = performance.now();
-          const initial = {};
-
-          for (const prop in properties) {
-            if (prop === 'opacity') {
-              initial[prop] = parseFloat(getComputedStyle(element).opacity) || 0;
-            } else if (prop === 'transform') {
-              initial[prop] = getComputedStyle(element).transform;
-              if (initial[prop] === 'none') initial[prop] = '';
-            }
-          }
-
-          function update(currentTime) {
-            const elapsed = currentTime - start;
-            const progress = Math.min(elapsed / duration, 1);
-            const easedProgress = easing(progress);
-
-            for (const prop in properties) {
-              if (prop === 'opacity') {
-                const target = properties[prop];
-                element.style.opacity = initial[prop] + (target - initial[prop]) * easedProgress;
-              } else if (prop === 'transform') {
-                element.style.transform = properties[prop](easedProgress);
-              }
-            }
-
-            if (progress < 1) {
-              requestAnimationFrame(update);
-            } else {
-              resolve();
-            }
-          }
-
-          requestAnimationFrame(update);
-        }, delay);
-      });
-    }
-
-    // Particle animation
-    let particleAnimations = [];
-
-    function animateParticles() {
-      const particles = document.querySelectorAll('.particle');
-      particles.forEach((p, i) => {
-        const baseDelay = i * 150;
-        const duration = 2500 + Math.random() * 1500;
-        const amplitude = 40 + Math.random() * 30;
-
-        function floatParticle() {
-          const anim = animate(p, {
-            opacity: 0.7,
-            transform: (t) => `translateY(${-amplitude * t}px) scale(${1 + 0.4 * Math.sin(t * Math.PI)})`
-          }, duration, ease.inOut, baseDelay);
-
-          anim.then(() => {
-            return animate(p, {
-              opacity: 0,
-              transform: (t) => `translateY(${-amplitude + amplitude * t}px) scale(${1.4 - 0.4 * t})`
-            }, duration, ease.inOut);
-          }).then(() => {
-            if (isPlaying) floatParticle();
-          });
-        }
-        floatParticle();
-      });
-    }
-
+    // Animation timeline
     let isPlaying = false;
+    let animationTimeouts = [];
 
-    // Main animation sequence
+    function clearAnimations() {
+      animationTimeouts.forEach(t => clearTimeout(t));
+      animationTimeouts = [];
+    }
+
+    function animate(element, styles, duration = 500, delay = 0) {
+      return new Promise(resolve => {
+        const timeout = setTimeout(() => {
+          if (typeof element === 'string') {
+            element = document.getElementById(element);
+          }
+          if (!element) return resolve();
+
+          element.style.transition = `all ${duration}ms cubic-bezier(0.16, 1, 0.3, 1)`;
+          Object.assign(element.style, styles);
+
+          setTimeout(resolve, duration);
+        }, delay);
+        animationTimeouts.push(timeout);
+      });
+    }
+
+    function typeText(elementId, text, speed = 50) {
+      return new Promise(resolve => {
+        const element = document.getElementById(elementId);
+        let i = 0;
+        element.innerHTML = '<span class="cursor-blink"></span>';
+
+        function type() {
+          if (i < text.length) {
+            element.innerHTML = text.substring(0, i + 1) + '<span class="cursor-blink"></span>';
+            i++;
+            const timeout = setTimeout(type, speed);
+            animationTimeouts.push(timeout);
+          } else {
+            resolve();
+          }
+        }
+        type();
+      });
+    }
+
     async function playVideo() {
       if (isPlaying) return;
       isPlaying = true;
@@ -494,165 +563,146 @@
       // Reset all scenes
       document.querySelectorAll('.scene').forEach(s => s.style.opacity = '0');
 
-      // Show background glow
-      animate(document.getElementById('glow1'), { opacity: 1 }, 1200, ease.out);
-      animate(document.getElementById('glow2'), { opacity: 0.9 }, 1400, ease.out, 300);
+      // Background animations
+      animate('gridBg', { opacity: '1' }, 1000);
+      animate('glow1', { opacity: '1' }, 1500);
+      animate('glow2', { opacity: '1' }, 1500, 500);
 
-      // Start particle animation
-      animateParticles();
+      // Particle animations
+      ['p1', 'p2', 'p3', 'p4', 'p5'].forEach((p, i) => {
+        const el = document.getElementById(p);
+        el.style.opacity = '0.6';
+        el.style.animation = `float${i % 2 === 0 ? 'Up' : 'Down'} ${3 + i * 0.5}s ease-in-out infinite`;
+      });
 
-      // Scene 1: Hook (0-3.5s)
-      const scene1 = document.getElementById('scene1');
-      scene1.style.opacity = '1';
+      // SCENE 1: Hook (0-4s)
+      await animate('scene1', { opacity: '1' }, 500);
+      await animate('hookText1', { opacity: '1', transform: 'translateY(0)' }, 600);
+      await animate('timeDisplay', { opacity: '1', transform: 'scale(1)' }, 800, 300);
 
-      await animate(document.getElementById('hookText'), {
-        opacity: 1,
-        transform: (t) => `translateY(${50 * (1 - t)}px)`
-      }, 700, ease.outBack);
+      // Cross out animation
+      await new Promise(resolve => {
+        setTimeout(() => {
+          document.getElementById('crossLine').classList.add('active');
+          resolve();
+        }, 500);
+      });
 
-      await animate(document.getElementById('painPoint'), {
-        opacity: 1,
-        transform: (t) => `translateY(${30 * (1 - t)}px)`
-      }, 550, ease.out, 500);
+      await animate('hookText2', { opacity: '1', transform: 'translateY(0)' }, 600, 200);
 
-      await new Promise(r => setTimeout(r, 1800));
+      await new Promise(r => setTimeout(r, 1500));
+      await animate('scene1', { opacity: '0' }, 400);
 
-      // Fade out scene 1
-      await animate(scene1, { opacity: 0 }, 450, ease.out);
-
-      // Scene 2: Solution reveal (3.5-7.5s)
-      const scene2 = document.getElementById('scene2');
-      scene2.style.opacity = '1';
-
-      await animate(document.getElementById('logoContainer'), {
-        opacity: 1,
-        transform: (t) => `scale(${0.7 + 0.3 * ease.outBack(t)})`
-      }, 900, ease.outBack);
-
-      await animate(document.getElementById('tagline'), {
-        opacity: 1,
-        transform: (t) => `translateY(${30 * (1 - t)}px)`
-      }, 550, ease.out, 400);
+      // SCENE 2: Solution Reveal (4-7s)
+      await animate('scene2', { opacity: '1' }, 500);
+      await animate('logoContainer', { opacity: '1', transform: 'scale(1)' }, 800);
+      await animate('tagline', { opacity: '1', transform: 'translateY(0)' }, 600, 400);
 
       await new Promise(r => setTimeout(r, 2000));
+      await animate('scene2', { opacity: '0' }, 400);
 
-      // Fade out scene 2
-      await animate(scene2, { opacity: 0 }, 450, ease.out);
+      // SCENE 3: Feature Demo (7-13s)
+      await animate('scene3', { opacity: '1' }, 500);
+      await animate('featureDemo', { opacity: '1' }, 300);
+      await animate('demoCard', { opacity: '1', transform: 'translateX(0)' }, 600);
 
-      // Scene 3: Features (7.5-14s)
-      const scene3 = document.getElementById('scene3');
-      scene3.style.opacity = '1';
+      await typeText('typingText', 'Write about productivity tips for entrepreneurs', 40);
 
-      await animate(document.getElementById('featureTitle'), {
-        opacity: 1,
-        transform: (t) => `translateY(${40 * (1 - t)}px)`
-      }, 550, ease.out);
+      await new Promise(r => setTimeout(r, 500));
 
-      // Staggered feature items
-      for (let i = 1; i <= 3; i++) {
-        await animate(document.getElementById(`feature${i}`), {
-          opacity: 1,
-          transform: (t) => `translateX(${-80 * (1 - t)}px)`
-        }, 550, ease.outBack);
-        await new Promise(r => setTimeout(r, 400));
-      }
+      // Posts appear
+      await animate('post1', { opacity: '1', transform: 'translateY(0)' }, 400, 200);
+      await animate('post2', { opacity: '1', transform: 'translateY(0)' }, 400, 150);
+      await animate('post3', { opacity: '1', transform: 'translateY(0)' }, 400, 150);
 
-      await new Promise(r => setTimeout(r, 2200));
+      await new Promise(r => setTimeout(r, 1500));
+      await animate('scene3', { opacity: '0' }, 400);
 
-      // Fade out scene 3
-      await animate(scene3, { opacity: 0 }, 450, ease.out);
+      // SCENE 4: Stats (13-17s)
+      await animate('scene4', { opacity: '1' }, 500);
+      await animate('statsContainer', { opacity: '1' }, 300);
 
-      // Scene 4: CTA (14-18s)
-      const scene4 = document.getElementById('scene4');
-      scene4.style.opacity = '1';
+      await animate('statRow1', { opacity: '1', transform: 'translateX(0)' }, 600);
+      await new Promise(r => setTimeout(r, 600));
+      await animate('statRow2', { opacity: '1', transform: 'translateX(0)' }, 600);
+      await new Promise(r => setTimeout(r, 600));
+      await animate('statRow3', { opacity: '1', transform: 'translateX(0)' }, 600);
 
-      await animate(document.getElementById('ctaHeadline'), {
-        opacity: 1,
-        transform: (t) => `translateY(${50 * (1 - t)}px)`
-      }, 700, ease.outBack);
+      await new Promise(r => setTimeout(r, 1500));
+      await animate('scene4', { opacity: '0' }, 400);
 
-      await animate(document.getElementById('ctaButton'), {
-        opacity: 1,
-        transform: (t) => `scale(${0.7 + 0.3 * ease.outBack(t)})`
-      }, 700, ease.outBack, 250);
+      // SCENE 5: CTA (17-20s)
+      await animate('scene5', { opacity: '1' }, 500);
+      await animate('ctaContainer', { opacity: '1' }, 300);
+      await animate('ctaButton', { opacity: '1', transform: 'scale(1)' }, 600, 300);
 
-      await animate(document.getElementById('ctaSubtext'), {
-        opacity: 1,
-        transform: (t) => `translateY(${25 * (1 - t)}px)`
-      }, 450, ease.out, 350);
+      // Pulse animation on button
+      const btn = document.getElementById('ctaButton');
+      btn.style.animation = 'pulse 1.5s ease-in-out infinite';
 
-      await animate(document.getElementById('logoSmall'), {
-        opacity: 1
-      }, 550, ease.out, 500);
-
-      // Pulse the CTA button
-      const ctaButton = document.getElementById('ctaButton');
-      for (let i = 0; i < 4; i++) {
-        await new Promise(r => setTimeout(r, 700));
-        ctaButton.style.transform = 'scale(1.08)';
-        ctaButton.style.transition = 'transform 0.35s ease';
-        await new Promise(r => setTimeout(r, 350));
-        ctaButton.style.transform = 'scale(1)';
-      }
+      await animate('freeBadge', { opacity: '1', transform: 'scale(1)' }, 500, 400);
+      await animate('ctaSubtext', { opacity: '1', transform: 'translateY(0)' }, 500, 300);
 
       isPlaying = false;
     }
 
-    function resetAll() {
+    function restartVideo() {
+      clearAnimations();
       isPlaying = false;
 
-      // Reset scenes
-      document.querySelectorAll('.scene').forEach(s => {
-        s.style.opacity = '0';
+      // Reset all elements
+      const elements = [
+        'gridBg', 'glow1', 'glow2',
+        'scene1', 'scene2', 'scene3', 'scene4', 'scene5',
+        'hookText1', 'hookText2', 'timeDisplay',
+        'logoContainer', 'tagline',
+        'featureDemo', 'demoCard', 'post1', 'post2', 'post3',
+        'statsContainer', 'statRow1', 'statRow2', 'statRow3',
+        'ctaContainer', 'ctaButton', 'freeBadge', 'ctaSubtext'
+      ];
+
+      elements.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.style.transition = 'none';
+          el.style.opacity = '0';
+          el.style.transform = '';
+          el.style.animation = '';
+        }
       });
 
-      // Reset glows
-      document.getElementById('glow1').style.opacity = '0';
-      document.getElementById('glow2').style.opacity = '0';
+      // Reset cross line
+      document.getElementById('crossLine').classList.remove('active');
+
+      // Reset specific transforms
+      document.getElementById('hookText1').style.transform = 'translateY(40px)';
+      document.getElementById('hookText2').style.transform = 'translateY(40px)';
+      document.getElementById('timeDisplay').style.transform = 'scale(0.5)';
+      document.getElementById('logoContainer').style.transform = 'scale(0.8)';
+      document.getElementById('tagline').style.transform = 'translateY(20px)';
+      document.getElementById('demoCard').style.transform = 'translateX(-100px)';
+      document.getElementById('post1').style.transform = 'translateY(30px)';
+      document.getElementById('post2').style.transform = 'translateY(30px)';
+      document.getElementById('post3').style.transform = 'translateY(30px)';
+      document.getElementById('statRow1').style.transform = 'translateX(-50px)';
+      document.getElementById('statRow2').style.transform = 'translateX(-50px)';
+      document.getElementById('statRow3').style.transform = 'translateX(-50px)';
+      document.getElementById('ctaButton').style.transform = 'scale(0.8)';
+      document.getElementById('freeBadge').style.transform = 'scale(0.8)';
+      document.getElementById('ctaSubtext').style.transform = 'translateY(20px)';
+
+      document.getElementById('typingText').innerHTML = '<span class="cursor-blink"></span>';
 
       // Reset particles
-      document.querySelectorAll('.particle').forEach(p => {
-        p.style.opacity = '0';
-        p.style.transform = '';
+      ['p1', 'p2', 'p3', 'p4', 'p5'].forEach(p => {
+        const el = document.getElementById(p);
+        el.style.opacity = '0';
+        el.style.animation = '';
       });
-
-      // Reset individual elements
-      const elements = {
-        'hookText': 'opacity: 0; transform: translateY(50px);',
-        'painPoint': 'opacity: 0; transform: translateY(30px);',
-        'logoContainer': 'opacity: 0; transform: scale(0.7);',
-        'tagline': 'opacity: 0; transform: translateY(30px);',
-        'featureTitle': 'opacity: 0; transform: translateY(40px);',
-        'feature1': 'opacity: 0; transform: translateX(-80px);',
-        'feature2': 'opacity: 0; transform: translateX(-80px);',
-        'feature3': 'opacity: 0; transform: translateX(-80px);',
-        'ctaHeadline': 'opacity: 0; transform: translateY(50px);',
-        'ctaButton': 'opacity: 0; transform: scale(0.7); transition: none;',
-        'ctaSubtext': 'opacity: 0; transform: translateY(25px);',
-        'logoSmall': 'opacity: 0;'
-      };
-
-      for (const [id, style] of Object.entries(elements)) {
-        const el = document.getElementById(id);
-        if (el) el.style.cssText = style;
-      }
     }
 
-    // Button handlers
-    document.getElementById('playBtn').addEventListener('click', () => {
-      if (!isPlaying) {
-        resetAll();
-        setTimeout(playVideo, 100);
-      }
-    });
-
-    document.getElementById('restartBtn').addEventListener('click', () => {
-      resetAll();
-      setTimeout(playVideo, 100);
-    });
-
     // Initialize
-    resetAll();
+    restartVideo();
   </script>
 </body>
 </html>

@@ -3,6 +3,7 @@ import { prisma } from '../lib/prisma.js'
 import { requireAuthentication, loadUser, getAuthenticatedUser } from '../middleware/auth.js'
 import { validateBody } from '../middleware/validate.js'
 import { checkFeature } from '../middleware/quota.js'
+import { aiGenerationLimiter } from '../middleware/rateLimit.js'
 import { generateContentSchema, generateFromVideoSchema } from '../schemas/ai.js'
 import { generateContent, generateFromVideo, AVAILABLE_MODELS } from '../services/openrouter.js'
 import { NotFoundError, ForbiddenError } from '../lib/errors.js'
@@ -11,6 +12,9 @@ const router = Router()
 
 // All routes require authentication
 router.use(requireAuthentication, loadUser)
+
+// Apply stricter rate limiting for AI generation endpoints
+router.use(aiGenerationLimiter)
 
 // GET /api/v1/ai/models - Get available AI models
 router.get('/models', (req, res) => {

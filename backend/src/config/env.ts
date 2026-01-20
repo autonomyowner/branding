@@ -10,6 +10,9 @@ const envSchema = z.object({
   // Database
   DATABASE_URL: z.string(),
 
+  // Redis (optional - for job queues and caching)
+  REDIS_URL: z.string().optional(),
+
   // Clerk
   CLERK_PUBLISHABLE_KEY: z.string(),
   CLERK_SECRET_KEY: z.string(),

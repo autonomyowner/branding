@@ -49,6 +49,14 @@ export const getUserByTelegramChatId = internalQuery({
   },
 });
 
+// Get user by ID (internal use only)
+export const getUserById = internalQuery({
+  args: { userId: v.id("users") },
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.userId);
+  },
+});
+
 // Get admin stats (internal use only)
 export const getAdminStats = internalQuery({
   args: {},

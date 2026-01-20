@@ -1,4 +1,5 @@
 import { env } from '../config/env.js'
+import { fetchWithTimeout, TIMEOUTS } from '../lib/fetchWithTimeout.js'
 
 const TELEGRAM_API_BASE = 'https://api.telegram.org/bot'
 
@@ -29,7 +30,7 @@ export async function sendMessage(
   }
 
   try {
-    const response = await fetch(getBotUrl('sendMessage'), {
+    const response = await fetchWithTimeout(getBotUrl('sendMessage'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -38,6 +39,7 @@ export async function sendMessage(
         parse_mode: options?.parseMode,
         disable_web_page_preview: options?.disableWebPagePreview,
       }),
+      timeout: TIMEOUTS.TELEGRAM_API,
     })
 
     const data = await response.json() as {
@@ -91,10 +93,11 @@ export async function setWebhook(webhookUrl: string): Promise<boolean> {
   }
 
   try {
-    const response = await fetch(getBotUrl('setWebhook'), {
+    const response = await fetchWithTimeout(getBotUrl('setWebhook'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ url: webhookUrl }),
+      timeout: TIMEOUTS.TELEGRAM_API,
     })
 
     const data = await response.json() as { ok: boolean }
@@ -111,8 +114,9 @@ export async function deleteWebhook(): Promise<boolean> {
   }
 
   try {
-    const response = await fetch(getBotUrl('deleteWebhook'), {
+    const response = await fetchWithTimeout(getBotUrl('deleteWebhook'), {
       method: 'POST',
+      timeout: TIMEOUTS.TELEGRAM_API,
     })
 
     const data = await response.json() as { ok: boolean }
@@ -133,7 +137,9 @@ export async function getBotInfo(): Promise<{
   }
 
   try {
-    const response = await fetch(getBotUrl('getMe'))
+    const response = await fetchWithTimeout(getBotUrl('getMe'), {
+      timeout: TIMEOUTS.TELEGRAM_API,
+    })
     const data = await response.json() as {
       ok: boolean
       result?: { username: string; first_name: string }

@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>POSTAIFY TikTok Ad v3 - AI Voiceover</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      cursor: none !important;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #1a1a1a;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .video-container {
+      width: 1080px;
+      height: 1920px;
+      background: #000000;
+      position: relative;
+      overflow: hidden;
+      border: 3px dashed #ff4444;
+      transform-origin: top center;
+    }
+
+    .dimensions-label {
+      color: #888;
+      font-size: 14px;
+      margin-top: 15px;
+      font-family: monospace;
+    }
+
+    .controls {
+      margin-top: 20px;
+      display: flex;
+      gap: 15px;
+    }
+
+    .controls button {
+      padding: 12px 32px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer !important;
+      transition: all 0.2s;
+    }
+
+    .play-btn {
+      background: #ff4444;
+      color: white;
+    }
+
+    .play-btn:hover {
+      background: #ff6666;
+    }
+
+    .restart-btn {
+      background: #333;
+      color: white;
+    }
+
+    .restart-btn:hover {
+      background: #444;
+    }
+
+    .scene {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      padding: 60px;
+    }
+
+    .grid-bg {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(250, 204, 21, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(250, 204, 21, 0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0;
+    }
+
+    .glow-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0;
+    }
+
+    .glow-1 {
+      width: 600px;
+      height: 600px;
+      background: rgba(250, 204, 21, 0.15);
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .glow-2 {
+      width: 400px;
+      height: 400px;
+      background: rgba(250, 204, 21, 0.1);
+      bottom: 200px;
+      right: -100px;
+    }
+
+    .particle {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: #FACC15;
+      border-radius: 50%;
+      opacity: 0;
+    }
+
+    /* Scene 1 - Hook: Price Problem */
+    .price-tag {
+      font-size: 140px;
+      font-weight: 900;
+      color: #ff4444;
+      opacity: 0;
+      transform: scale(0.5);
+      text-shadow: 0 0 60px rgba(255, 68, 68, 0.5);
+      position: relative;
+    }
+
+    .hook-text {
+      font-size: 64px;
+      font-weight: 800;
+      color: white;
+      text-align: center;
+      line-height: 1.15;
+      opacity: 0;
+      transform: translateY(40px);
+    }
+
+    .hook-small {
+      font-size: 38px;
+      color: rgba(255, 255, 255, 0.6);
+      margin-top: 30px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .hook-highlight {
+      color: #FACC15;
+    }
+
+    /* Scene 2 - Logo */
+    .logo-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+      opacity: 0;
+      transform: scale(0.8);
+    }
+
+    .logo-svg {
+      width: 160px;
+      height: 160px;
+    }
+
+    .brand-name {
+      font-size: 96px;
+      font-weight: 900;
+      color: white;
+      letter-spacing: -2px;
+    }
+
+    .brand-name span {
+      color: #FACC15;
+    }
+
+    .tagline {
+      font-size: 40px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.7);
+      margin-top: 20px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    /* Scene 3 - Voice Selection */
+    .voice-demo {
+      width: 100%;
+      opacity: 0;
+    }
+
+    .feature-label {
+      font-size: 32px;
+      font-weight: 700;
+      color: #FACC15;
+      text-align: center;
+      margin-bottom: 40px;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      opacity: 0;
+    }
+
+    .voice-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+
+    .voice-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      padding: 35px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      opacity: 0;
+      transform: scale(0.8);
+      transition: all 0.3s ease;
+    }
+
+    .voice-card.selected {
+      border-color: #FACC15;
+      background: rgba(250, 204, 21, 0.1);
+      box-shadow: 0 0 40px rgba(250, 204, 21, 0.2);
+    }
+
+    .voice-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+    }
+
+    .voice-name {
+      font-size: 28px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .voice-type {
+      font-size: 20px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .voice-wave {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      height: 40px;
+      opacity: 0;
+    }
+
+    .wave-bar {
+      width: 6px;
+      background: #FACC15;
+      border-radius: 3px;
+      animation: none;
+    }
+
+    @keyframes wave {
+      0%, 100% { height: 10px; }
+      50% { height: 35px; }
+    }
+
+    /* Scene 4 - Script Generation */
+    .script-demo {
+      width: 100%;
+      opacity: 0;
+    }
+
+    .script-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(250, 204, 21, 0.2);
+      border-radius: 24px;
+      padding: 40px;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .script-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .script-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .ai-badge {
+      background: linear-gradient(135deg, #FACC15 0%, #EAB308 100%);
+      color: #000;
+      font-size: 18px;
+      font-weight: 700;
+      padding: 10px 20px;
+      border-radius: 50px;
+    }
+
+    .script-input {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 25px;
+      margin-bottom: 25px;
+    }
+
+    .script-input-label {
+      font-size: 20px;
+      color: rgba(255, 255, 255, 0.5);
+      margin-bottom: 10px;
+    }
+
+    .script-input-text {
+      font-size: 28px;
+      color: white;
+      min-height: 40px;
+    }
+
+    .script-output {
+      background: rgba(250, 204, 21, 0.05);
+      border: 1px solid rgba(250, 204, 21, 0.2);
+      border-radius: 16px;
+      padding: 25px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .script-output-label {
+      font-size: 20px;
+      color: #FACC15;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .script-output-text {
+      font-size: 26px;
+      color: rgba(255, 255, 255, 0.9);
+      line-height: 1.5;
+    }
+
+    .cursor-blink {
+      display: inline-block;
+      width: 3px;
+      height: 30px;
+      background: #FACC15;
+      margin-left: 4px;
+      animation: blink 0.8s infinite;
+      vertical-align: middle;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    /* Scene 5 - Result */
+    .result-demo {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+      opacity: 0;
+    }
+
+    .video-player {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid rgba(250, 204, 21, 0.3);
+      border-radius: 24px;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: scale(0.9);
+    }
+
+    .video-content {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(250, 204, 21, 0.1) 0%, rgba(0,0,0,0.5) 100%);
+    }
+
+    .play-icon {
+      width: 100px;
+      height: 100px;
+      background: rgba(250, 204, 21, 0.9);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .play-triangle {
+      width: 0;
+      height: 0;
+      border-left: 35px solid #000;
+      border-top: 22px solid transparent;
+      border-bottom: 22px solid transparent;
+      margin-left: 8px;
+    }
+
+    .audio-wave-container {
+      position: absolute;
+      bottom: 30px;
+      left: 30px;
+      right: 30px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      opacity: 0;
+    }
+
+    .audio-bar {
+      width: 8px;
+      background: #FACC15;
+      border-radius: 4px;
+    }
+
+    .result-badge {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .badge-item {
+      background: rgba(34, 197, 94, 0.2);
+      border: 2px solid #22c55e;
+      color: #22c55e;
+      font-size: 28px;
+      font-weight: 700;
+      padding: 20px 35px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .checkmark {
+      font-size: 32px;
+    }
+
+    /* Scene 6 - CTA */
+    .cta-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 45px;
+      opacity: 0;
+    }
+
+    .cta-title {
+      font-size: 58px;
+      font-weight: 800;
+      color: white;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .cta-subtitle {
+      font-size: 36px;
+      color: rgba(255, 255, 255, 0.6);
+      text-align: center;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .cta-button {
+      background: linear-gradient(135deg, #FACC15 0%, #EAB308 100%);
+      color: #000;
+      font-size: 48px;
+      font-weight: 800;
+      padding: 40px 80px;
+      border-radius: 20px;
+      opacity: 0;
+      transform: scale(0.8);
+      box-shadow: 0 0 60px rgba(250, 204, 21, 0.4);
+    }
+
+    .cta-subtext {
+      font-size: 30px;
+      color: rgba(255, 255, 255, 0.5);
+      opacity: 0;
+    }
+
+    .free-badge {
+      background: rgba(34, 197, 94, 0.2);
+      border: 2px solid #22c55e;
+      color: #22c55e;
+      font-size: 28px;
+      font-weight: 700;
+      padding: 16px 40px;
+      border-radius: 50px;
+      opacity: 0;
+      transform: scale(0.8);
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 60px rgba(250, 204, 21, 0.4); }
+      50% { transform: scale(1.05); box-shadow: 0 0 80px rgba(250, 204, 21, 0.6); }
+    }
+
+    @keyframes floatUp {
+      0%, 100% { transform: translateY(0) scale(1); opacity: 0.6; }
+      50% { transform: translateY(-30px) scale(1.2); opacity: 0.9; }
+    }
+
+    @keyframes floatDown {
+      0%, 100% { transform: translateY(0) scale(1); opacity: 0.6; }
+      50% { transform: translateY(30px) scale(0.8); opacity: 0.4; }
+    }
+  </style>
+</head>
+<body>
+  <div class="video-container" id="video">
+    <div class="grid-bg" id="gridBg"></div>
+    <div class="glow-orb glow-1" id="glow1"></div>
+    <div class="glow-orb glow-2" id="glow2"></div>
+
+    <div class="particle" id="p1" style="left: 10%; top: 20%;"></div>
+    <div class="particle" id="p2" style="left: 85%; top: 30%;"></div>
+    <div class="particle" id="p3" style="left: 15%; top: 70%;"></div>
+    <div class="particle" id="p4" style="left: 90%; top: 80%;"></div>
+    <div class="particle" id="p5" style="left: 50%; top: 15%;"></div>
+
+    <!-- Scene 1: Hook - Price Problem -->
+    <div class="scene" id="scene1">
+      <div class="hook-text" id="hookText1">Pro voiceovers cost</div>
+      <div class="price-tag" id="priceTag">$500+</div>
+      <div class="hook-text" id="hookText2">per video?</div>
+      <div class="hook-small" id="hookSmall">There's a <span class="hook-highlight">better way.</span></div>
+    </div>
+
+    <!-- Scene 2: Logo Reveal -->
+    <div class="scene" id="scene2">
+      <div class="logo-container" id="logoContainer">
+        <svg class="logo-svg" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#FACC15"/>
+              <stop offset="100%" style="stop-color:#EAB308"/>
+            </linearGradient>
+          </defs>
+          <rect x="4" y="6" width="16" height="3" rx="1.5" fill="url(#logoGrad)"/>
+          <rect x="4" y="12" width="24" height="3" rx="1.5" fill="url(#logoGrad)" opacity="0.8"/>
+          <rect x="4" y="18" width="20" height="3" rx="1.5" fill="url(#logoGrad)" opacity="0.6"/>
+          <rect x="4" y="24" width="12" height="3" rx="1.5" fill="url(#logoGrad)" opacity="0.4"/>
+        </svg>
+        <div class="brand-name">POST<span>AIFY</span></div>
+      </div>
+      <div class="tagline" id="tagline">AI Voiceover Generator</div>
+    </div>
+
+    <!-- Scene 3: Voice Selection -->
+    <div class="scene" id="scene3">
+      <div class="voice-demo" id="voiceDemo">
+        <div class="feature-label" id="voiceLabel">Choose Your Voice</div>
+        <div class="voice-grid">
+          <div class="voice-card" id="voice1">
+            <div class="voice-avatar">M</div>
+            <div class="voice-name">Marcus</div>
+            <div class="voice-type">Deep & Professional</div>
+            <div class="voice-wave" id="wave1">
+              <div class="wave-bar" style="height: 15px;"></div>
+              <div class="wave-bar" style="height: 25px;"></div>
+              <div class="wave-bar" style="height: 20px;"></div>
+              <div class="wave-bar" style="height: 30px;"></div>
+              <div class="wave-bar" style="height: 18px;"></div>
+            </div>
+          </div>
+          <div class="voice-card" id="voice2">
+            <div class="voice-avatar">S</div>
+            <div class="voice-name">Sarah</div>
+            <div class="voice-type">Warm & Friendly</div>
+            <div class="voice-wave" id="wave2">
+              <div class="wave-bar" style="height: 20px;"></div>
+              <div class="wave-bar" style="height: 15px;"></div>
+              <div class="wave-bar" style="height: 28px;"></div>
+              <div class="wave-bar" style="height: 22px;"></div>
+              <div class="wave-bar" style="height: 18px;"></div>
+            </div>
+          </div>
+          <div class="voice-card" id="voice3">
+            <div class="voice-avatar">A</div>
+            <div class="voice-name">Alex</div>
+            <div class="voice-type">Energetic & Bold</div>
+            <div class="voice-wave" id="wave3">
+              <div class="wave-bar" style="height: 18px;"></div>
+              <div class="wave-bar" style="height: 32px;"></div>
+              <div class="wave-bar" style="height: 15px;"></div>
+              <div class="wave-bar" style="height: 25px;"></div>
+              <div class="wave-bar" style="height: 20px;"></div>
+            </div>
+          </div>
+          <div class="voice-card" id="voice4">
+            <div class="voice-avatar">E</div>
+            <div class="voice-name">Emma</div>
+            <div class="voice-type">Calm & Soothing</div>
+            <div class="voice-wave" id="wave4">
+              <div class="wave-bar" style="height: 12px;"></div>
+              <div class="wave-bar" style="height: 18px;"></div>
+              <div class="wave-bar" style="height: 25px;"></div>
+              <div class="wave-bar" style="height: 15px;"></div>
+              <div class="wave-bar" style="height: 20px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scene 4: Script Generation -->
+    <div class="scene" id="scene4">
+      <div class="script-demo" id="scriptDemo">
+        <div class="feature-label" id="scriptLabel">No Script? No Problem</div>
+        <div class="script-card" id="scriptCard">
+          <div class="script-header">
+            <div class="script-title">AI Script Writer</div>
+            <div class="ai-badge">AI Powered</div>
+          </div>
+          <div class="script-input">
+            <div class="script-input-label">Topic:</div>
+            <div class="script-input-text" id="topicText"><span class="cursor-blink"></span></div>
+          </div>
+          <div class="script-output" id="scriptOutput">
+            <div class="script-output-label">
+              <span>Generated Script</span>
+              <span style="color: #22c55e;">✓</span>
+            </div>
+            <div class="script-output-text" id="generatedScript"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scene 5: Result -->
+    <div class="scene" id="scene5">
+      <div class="result-demo" id="resultDemo">
+        <div class="feature-label" id="resultLabel" style="opacity: 0;">And Voilà!</div>
+        <div class="video-player" id="videoPlayer">
+          <div class="video-content">
+            <div class="play-icon">
+              <div class="play-triangle"></div>
+            </div>
+          </div>
+          <div class="audio-wave-container" id="audioWave">
+            <!-- Audio bars will be generated by JS -->
+          </div>
+        </div>
+        <div class="result-badge" id="resultBadge">
+          <div class="badge-item">
+            <span class="checkmark">✓</span>
+            <span>Pro Quality</span>
+          </div>
+          <div class="badge-item">
+            <span class="checkmark">✓</span>
+            <span>Seconds</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scene 6: CTA -->
+    <div class="scene" id="scene6">
+      <div class="cta-container" id="ctaContainer">
+        <div class="cta-title">Pro voiceovers.<br><span style="color: #FACC15;">Zero cost.</span></div>
+        <div class="cta-subtitle" id="ctaSubtitle">No studio. No waiting. No budget needed.</div>
+        <div class="cta-button" id="ctaButton">Try POSTAIFY</div>
+        <div class="free-badge" id="freeBadge">FREE to Start</div>
+        <div class="cta-subtext" id="ctaSubtext">No credit card required</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dimensions-label">1080 x 1920 px (9:16 TikTok)</div>
+
+  <div class="controls">
+    <button class="play-btn" onclick="playVideo()">Play</button>
+    <button class="restart-btn" onclick="restartVideo()">Restart</button>
+  </div>
+
+  <script>
+    let isPlaying = false;
+    let animationTimeouts = [];
+
+    // Generate audio bars
+    const audioWave = document.getElementById('audioWave');
+    for (let i = 0; i < 40; i++) {
+      const bar = document.createElement('div');
+      bar.className = 'audio-bar';
+      bar.style.height = '10px';
+      bar.dataset.index = i;
+      audioWave.appendChild(bar);
+    }
+
+    function clearAnimations() {
+      animationTimeouts.forEach(t => clearTimeout(t));
+      animationTimeouts = [];
+    }
+
+    function animate(element, styles, duration = 500, delay = 0) {
+      return new Promise(resolve => {
+        const timeout = setTimeout(() => {
+          if (typeof element === 'string') {
+            element = document.getElementById(element);
+          }
+          if (!element) return resolve();
+
+          element.style.transition = `all ${duration}ms cubic-bezier(0.16, 1, 0.3, 1)`;
+          Object.assign(element.style, styles);
+
+          setTimeout(resolve, duration);
+        }, delay);
+        animationTimeouts.push(timeout);
+      });
+    }
+
+    function typeText(elementId, text, speed = 50) {
+      return new Promise(resolve => {
+        const element = document.getElementById(elementId);
+        let i = 0;
+        element.innerHTML = '<span class="cursor-blink"></span>';
+
+        function type() {
+          if (i < text.length) {
+            element.innerHTML = text.substring(0, i + 1) + '<span class="cursor-blink"></span>';
+            i++;
+            const timeout = setTimeout(type, speed);
+            animationTimeouts.push(timeout);
+          } else {
+            resolve();
+          }
+        }
+        type();
+      });
+    }
+
+    function animateWave(waveId) {
+      const wave = document.getElementById(waveId);
+      wave.style.opacity = '1';
+      const bars = wave.querySelectorAll('.wave-bar');
+      bars.forEach((bar, i) => {
+        bar.style.animation = `wave 0.5s ease-in-out ${i * 0.1}s infinite`;
+      });
+    }
+
+    function stopWave(waveId) {
+      const wave = document.getElementById(waveId);
+      const bars = wave.querySelectorAll('.wave-bar');
+      bars.forEach(bar => {
+        bar.style.animation = 'none';
+      });
+    }
+
+    async function playVideo() {
+      if (isPlaying) return;
+      isPlaying = true;
+
+      document.querySelectorAll('.scene').forEach(s => s.style.opacity = '0');
+
+      // Background
+      animate('gridBg', { opacity: '1' }, 1000);
+      animate('glow1', { opacity: '1' }, 1500);
+      animate('glow2', { opacity: '1' }, 1500, 500);
+
+      ['p1', 'p2', 'p3', 'p4', 'p5'].forEach((p, i) => {
+        const el = document.getElementById(p);
+        el.style.opacity = '0.6';
+        el.style.animation = `float${i % 2 === 0 ? 'Up' : 'Down'} ${3 + i * 0.5}s ease-in-out infinite`;
+      });
+
+      // SCENE 1: Hook (0-4s)
+      await animate('scene1', { opacity: '1' }, 500);
+      await animate('hookText1', { opacity: '1', transform: 'translateY(0)' }, 600);
+      await animate('priceTag', { opacity: '1', transform: 'scale(1)' }, 700, 200);
+
+      await animate('hookText2', { opacity: '1', transform: 'translateY(0)' }, 500, 300);
+      await animate('hookSmall', { opacity: '1', transform: 'translateY(0)' }, 500, 400);
+
+      await new Promise(r => setTimeout(r, 1200));
+      await animate('scene1', { opacity: '0' }, 400);
+
+      // SCENE 2: Logo (4-6.5s)
+      await animate('scene2', { opacity: '1' }, 500);
+      await animate('logoContainer', { opacity: '1', transform: 'scale(1)' }, 800);
+      await animate('tagline', { opacity: '1', transform: 'translateY(0)' }, 600, 400);
+
+      await new Promise(r => setTimeout(r, 1500));
+      await animate('scene2', { opacity: '0' }, 400);
+
+      // SCENE 3: Voice Selection (6.5-11s)
+      await animate('scene3', { opacity: '1' }, 500);
+      await animate('voiceDemo', { opacity: '1' }, 300);
+      await animate('voiceLabel', { opacity: '1' }, 400);
+
+      // Show voice cards
+      await animate('voice1', { opacity: '1', transform: 'scale(1)' }, 400, 100);
+      await animate('voice2', { opacity: '1', transform: 'scale(1)' }, 400, 100);
+      await animate('voice3', { opacity: '1', transform: 'scale(1)' }, 400, 100);
+      await animate('voice4', { opacity: '1', transform: 'scale(1)' }, 400, 100);
+
+      // Simulate selection with wave animation
+      await new Promise(r => setTimeout(r, 400));
+      document.getElementById('voice1').classList.add('selected');
+      animateWave('wave1');
+
+      await new Promise(r => setTimeout(r, 600));
+      document.getElementById('voice1').classList.remove('selected');
+      stopWave('wave1');
+      document.getElementById('voice3').classList.add('selected');
+      animateWave('wave3');
+
+      await new Promise(r => setTimeout(r, 800));
+      await animate('scene3', { opacity: '0' }, 400);
+      stopWave('wave3');
+
+      // SCENE 4: Script Generation (11-16s)
+      await animate('scene4', { opacity: '1' }, 500);
+      await animate('scriptDemo', { opacity: '1' }, 300);
+      await animate('scriptLabel', { opacity: '1' }, 400);
+      await animate('scriptCard', { opacity: '1', transform: 'translateY(0)' }, 600);
+
+      await typeText('topicText', 'Product launch announcement', 40);
+
+      await new Promise(r => setTimeout(r, 500));
+      await animate('scriptOutput', { opacity: '1', transform: 'translateY(0)' }, 500);
+
+      const script = "Introducing the future of productivity. Built for teams who demand excellence. Available now.";
+      document.getElementById('generatedScript').textContent = script;
+
+      await new Promise(r => setTimeout(r, 1500));
+      await animate('scene4', { opacity: '0' }, 400);
+
+      // SCENE 5: Result (16-20s)
+      await animate('scene5', { opacity: '1' }, 500);
+      await animate('resultDemo', { opacity: '1' }, 300);
+      await animate('resultLabel', { opacity: '1' }, 500);
+      await animate('videoPlayer', { opacity: '1', transform: 'scale(1)' }, 700);
+
+      // Animate audio bars
+      await animate('audioWave', { opacity: '1' }, 400);
+      const audioBars = document.querySelectorAll('.audio-bar');
+      audioBars.forEach((bar, i) => {
+        const height = 10 + Math.random() * 40;
+        bar.style.transition = 'height 0.15s ease';
+        setInterval(() => {
+          bar.style.height = (10 + Math.random() * 40) + 'px';
+        }, 150 + i * 10);
+      });
+
+      await new Promise(r => setTimeout(r, 600));
+      await animate('resultBadge', { opacity: '1', transform: 'translateY(0)' }, 600);
+
+      await new Promise(r => setTimeout(r, 1200));
+      await animate('scene5', { opacity: '0' }, 400);
+
+      // SCENE 6: CTA (20-24s)
+      await animate('scene6', { opacity: '1' }, 500);
+      await animate('ctaContainer', { opacity: '1' }, 300);
+      await animate('ctaSubtitle', { opacity: '1', transform: 'translateY(0)' }, 500, 200);
+      await animate('ctaButton', { opacity: '1', transform: 'scale(1)' }, 600, 300);
+
+      const btn = document.getElementById('ctaButton');
+      btn.style.animation = 'pulse 1.5s ease-in-out infinite';
+
+      await animate('freeBadge', { opacity: '1', transform: 'scale(1)' }, 500, 400);
+      await animate('ctaSubtext', { opacity: '1' }, 500, 300);
+
+      isPlaying = false;
+    }
+
+    function restartVideo() {
+      clearAnimations();
+      isPlaying = false;
+
+      const elements = [
+        'gridBg', 'glow1', 'glow2',
+        'scene1', 'scene2', 'scene3', 'scene4', 'scene5', 'scene6',
+        'hookText1', 'hookText2', 'priceTag', 'hookSmall',
+        'logoContainer', 'tagline',
+        'voiceDemo', 'voiceLabel', 'voice1', 'voice2', 'voice3', 'voice4',
+        'scriptDemo', 'scriptLabel', 'scriptCard', 'scriptOutput',
+        'resultDemo', 'resultLabel', 'videoPlayer', 'audioWave', 'resultBadge',
+        'ctaContainer', 'ctaSubtitle', 'ctaButton', 'freeBadge', 'ctaSubtext'
+      ];
+
+      elements.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.style.transition = 'none';
+          el.style.opacity = '0';
+          el.style.transform = '';
+          el.style.animation = '';
+        }
+      });
+
+      // Reset specific states
+      document.getElementById('hookText1').style.transform = 'translateY(40px)';
+      document.getElementById('hookText2').style.transform = 'translateY(40px)';
+      document.getElementById('priceTag').style.transform = 'scale(0.5)';
+      document.getElementById('hookSmall').style.transform = 'translateY(20px)';
+      document.getElementById('logoContainer').style.transform = 'scale(0.8)';
+      document.getElementById('tagline').style.transform = 'translateY(20px)';
+
+      ['voice1', 'voice2', 'voice3', 'voice4'].forEach(id => {
+        const el = document.getElementById(id);
+        el.style.transform = 'scale(0.8)';
+        el.classList.remove('selected');
+      });
+
+      ['wave1', 'wave2', 'wave3', 'wave4'].forEach(id => {
+        const el = document.getElementById(id);
+        el.style.opacity = '0';
+        el.querySelectorAll('.wave-bar').forEach(bar => {
+          bar.style.animation = 'none';
+        });
+      });
+
+      document.getElementById('scriptCard').style.transform = 'translateY(30px)';
+      document.getElementById('scriptOutput').style.transform = 'translateY(20px)';
+      document.getElementById('topicText').innerHTML = '<span class="cursor-blink"></span>';
+      document.getElementById('generatedScript').textContent = '';
+
+      document.getElementById('videoPlayer').style.transform = 'scale(0.9)';
+      document.getElementById('resultBadge').style.transform = 'translateY(20px)';
+
+      document.querySelectorAll('.audio-bar').forEach(bar => {
+        bar.style.height = '10px';
+      });
+
+      document.getElementById('ctaSubtitle').style.transform = 'translateY(20px)';
+      document.getElementById('ctaButton').style.transform = 'scale(0.8)';
+      document.getElementById('freeBadge').style.transform = 'scale(0.8)';
+
+      ['p1', 'p2', 'p3', 'p4', 'p5'].forEach(p => {
+        const el = document.getElementById(p);
+        el.style.opacity = '0';
+        el.style.animation = '';
+      });
+    }
+
+    restartVideo();
+  </script>
+</body>
+</html>

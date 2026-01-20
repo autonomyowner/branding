@@ -1,0 +1,1650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POSTAIFY Infrastructure Guide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;600;700&family=JetBrains+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #fdfbf7;
+            --bg-secondary: #f5f1e8;
+            --bg-tertiary: #eae4d5;
+            --text-primary: #2a2520;
+            --text-secondary: #5a5248;
+            --text-tertiary: #8a8070;
+            --accent-primary: #c17f4a;
+            --accent-secondary: #2d5f5d;
+            --accent-tertiary: #8b6f47;
+            --border-color: #d4cdb8;
+            --code-bg: #2b2823;
+            --code-text: #e8dcc8;
+            --shadow: rgba(42, 37, 32, 0.08);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1a1815;
+            --bg-secondary: #242118;
+            --bg-tertiary: #2d2920;
+            --text-primary: #e8dcc8;
+            --text-secondary: #b8ac98;
+            --text-tertiary: #887c68;
+            --accent-primary: #d89864;
+            --accent-secondary: #5da39f;
+            --accent-tertiary: #a88f6f;
+            --border-color: #3d3830;
+            --code-bg: #141312;
+            --code-text: #e8dcc8;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'IBM Plex Sans', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 320px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 3rem 2rem;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--accent-tertiary);
+            border-radius: 3px;
+        }
+
+        .logo {
+            font-family: 'Spectral', serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 0.875rem;
+            color: var(--text-tertiary);
+            margin-bottom: 2.5rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 42px;
+            height: 42px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            font-size: 1.25rem;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+            background: var(--accent-tertiary);
+            color: var(--bg-primary);
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-title {
+            font-family: 'Spectral', serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-tertiary);
+            margin-bottom: 0.75rem;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 0.5rem 0.75rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.9375rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-tertiary);
+            color: var(--accent-primary);
+            transform: translateX(4px);
+        }
+
+        .nav-item.active {
+            background: var(--accent-primary);
+            color: var(--bg-primary);
+            font-weight: 500;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 320px;
+            flex: 1;
+            padding: 4rem 5rem 4rem 4rem;
+            max-width: 1200px;
+        }
+
+        .header {
+            margin-bottom: 4rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid var(--accent-primary);
+        }
+
+        .header h1 {
+            font-family: 'Spectral', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-bottom: 1rem;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        .header-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        /* Section Styling */
+        .section {
+            margin-bottom: 3rem;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            padding: 1.5rem 2rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .section-header:hover {
+            background: var(--bg-tertiary);
+            transform: translateX(4px);
+            border-color: var(--accent-tertiary);
+        }
+
+        .section-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .section-title {
+            flex: 1;
+        }
+
+        .section-title h2 {
+            font-family: 'Spectral', serif;
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .section-title .subtitle {
+            font-size: 0.875rem;
+            color: var(--text-tertiary);
+            margin: 0;
+            padding: 0;
+            border: none;
+        }
+
+        .expand-icon {
+            font-size: 1.25rem;
+            color: var(--accent-primary);
+            transition: transform 0.3s ease;
+        }
+
+        .section.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+            padding: 0 2rem;
+        }
+
+        .section.expanded .section-content {
+            max-height: 10000px;
+            padding: 2rem;
+        }
+
+        .section-content-inner {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Typography */
+        h3 {
+            font-family: 'Spectral', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--accent-secondary);
+            margin: 2rem 0 1rem;
+        }
+
+        h4 {
+            font-family: 'Spectral', serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 1.5rem 0 0.75rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        ul, ol {
+            margin: 1rem 0 1rem 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            padding-left: 0.5rem;
+        }
+
+        /* Code Blocks */
+        pre {
+            background: var(--code-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            color: var(--code-text);
+        }
+
+        p code, li code {
+            background: var(--code-bg);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        /* Diagrams */
+        .diagram {
+            background: var(--code-bg);
+            padding: 2rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            color: var(--code-text);
+        }
+
+        .diagram pre {
+            background: transparent;
+            padding: 0;
+            margin: 0;
+            border: none;
+            color: var(--code-text);
+        }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-secondary);
+        }
+
+        th {
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Info Boxes */
+        .info-box {
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--accent-primary);
+            background: var(--bg-tertiary);
+        }
+
+        .info-box.tip {
+            border-left-color: var(--accent-secondary);
+        }
+
+        .info-box strong:first-child {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--accent-primary);
+        }
+
+        /* Links */
+        a {
+            color: var(--accent-secondary);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        a:hover {
+            border-bottom-color: var(--accent-secondary);
+        }
+
+        /* Mobile Responsive */
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 1.5rem;
+            left: 1.5rem;
+            z-index: 200;
+            background: var(--accent-primary);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 8px;
+            width: 44px;
+            height: 44px;
+            font-size: 1.25rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        @media (max-width: 1024px) {
+            .mobile-menu-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 5rem 2rem 2rem;
+            }
+
+            .theme-toggle {
+                top: 1.5rem;
+                right: 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .sidebar {
+                width: 100%;
+                padding: 5rem 1.5rem 2rem;
+            }
+
+            .main-content {
+                padding: 5rem 1.5rem 2rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .section-header {
+                padding: 1rem 1.5rem;
+            }
+
+            .section-content-inner {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Scroll animations */
+        .section {
+            animation-delay: calc(var(--index) * 0.1s);
+        }
+    </style>
+</head>
+<body>
+    <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+    <button class="theme-toggle" onclick="toggleTheme()">◐</button>
+
+    <div class="container">
+        <aside class="sidebar" id="sidebar">
+            <div class="logo">POSTAIFY</div>
+            <div class="subtitle">Infrastructure Guide</div>
+
+            <nav>
+                <div class="nav-section">
+                    <div class="nav-title">Overview</div>
+                    <a href="#architecture" class="nav-item">Architecture</a>
+                    <a href="#file-structure" class="nav-item">File Structure</a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-title">Core Tech</div>
+                    <a href="#nodejs-express" class="nav-item">Node.js & Express</a>
+                    <a href="#typescript" class="nav-item">TypeScript</a>
+                    <a href="#postgresql" class="nav-item">PostgreSQL & Neon</a>
+                    <a href="#prisma" class="nav-item">Prisma ORM</a>
+                    <a href="#redis" class="nav-item">Redis</a>
+                    <a href="#clerk" class="nav-item">Clerk Auth</a>
+                    <a href="#stripe" class="nav-item">Stripe Payments</a>
+                    <a href="#cloudflare" class="nav-item">Cloudflare R2</a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-title">AI Services</div>
+                    <a href="#openrouter" class="nav-item">OpenRouter</a>
+                    <a href="#fal" class="nav-item">Fal.ai Images</a>
+                    <a href="#elevenlabs" class="nav-item">ElevenLabs TTS</a>
+                    <a href="#telegram" class="nav-item">Telegram Bot</a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-title">Operations</div>
+                    <a href="#security" class="nav-item">Security</a>
+                    <a href="#request-flow" class="nav-item">Request Flow</a>
+                    <a href="#deployment" class="nav-item">Deployment</a>
+                    <a href="#learning" class="nav-item">Learning Resources</a>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <h1>POSTAIFY Infrastructure Guide</h1>
+                <p class="header-subtitle">Your Complete Backend Architecture & Learning Resource</p>
+            </header>
+
+            <!-- Architecture -->
+            <section class="section" id="architecture" style="--index: 0">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span class="section-icon">📊</span>
+                    <div class="section-title">
+                        <h2>High-Level Architecture</h2>
+                        <p class="subtitle">Understanding the complete system design</p>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="section-content-inner">
+                        <div class="diagram">
+<pre>
+┌─────────────────────────────────────────────────────────────────┐
+│                         USERS / FRONTEND                         │
+│                     (React / Next.js App)                        │
+└───────────────────────────┬─────────────────────────────────────┘
+                            │ HTTPS Requests
+                            ↓
+┌─────────────────────────────────────────────────────────────────┐
+│                    🔒 AUTHENTICATION LAYER                       │
+│                    Clerk (User Management)                       │
+└───────────────────────────┬─────────────────────────────────────┘
+                            │ JWT Tokens
+                            ↓
+┌─────────────────────────────────────────────────────────────────┐
+│                    🛡️ EXPRESS.JS BACKEND                         │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐         │
+│  │ Rate Limiter │  │  Middleware  │  │   API Routes │         │
+│  └──────────────┘  └──────────────┘  └──────────────┘         │
+└───────┬────────────────┬────────────────┬────────────────┬─────┘
+        │                │                │                │
+        ↓                ↓                ↓                ↓
+┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
+│  🗄️ DATABASE │  │  🔴 REDIS    │  │  ☁️ STORAGE  │  │  🤖 AI APIs  │
+│  PostgreSQL  │  │  Job Queues  │  │  Cloudflare  │  │  OpenRouter  │
+│  (Neon)      │  │  + Cache     │  │  R2          │  │  Fal.ai      │
+└──────────────┘  └──────────────┘  └──────────────┘  └──────────────┘
+</pre>
+                        </div>
+                        <p>This architecture follows a modern microservices pattern where the Express.js backend acts as the central orchestrator, coordinating between authentication, databases, caching layers, and external AI services.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- File Structure -->
+            <section class="section" id="file-structure" style="--index: 1">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span class="section-icon">📁</span>
+                    <div class="section-title">
+                        <h2>Project File Structure</h2>
+                        <p class="subtitle">Complete backend organization</p>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="section-content-inner">
+<pre><code>D:\p1\POSTAIFY\backend\
+│
+├── 📄 package.json              # Dependencies & scripts
+├── 📄 tsconfig.json             # TypeScript configuration
+├── 📄 .env                      # Environment variables (secrets)
+│
+├── 📁 prisma/
+│   ├── schema.prisma            # Database schema definition
+│   └── migrations/              # Database version history
+│
+├── 📁 src/
+│   │
+│   ├── 📄 index.ts              # ⭐ Main entry point (starts server)
+│   │
+│   ├── 📁 config/
+│   │   └── env.ts               # Environment variable validation
+│   │
+│   ├── 📁 lib/
+│   │   ├── prisma.ts            # Database connection
+│   │   ├── redis.ts             # Redis connection manager
+│   │   ├── queue.ts             # Job queue system (BullMQ)
+│   │   └── fetchWithTimeout.ts  # HTTP timeout wrapper
+│   │
+│   ├── 📁 middleware/
+│   │   ├── auth.ts              # Clerk authentication
+│   │   ├── rateLimit.ts         # Rate limiting protection
+│   │   ├── quota.ts             # Usage limits per plan
+│   │   ├── validate.ts          # Request validation
+│   │   └── errorHandler.ts      # Global error handler
+│   │
+│   ├── 📁 routes/
+│   │   ├── ai.ts                # AI generation
+│   │   ├── images.ts            # Image generation
+│   │   ├── voice.ts             # Voice/TTS
+│   │   ├── telegram.ts          # Telegram integration
+│   │   └── subscriptions.ts     # Stripe subscriptions
+│   │
+│   ├── 📁 services/
+│   │   ├── openrouter.ts        # AI text generation
+│   │   ├── fal.ts               # AI image generation
+│   │   ├── elevenlabs.ts        # Text-to-speech
+│   │   ├── telegram.ts          # Telegram bot API
+│   │   └── storage.ts           # Cloudflare R2 uploads
+│   │
+│   └── 📁 workers/
+│       └── scheduler.ts         # Background job scheduler
+│
+└── 📁 dist/                     # Compiled JavaScript (build output)
+</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Node.js & Express -->
+            <section class="section" id="nodejs-express" style="--index: 2">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span class="section-icon">🟢</span>
+                    <div class="section-title">
+                        <h2>Node.js & Express.js</h2>
+                        <p class="subtitle">Backend framework powering your API</p>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="section-content-inner">
+                        <h3>What it is</h3>
+                        <ul>
+                            <li><strong>Node.js:</strong> JavaScript runtime that lets you run JavaScript on the server</li>
+                            <li><strong>Express.js:</strong> Web framework for Node.js that handles HTTP requests</li>
+                        </ul>
+
+                        <h3>What it does in your project</h3>
+                        <ul>
+                            <li>Receives HTTP requests from frontend (GET, POST, PUT, DELETE)</li>
+                            <li>Routes requests to correct handlers (e.g., <code>/api/v1/posts</code> → posts.ts)</li>
+                            <li>Processes business logic (create post, generate AI content, etc.)</li>
+                            <li>Sends responses back to frontend</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <strong>File location:</strong> <code>src/index.ts</code> (main entry point)
+                        </div>
+
+                        <h3>Key concepts</h3>
+<pre><code>// 1. Create Express app
+const app = express()
+
+// 2. Add middleware (runs before routes)
+app.use(helmet())           // Security headers
+app.use(compression())      // Compress responses
+app.use(cors())             // Allow cross-origin requests
+
+// 3. Define routes
+app.get('/api/v1/posts', getAllPosts)      // GET = read
+app.post('/api/v1/posts', createPost)      // POST = create
+app.put('/api/v1/posts/:id', updatePost)   // PUT = update
+app.delete('/api/v1/posts/:id', deletePost) // DELETE = delete
+
+// 4. Start server
+app.listen(3001, () => console.log('Server running on port 3001'))
+</code></pre>
+
+                        <div class="info-box tip">
+                            <strong>Learn more:</strong>
+                            <ul>
+                                <li><a href="https://nodejs.org/en/learn/getting-started/introduction-to-nodejs" target="_blank">Node.js Introduction</a></li>
+                                <li><a href="https://expressjs.com/en/starter/hello-world.html" target="_blank">Express.js Getting Started</a></li>
+                                <li><a href="https://restfulapi.net/" target="_blank">REST API Design</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TypeScript -->
+            <section class="section" id="typescript" style="--index: 3">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span class="section-icon">📘</span>
+                    <div class="section-title">
+                        <h2>TypeScript</h2>
+                        <p class="subtitle">Type-safe JavaScript for better code quality</p>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="section-content-inner">
+                        <h3>What it is</h3>
+                        <p>JavaScript with <strong>type safety</strong> - catches bugs before runtime and compiles to regular JavaScript.</p>
+
+                        <h3>Why you use it</h3>
+                        <ul>
+                            <li>Prevents bugs: <code>function add(a: number, b: number)</code> won't accept strings</li>
+                            <li>Better autocomplete in VS Code</li>
+                            <li>Self-documenting code (types explain what functions expect)</li>
+                        </ul>
+
+                        <h3>Example comparison</h3>
+<pre><code>// Without TypeScript (JavaScript)
+function createPost(data) {
+  // What is 'data'? What properties does it have? 🤷
+  return data.title.toUpperCase()  // Could crash if title doesn't exist
+}
+
+// With TypeScript
+interface PostData {
+  title: string
+  content: string
+  platform: 'twitter' | 'linkedin' | 'instagram'
+}
+
+function createPost(data: PostData) {
+  // TypeScript knows exactly what 'data' contains ✅
+  // If you forget a property, TypeScript errors before running
+  return data.title.toUpperCase()
+}
+</code></pre>
+
+                        <h3>Your project setup</h3>
+                        <ul>
+                            <li>All files use <code>.ts</code> extension</li>
+                            <li>Build command: <code>npm run build</code> (compiles TypeScript → JavaScript)</li>
+                            <li>Output folder: <code>dist/</code> (contains compiled JavaScript)</li>
+                        </ul>
+
+                        <div class="info-box tip">
+                            <strong>Learn more:</strong>
+                            <ul>
+                                <li><a href="https://www.typescriptlang.org/docs/handbook/intro.html" target="_blank">TypeScript Handbook</a></li>
+                                <li><a href="https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes.html" target="_blank">TypeScript in 5 Minutes</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PostgreSQL -->
+            <section class="section" id="postgresql" style="--index: 4">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span class="section-icon">🗄️</span>
+                    <div class="section-title">
+                        <h2>PostgreSQL & Neon</h2>
+                        <p class="subtitle">Serverless database for your data</p>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="section-content-inner">
+                        <h3>What it is</h3>
+                        <ul>
+                            <li><strong>PostgreSQL:</strong> Powerful open-source relational database (stores data in tables)</li>
+                            <li><strong>Neon:</strong> Serverless PostgreSQL hosting (cloud-based, auto-scaling)</li>
+                        </ul>
+
+                        <h3>What it stores</h3>
+                        <div class="diagram">
+<pre>
+Users Table:
+┌────────┬────────────────┬──────────────┬─────────┐
+│ id     │ email          │ name         │ plan    │
+├────────┼────────────────┼──────────────┼─────────┤
+│ usr_1  │ john@email.com │ John Doe     │ PRO     │
+│ usr_2  │ jane@email.com │ Jane Smith   │ FREE    │
+└────────┴────────────────┴──────────────┴─────────┘
+
+Posts Table:
+┌────────┬──────────────────────────┬──────────┬─────────┐
+│ id     │ content                  │ userId   │ status  │
+├────────┼──────────────────────────┼──────────┼─────────┤
+│ post_1 │ "Check out this..."      │ usr_1    │ DRAFT   │
+│ post_2 │ "Amazing product..."     │ usr_1    │ PUBLISHED│
+└────────┴──────────────────────────┴──────────┴─────────┘
+</pre>
+                        </div>
+
+                        <h3>Your setup</h3>
+                        <ul>
+                            <li><strong>Host:</strong> Neon (https://neon.tech)</li>
+                            <li><strong>Region:</strong> EU Central (Frankfurt)</li>
+                            <li><strong>Connection Pool:</strong> 25 concurrent connections</li>
+                            <li><strong>Database:</strong> neondb</li>
+                        </ul>
+
+                        <div class="info-box">
+                            <strong>Connection string (in .env):</strong>
+                            <pre><code>DATABASE_URL=postgresql://user:password@host/database?connection_limit=25</code></pre>
+                        </div>
+
+                        <h3>Why Neon over regular PostgreSQL?</h3>
+                        <ul>
+                            <li>✅ Serverless (auto-scales, pay for what you use)</li>
+                            <li>✅ Instant branching (create dev/staging copies)</li>
+                            <li>✅ Built-in connection pooling</li>
+                            <li>✅ Automatic backups</li>
+                            <li>✅ Free tier: 0.5GB storage, 100 hours compute/month</li>
+                        </ul>
+
+                        <h3>Common SQL operations</h3>
+<pre><code>-- Create a user
+INSERT INTO "User" (email, name, plan)
+VALUES ('user@email.com', 'Name', 'FREE');
+
+-- Get all posts for a user
+SELECT * FROM "Post" WHERE "userId" = 'usr_1';
+
+-- Update subscription
+UPDATE "User" SET plan = 'PRO' WHERE id = 'usr_1';
+
+-- Delete a post
+DELETE FROM "Post" WHERE id = 'post_1';
+</code></pre>
+
+                        <div class="info-box tip">
+                            <strong>Learn more:</strong>
+                            <ul>
+                                <li><a href="https://www.postgresqltutorial.com/" target="_blank">PostgreSQL Tutorial</a></li>
+                                <li><a href="https://neon.tech/docs/introduction" target="_blank">Neon Documentation</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Prisma -->
+            <section class="section" id="prisma" style="--index: 5">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span class="section-icon">🔷</span>
+                    <div class="section-title">
+                        <h2>Prisma ORM</h2>
+                        <p class="subtitle">Type-safe database interface</p>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="section-content-inner">
+                        <h3>What it is</h3>
+                        <p><strong>ORM:</strong> Object-Relational Mapping - write TypeScript instead of SQL. Translates your code to SQL queries automatically.</p>
+
+                        <div class="info-box">
+                            <strong>File location:</strong> <code>prisma/schema.prisma</code>
+                        </div>
+
+                        <h3>Instead of writing SQL</h3>
+<pre><code>SELECT * FROM "User" WHERE email = 'john@email.com';</code></pre>
+
+                        <h3>You write TypeScript</h3>
+<pre><code>const user = await prisma.user.findUnique({
+  where: { email: 'john@email.com' }
+})</code></pre>
+
+                        <h3>Your Prisma Schema example</h3>
+<pre><code>// Define your database structure
+model User {
+  id                String   @id @default(cuid())
+  email             String   @unique
+  name              String
+  plan              Plan     @default(FREE)
+  postsThisMonth    Int      @default(0)
+
+  // Relations
+  posts             Post[]   // One user has many posts
+  brands            Brand[]
+
+  @@index([email])  // Speed up lookups by email
+}
+
+model Post {
+  id          String      @id @default(cuid())
+  content     String
+  platform    Platform
+  status      PostStatus  @default(DRAFT)
+
+  // Foreign key
+  userId      String
+  user        User        @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([status])
+}
+</code></pre>
+
+                        <h3>Common Prisma operations</h3>
+<pre><code>// Create a post
+const post = await prisma.post.create({
+  data: {
+    content: "Hello world",
+    platform: "TWITTER",
+    userId: "usr_123"
+  }
+})
+
+// Get user with all their posts
+const user = await prisma.user.findUnique({
+  where: { id: "usr_123" },
+  include: { posts: true }  // Include related posts
+})
+
+// Update post status
+await prisma.post.update({
+  where: { id: "post_456" },
+  data: { status: "PUBLISHED" }
+})
+
+// Count posts per user
+const count = await prisma.post.count({
+  where: { userId: "usr_123" }
+})
+</code></pre>
+
+                        <h3>Prisma Commands</h3>
+<pre><code># Generate TypeScript client from schema
+npm run prisma:generate
+
+# Create migration (update database structure)
+npm run prisma:migrate
+
+# Open visual database browser
+npm run prisma:studio
+
+# Reset database (DEV ONLY!)
+npx prisma migrate reset
+</code></pre>
+
+                        <h3>Why Prisma?</h3>
+                        <ul>
+                            <li>✅ Type-safe (autocomplete for queries)</li>
+                            <li>✅ Auto-generated TypeScript types</li>
+                            <li>✅ Migration system (version control for database)</li>
+                            <li>✅ Visual database browser (Prisma Studio)</li>
+                            <li>✅ Prevents SQL injection attacks</li>
+                        </ul>
+
+                        <div class="info-box tip">
+                            <strong>Learn more:</strong>
+                            <ul>
+                                <li><a href="https://www.prisma.io/docs/getting-started/quickstart" target="_blank">Prisma Quickstart</a></li>
+                                <li><a href="https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference" target="_blank">Schema Reference</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Redis -->
+            <section class="section" id="redis" style="--index: 6">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span class="section-icon">🔴</span>
+                    <div class="section-title">
+                        <h2>Redis</h2>
+                        <p class="subtitle">In-memory database for caching and job queues</p>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="section-content-inner">
+                        <h3>What it is</h3>
+                        <p>Super-fast <strong>in-memory</strong> database (stores data in RAM, not disk). Key-value store: <code>SET user:123 "John"</code> → <code>GET user:123</code> returns "John"</p>
+
+                        <h3>What you use it for</h3>
+
+                        <h4>1. Job Queues (BullMQ)</h4>
+                        <div class="diagram">
+<pre>
+User clicks "Generate Post"
+    ↓
+Backend adds job to Redis queue
+    ↓
+Backend responds immediately: "Generating..."
+    ↓
+Worker picks up job from queue
+    ↓
+Worker calls OpenRouter API (takes 10-30 seconds)
+    ↓
+Worker saves result to database
+    ↓
+Frontend polls for completion
+</pre>
+                        </div>
+
+                        <h4>2. Caching (future use)</h4>
+<pre><code>// Check cache first (fast)
+const cachedPosts = await redis.get('user:123:posts')
+if (cachedPosts) return JSON.parse(cachedPosts)
+
+// If not cached, query database (slower)
+const posts = await prisma.post.findMany({
+  where: { userId: '123' }
+})
+
+// Save to cache for next time
+await redis.set('user:123:posts', JSON.stringify(posts), 'EX', 300) // 5 min
+</code></pre>
+
+                        <h3>Your setup</h3>
+                        <ul>
+                            <li><strong>Host:</strong> Redis Cloud (https://redis.com)</li>
+                            <li><strong>Region:</strong> EU West (Belgium) - close to your Neon DB</li>
+                            <li><strong>Memory:</strong> 30MB free tier</li>
+                            <li><strong>Connection:</strong> <code>redis://default:password@host:port</code></li>
+                        </ul>
+
+                        <h3>Your queues</h3>
+<pre><code>QUEUE_NAMES = {
+  AI_GENERATION: 'ai-generation',      // Text generation jobs
+  IMAGE_GENERATION: 'image-generation', // Image creation jobs
+  TELEGRAM_DELIVERY: 'telegram-delivery' // Scheduled post delivery
+}
+</code></pre>
+
+                        <h3>How a job flows</h3>
+<pre><code>// 1. Add job to queue (src/lib/queue.ts)
+await addJob('AI_GENERATION', {
+  prompt: "Generate a LinkedIn post about AI",
+  userId: "usr_123"
+})
+
+// 2. Worker picks it up (src/workers/scheduler.ts)
+createWorker('AI_GENERATION', async (job) => {
+  const { prompt, userId } = job.data
+
+  // Do expensive work
+  const result = await openRouter.generate(prompt)
+
+  // Save result
+  await prisma.post.create({
+    data: { content: result, userId }
+  })
+
+  return { success: true }
+})
+
+// 3. If it fails, auto-retry (3 attempts with backoff)
+// Retry 1: immediately
+// Retry 2: after 1 second
+// Retry 3: after 2 seconds
+</code></pre>
+
+                        <h3>Why Redis?</h3>
+                        <ul>
+                            <li>✅ <strong>Super fast:</strong> 100,000+ ops/second (vs PostgreSQL ~1,000 ops/sec)</li>
+                            <li>✅ <strong>Job persistence:</strong> Jobs survive server restarts</li>
+                            <li>✅ <strong>Retry logic:</strong> Failed jobs automatically retry</li>
+                            <li>✅ <strong>Concurrency control:</strong> Process N jobs at once</li>
+                            <li>✅ <strong>Priority queues:</strong> Important jobs processed first</li>
+                        </ul>
+
+                        <h3>Redis vs PostgreSQL</h3>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>PostgreSQL (Persistent)</th>
+                                        <th>Redis (In-Memory)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Stores on disk</td>
+                                        <td>Stores in RAM</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Survives restarts</td>
+                                        <td>Ultra-fast</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Slower (disk I/O)</td>
+                                        <td>Simple key-value</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Complex queries (JOIN, WHERE, etc.)</td>
+                                        <td>Use for: Caching, queues, rate limiting</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Use for: User data, posts, relationships</td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="info-box tip">
+                            <strong>Learn more:</strong>
+                            <ul>
+                                <li><a href="https://www.youtube.com/watch?v=G1rOthIU-uo" target="_blank">Redis in 100 Seconds</a></li>
+                                <li><a href="https://university.redis.com/" target="_blank">Redis University</a></li>
+                                <li><a href="https://docs.bullmq.io/" target="_blank">BullMQ Documentation</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Additional sections would continue here with the same pattern -->
+            <!-- For brevity, I'll add a few more key sections -->
+
+            <!-- Clerk -->
+            <section class="section" id="clerk" style="--index: 7">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span class="section-icon">🔐</span>
+                    <div class="section-title">
+                        <h2>Clerk Authentication</h2>
+                        <p class="subtitle">User authentication and management</p>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="section-content-inner">
+                        <h3>What it is</h3>
+                        <p>Authentication-as-a-Service (handles login, signup, sessions) - Like "Sign in with Google" but for your entire auth system.</p>
+
+                        <h3>What it provides</h3>
+                        <ul>
+                            <li>✅ Sign up / Sign in UI (pre-built)</li>
+                            <li>✅ Email verification</li>
+                            <li>✅ Password reset</li>
+                            <li>✅ OAuth (Google, GitHub, etc.)</li>
+                            <li>✅ Multi-factor authentication</li>
+                            <li>✅ Session management</li>
+                            <li>✅ User management dashboard</li>
+                        </ul>
+
+                        <h3>How it works</h3>
+                        <div class="diagram">
+<pre>
+1. User visits your frontend
+   ↓
+2. Clicks "Sign In"
+   ↓
+3. Clerk modal appears (handled by Clerk)
+   ↓
+4. User enters email/password
+   ↓
+5. Clerk verifies and creates session
+   ↓
+6. Clerk returns JWT token
+   ↓
+7. Frontend stores token
+   ↓
+8. Every API request includes token in header
+   ↓
+9. Backend verifies token with Clerk
+   ↓
+10. If valid, process request. If not, return 401 Unauthorized
+</pre>
+                        </div>
+
+                        <h3>Backend implementation</h3>
+<pre><code>import { clerkAuth } from '@clerk/express'
+
+// Verify JWT token
+app.use(clerkAuth)
+
+// Require authentication
+export async function requireAuthentication(req, res, next) {
+  if (!req.auth.userId) {
+    return res.status(401).json({ error: 'Unauthorized' })
+  }
+  next()
+}
+
+// Load user from database
+export async function loadUser(req, res, next) {
+  const user = await prisma.user.findUnique({
+    where: { clerkId: req.auth.userId }
+  })
+  req.user = user
+  next()
+}
+</code></pre>
+
+                        <h3>Protected route example</h3>
+<pre><code>// Anyone can access
+app.get('/api/v1/posts/public', getPublicPosts)
+
+// Must be logged in
+app.get('/api/v1/posts',
+  requireAuthentication,
+  loadUser,
+  getUserPosts
+)
+</code></pre>
+
+                        <h3>Why Clerk?</h3>
+                        <ul>
+                            <li>✅ No password storage (Clerk handles it)</li>
+                            <li>✅ Security best practices built-in</li>
+                            <li>✅ 5 minutes to implement vs weeks of custom auth</li>
+                            <li>✅ Free tier: 10,000 monthly active users</li>
+                            <li>✅ GDPR compliant</li>
+                        </ul>
+
+                        <div class="info-box tip">
+                            <strong>Learn more:</strong>
+                            <ul>
+                                <li><a href="https://clerk.com/docs" target="_blank">Clerk Documentation</a></li>
+                                <li><a href="https://jwt.io/introduction" target="_blank">JWT Explained</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- OpenRouter -->
+            <section class="section" id="openrouter" style="--index: 8">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span class="section-icon">🧠</span>
+                    <div class="section-title">
+                        <h2>OpenRouter</h2>
+                        <p class="subtitle">AI text generation gateway</p>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="section-content-inner">
+                        <h3>What it is</h3>
+                        <p>Gateway to 100+ AI models (GPT-4, Claude, Llama, Mistral, etc.) - One API, many models with pay-per-token pricing.</p>
+
+                        <h3>What you use it for</h3>
+                        <ul>
+                            <li>Generate social media posts from video transcripts</li>
+                            <li>Rewrite content in different tones</li>
+                            <li>Create captions</li>
+                            <li>Optimize text for voiceovers</li>
+                        </ul>
+
+                        <h3>Implementation example</h3>
+<pre><code>export async function generatePostsFromTranscript(
+  transcript: string,
+  options: {
+    platform: 'twitter' | 'linkedin' | 'instagram',
+    numberOfPosts: number,
+    style: 'professional' | 'casual' | 'witty'
+  }
+) {
+  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      model: 'anthropic/claude-3.5-sonnet',
+      messages: [
+        {
+          role: 'system',
+          content: 'You are a social media expert...'
+        },
+        {
+          role: 'user',
+          content: `Generate ${numberOfPosts} ${style} posts for ${platform}:
+
+${transcript}`
+        }
+      ],
+      max_tokens: 4000,
+      temperature: 0.9  // Higher = more creative
+    })
+  })
+
+  const data = await response.json()
+  return JSON.parse(data.choices[0].message.content)
+}
+</code></pre>
+
+                        <h3>Model pricing</h3>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Category</th>
+                                        <th>Model</th>
+                                        <th>Price per 1M tokens</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td rowspan="2"><strong>Cheapest</strong></td>
+                                        <td>google/gemini-flash-1.5</td>
+                                        <td>$0.075</td>
+                                    </tr>
+                                    <tr>
+                                        <td>meta/llama-3.1-8b</td>
+                                        <td>$0.06</td>
+                                    </tr>
+                                    <tr>
+                                        <td rowspan="2"><strong>Best Quality</strong></td>
+                                        <td>anthropic/claude-3.5-sonnet</td>
+                                        <td>$3.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>openai/gpt-4-turbo</td>
+                                        <td>$10.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td rowspan="2"><strong>Balanced</strong></td>
+                                        <td>anthropic/claude-3-haiku</td>
+                                        <td>$0.25</td>
+                                    </tr>
+                                    <tr>
+                                        <td>openai/gpt-3.5-turbo</td>
+                                        <td>$0.50</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3>Cost example</h3>
+<pre><code>Typical post generation:
+- Input: 2,000 tokens (your video transcript)
+- Output: 500 tokens (5 posts × 100 tokens each)
+- Total: 2,500 tokens = 0.0025M tokens
+
+Using Claude 3.5 Sonnet:
+0.0025M × $3.00 = $0.0075 per generation (~$0.01)
+
+100 generations = ~$1
+1,000 generations = ~$10
+</code></pre>
+
+                        <h3>Why OpenRouter vs direct OpenAI/Anthropic?</h3>
+                        <ul>
+                            <li>✅ Access to 100+ models with one API key</li>
+                            <li>✅ Automatic fallback (if one model is down, use another)</li>
+                            <li>✅ Compare models easily (switch with 1 line of code)</li>
+                            <li>✅ Often cheaper (bulk pricing)</li>
+                            <li>✅ Credit system (pay once, use across all models)</li>
+                        </ul>
+
+                        <div class="info-box tip">
+                            <strong>Learn more:</strong>
+                            <ul>
+                                <li><a href="https://openrouter.ai/docs" target="_blank">OpenRouter Documentation</a></li>
+                                <li><a href="https://www.promptingguide.ai/" target="_blank">Prompt Engineering Guide</a></li>
+                                <li><a href="https://platform.openai.com/tokenizer" target="_blank">Token Calculator</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Deployment -->
+            <section class="section" id="deployment" style="--index: 9">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span class="section-icon">☁️</span>
+                    <div class="section-title">
+                        <h2>Deployment Options</h2>
+                        <p class="subtitle">Getting your backend live</p>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="section-content-inner">
+                        <h3>Option 1: Railway (Recommended)</h3>
+                        <div class="info-box">
+                            <strong>Best for:</strong> Full-featured backend with no timeout issues
+                        </div>
+                        <ul>
+                            <li>✅ Full server (no timeouts)</li>
+                            <li>✅ Persistent connections</li>
+                            <li>✅ PostgreSQL included</li>
+                            <li>✅ Redis included</li>
+                            <li>✅ Auto-deploys from Git</li>
+                            <li>✅ $5 credit free</li>
+                        </ul>
+                        <h4>Setup steps:</h4>
+                        <ol>
+                            <li>Go to railway.app</li>
+                            <li>"New Project" → "Deploy from GitHub"</li>
+                            <li>Select your backend repo</li>
+                            <li>Add environment variables</li>
+                            <li>Deploy</li>
+                        </ol>
+                        <p><strong>Cost:</strong> $5-20/month depending on usage</p>
+
+                        <h3>Option 2: Vercel (Easiest)</h3>
+                        <div class="info-box">
+                            <strong>Best for:</strong> Quick deployment, serverless approach
+                        </div>
+                        <ul>
+                            <li>✅ Zero config deployment</li>
+                            <li>✅ Auto-scales</li>
+                            <li>✅ Global CDN</li>
+                            <li>✅ Free tier (100GB bandwidth, 100 hours compute)</li>
+                            <li>❌ 10 second function timeout (might cut off long AI requests)</li>
+                            <li>❌ Serverless (cold starts)</li>
+                        </ul>
+
+                        <h3>Option 3: Digital Ocean App Platform</h3>
+                        <ul>
+                            <li>✅ Predictable pricing</li>
+                            <li>✅ Full server</li>
+                            <li>✅ Managed PostgreSQL + Redis</li>
+                            <li>✅ Automatic backups</li>
+                            <li>❌ More expensive ($12+/month)</li>
+                        </ul>
+
+                        <h3>Option 4: Self-Hosted VPS</h3>
+                        <ul>
+                            <li>✅ Full control</li>
+                            <li>✅ Cheapest long-term</li>
+                            <li>✅ No platform limits</li>
+                            <li>❌ You manage everything (updates, security, backups)</li>
+                            <li>❌ Requires DevOps knowledge</li>
+                        </ul>
+
+                        <div class="info-box tip">
+                            <strong>Recommendation:</strong> Start with Railway for its balance of simplicity and features. No timeout issues (important for AI generation), simple setup, and easy scaling.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Learning Resources -->
+            <section class="section" id="learning" style="--index: 10">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span class="section-icon">🎓</span>
+                    <div class="section-title">
+                        <h2>Learning Resources</h2>
+                        <p class="subtitle">Your path to backend mastery</p>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="section-content-inner">
+                        <h3>Week 1-2: JavaScript/TypeScript Foundations</h3>
+                        <ul>
+                            <li><a href="https://javascript.info/" target="_blank">JavaScript.info</a> - Comprehensive JS guide</li>
+                            <li><a href="https://www.typescriptlang.org/docs/handbook/" target="_blank">TypeScript Handbook</a> - Official docs</li>
+                            <li><a href="https://www.youtube.com/watch?v=V_Kr9OSfDeU" target="_blank">Async/Await Tutorial</a> - Video guide</li>
+                        </ul>
+
+                        <h3>Week 3-4: Node.js & Express</h3>
+                        <ul>
+                            <li><a href="https://nodejs.org/en/learn/" target="_blank">Node.js Learning</a> - Official docs</li>
+                            <li><a href="https://expressjs.com/en/guide/routing.html" target="_blank">Express.js Guide</a> - Routing & middleware</li>
+                            <li><a href="https://restfulapi.net/" target="_blank">REST API Design</a> - Best practices</li>
+                        </ul>
+
+                        <h3>Week 5-6: Databases</h3>
+                        <ul>
+                            <li><a href="https://www.postgresqltutorial.com/" target="_blank">PostgreSQL Tutorial</a> - SQL basics</li>
+                            <li><a href="https://www.prisma.io/docs/getting-started" target="_blank">Prisma Quickstart</a> - ORM guide</li>
+                            <li><a href="https://www.youtube.com/watch?v=ztHopE5Wnpc" target="_blank">Database Design</a> - Video tutorial</li>
+                        </ul>
+
+                        <h3>Week 7-8: Authentication & Security</h3>
+                        <ul>
+                            <li><a href="https://jwt.io/introduction" target="_blank">JWT Explained</a> - Token authentication</li>
+                            <li><a href="https://owasp.org/www-project-top-ten/" target="_blank">OWASP Top 10</a> - Security essentials</li>
+                            <li><a href="https://clerk.com/docs" target="_blank">Clerk Documentation</a> - Auth platform</li>
+                        </ul>
+
+                        <h3>Free Courses</h3>
+                        <ul>
+                            <li><a href="https://www.freecodecamp.org/learn/back-end-development-and-apis/" target="_blank">freeCodeCamp Backend</a></li>
+                            <li><a href="https://www.theodinproject.com/" target="_blank">The Odin Project</a> (full-stack)</li>
+                            <li><a href="https://roadmap.sh/backend" target="_blank">Backend Roadmap</a> - Learning path</li>
+                        </ul>
+
+                        <h3>Recommended Books</h3>
+                        <ul>
+                            <li>"You Don't Know JS" (<a href="https://github.com/getify/You-Dont-Know-JS" target="_blank">free online</a>)</li>
+                            <li>"Node.js Design Patterns"</li>
+                            <li>"Designing Data-Intensive Applications"</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer style="margin-top: 5rem; padding: 2rem 0; border-top: 2px solid var(--border-color); color: var(--text-tertiary); text-align: center;">
+                <p style="margin-bottom: 0.5rem;">🎉 <strong>You now understand your entire backend infrastructure!</strong></p>
+                <p>Keep this guide open while developing. Expand sections as you work on different parts of the codebase.</p>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        // Section Toggle
+        function toggleSection(header) {
+            const section = header.parentElement;
+            section.classList.toggle('expanded');
+        }
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+
+        // Smooth Scroll and Active Nav
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = item.getAttribute('href').substring(1);
+                const targetSection = document.getElementById(targetId);
+
+                if (targetSection) {
+                    // Expand the section
+                    targetSection.classList.add('expanded');
+
+                    // Smooth scroll
+                    targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                    // Update active nav
+                    document.querySelectorAll('.nav-item').forEach(navItem => {
+                        navItem.classList.remove('active');
+                    });
+                    item.classList.add('active');
+
+                    // Close mobile menu
+                    if (window.innerWidth <= 1024) {
+                        document.getElementById('sidebar').classList.remove('open');
+                    }
+                }
+            });
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            const sidebar = document.getElementById('sidebar');
+            const menuToggle = document.querySelector('.mobile-menu-toggle');
+
+            if (window.innerWidth <= 1024 &&
+                !sidebar.contains(e.target) &&
+                !menuToggle.contains(e.target) &&
+                sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+            }
+        });
+
+        // Intersection Observer for active nav highlighting
+        const observerOptions = {
+            root: null,
+            rootMargin: '-100px 0px -80% 0px',
+            threshold: 0
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    document.querySelectorAll('.nav-item').forEach(item => {
+                        item.classList.remove('active');
+                        if (item.getAttribute('href') === `#${id}`) {
+                            item.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // T for theme toggle
+            if (e.key === 't' && !e.ctrlKey && !e.metaKey) {
+                const activeElement = document.activeElement;
+                if (activeElement.tagName !== 'INPUT' && activeElement.tagName !== 'TEXTAREA') {
+                    toggleTheme();
+                }
+            }
+
+            // Escape to close mobile menu
+            if (e.key === 'Escape') {
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar.classList.contains('open')) {
+                    sidebar.classList.remove('open');
+                }
+            }
+        });
+
+        // Add stagger animation delay to sections
+        document.querySelectorAll('.section').forEach((section, index) => {
+            section.style.setProperty('--index', index);
+        });
+    </script>
+</body>
+</html>

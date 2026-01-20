@@ -1,11 +1,52 @@
 import { prisma } from '../lib/prisma.js'
 import { sendPostToTelegram, isTelegramConfigured } from '../services/telegram.js'
+import { getQueue, createWorker, QUEUE_NAMES, areQueuesAvailable } from '../lib/queue.js'
 
 // How often to check for due posts (in milliseconds)
 const CHECK_INTERVAL = 60 * 1000 // 1 minute
+const BATCH_SIZE = 50 // Process posts in batches
+const CONCURRENCY = 5 // Process up to 5 posts concurrently
 
 let isRunning = false
 let intervalId: NodeJS.Timeout | null = null
+
+interface TelegramDeliveryJob {
+  postId: string
+  chatId: string
+  content: string
+  platform: string
+  brandName: string
+}
+
+// Process a single post (used by both queue worker and direct processing)
+async function processPost(job: TelegramDeliveryJob): Promise<{ success: boolean; error?: string }> {
+  try {
+    const result = await sendPostToTelegram(
+      job.chatId,
+      job.content,
+      job.platform,
+      job.brandName
+    )
+
+    if (result.ok) {
+      await prisma.post.update({
+        where: { id: job.postId },
+        data: {
+          telegramSent: true,
+          telegramSentAt: new Date(),
+          status: 'PUBLISHED',
+          publishedAt: new Date(),
+        },
+      })
+      return { success: true }
+    } else {
+      return { success: false, error: result.error }
+    }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error'
+    return { success: false, error: message }
+  }
+}
 
 // Process scheduled posts that are due
 async function processScheduledPosts(): Promise<void> {
@@ -44,7 +85,7 @@ async function processScheduledPosts(): Promise<void> {
           },
         },
       },
-      take: 50, // Process in batches
+      take: BATCH_SIZE,
     })
 
     if (duePosts.length === 0) {
@@ -53,45 +94,87 @@ async function processScheduledPosts(): Promise<void> {
 
     console.log(`[Scheduler] Processing ${duePosts.length} due posts`)
 
-    for (const post of duePosts) {
-      if (!post.user.telegramChatId || !post.user.telegramEnabled) {
-        continue
-      }
+    // If queues are available, use them for better reliability
+    const queue = getQueue(QUEUE_NAMES.TELEGRAM_DELIVERY)
 
-      try {
-        // Send to Telegram
-        const result = await sendPostToTelegram(
-          post.user.telegramChatId,
-          post.content,
-          post.platform,
-          post.brand.name
-        )
-
-        if (result.ok) {
-          // Mark as sent to Telegram and update status to PUBLISHED
-          await prisma.post.update({
-            where: { id: post.id },
-            data: {
-              telegramSent: true,
-              telegramSentAt: new Date(),
-              status: 'PUBLISHED',
-              publishedAt: new Date(),
-            },
-          })
-
-          console.log(`[Scheduler] Sent post ${post.id} to Telegram`)
-        } else {
-          console.error(`[Scheduler] Failed to send post ${post.id}: ${result.error}`)
+    if (queue) {
+      // Add jobs to queue for processing
+      for (const post of duePosts) {
+        if (!post.user.telegramChatId || !post.user.telegramEnabled) {
+          continue
         }
-      } catch (error) {
-        console.error(`[Scheduler] Error processing post ${post.id}:`, error)
-      }
 
-      // Small delay between messages to avoid rate limiting
-      await new Promise((resolve) => setTimeout(resolve, 100))
+        await queue.add(QUEUE_NAMES.TELEGRAM_DELIVERY, {
+          postId: post.id,
+          chatId: post.user.telegramChatId,
+          content: post.content,
+          platform: post.platform,
+          brandName: post.brand.name,
+        } as TelegramDeliveryJob)
+      }
+      console.log(`[Scheduler] Added ${duePosts.length} jobs to queue`)
+    } else {
+      // Fallback: Process concurrently without queue (degraded mode)
+      const jobs: TelegramDeliveryJob[] = duePosts
+        .filter(post => post.user.telegramChatId && post.user.telegramEnabled)
+        .map(post => ({
+          postId: post.id,
+          chatId: post.user.telegramChatId!,
+          content: post.content,
+          platform: post.platform,
+          brandName: post.brand.name,
+        }))
+
+      // Process in parallel batches of CONCURRENCY
+      for (let i = 0; i < jobs.length; i += CONCURRENCY) {
+        const batch = jobs.slice(i, i + CONCURRENCY)
+        const results = await Promise.allSettled(batch.map(job => processPost(job)))
+
+        results.forEach((result, index) => {
+          const job = batch[index]
+          if (result.status === 'fulfilled' && result.value.success) {
+            console.log(`[Scheduler] Sent post ${job.postId} to Telegram`)
+          } else {
+            const error = result.status === 'rejected'
+              ? result.reason
+              : result.value.error
+            console.error(`[Scheduler] Failed to send post ${job.postId}: ${error}`)
+          }
+        })
+
+        // Small delay between batches to avoid rate limiting
+        if (i + CONCURRENCY < jobs.length) {
+          await new Promise(resolve => setTimeout(resolve, 200))
+        }
+      }
     }
   } catch (error) {
     console.error('[Scheduler] Error processing scheduled posts:', error)
+  }
+}
+
+// Initialize the queue worker (if Redis is available)
+function initializeWorker(): void {
+  if (!areQueuesAvailable()) {
+    console.log('[Scheduler] Redis not available - running in degraded mode without job queue')
+    return
+  }
+
+  const worker = createWorker<TelegramDeliveryJob, { success: boolean }>(
+    QUEUE_NAMES.TELEGRAM_DELIVERY,
+    async (job) => {
+      console.log(`[Worker] Processing job ${job.id} for post ${job.data.postId}`)
+      const result = await processPost(job.data)
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to process post')
+      }
+      return result
+    },
+    CONCURRENCY
+  )
+
+  if (worker) {
+    console.log('[Scheduler] Queue worker initialized with Redis')
   }
 }
 
@@ -108,6 +191,10 @@ export function startScheduler(): void {
   }
 
   isRunning = true
+
+  // Initialize queue worker if Redis is available
+  initializeWorker()
+
   console.log('[Scheduler] Started - checking for due posts every minute')
 
   // Run immediately on start
