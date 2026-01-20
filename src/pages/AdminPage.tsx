@@ -24,6 +24,7 @@ export function AdminPage() {
   const getStatsAction = useAction(convexApi.admin.getStats)
   const getUsersAction = useAction(convexApi.admin.getUsers)
   const getEmailCapturesAction = useAction(convexApi.admin.getEmailCaptures)
+  const updateUserPlanAction = useAction(convexApi.admin.updateUserPlan)
 
   // Login state
   const [username, setUsername] = useState('')
@@ -263,6 +264,9 @@ export function AdminPage() {
               users={users}
               pagination={usersPagination}
               onPageChange={setUsersPage}
+              adminToken={adminToken}
+              updateUserPlanAction={updateUserPlanAction}
+              onUserUpdated={() => adminToken && loadData(adminToken)}
             />
           )}
           {activeTab === 'emails' && (
@@ -443,7 +447,45 @@ function OverviewTab({ stats }: { stats: any }) {
 }
 
 // Users Tab
-function UsersTab({ users, pagination, onPageChange }: any) {
+function UsersTab({ users, pagination, onPageChange, adminToken, updateUserPlanAction, onUserUpdated }: any) {
+  const [editingUser, setEditingUser] = useState<any>(null)
+  const [selectedPlan, setSelectedPlan] = useState<string>('')
+  const [isUpdating, setIsUpdating] = useState(false)
+  const [updateMessage, setUpdateMessage] = useState('')
+
+  const handleEditPlan = (user: any) => {
+    setEditingUser(user)
+    setSelectedPlan(user.plan)
+    setUpdateMessage('')
+  }
+
+  const handleUpdatePlan = async () => {
+    if (!editingUser || !selectedPlan || !adminToken) return
+
+    setIsUpdating(true)
+    setUpdateMessage('')
+
+    try {
+      const result = await updateUserPlanAction({
+        token: adminToken,
+        email: editingUser.email,
+        plan: selectedPlan,
+      })
+
+      if (result.success) {
+        setUpdateMessage(result.message)
+        setEditingUser(null)
+        onUserUpdated()
+      } else {
+        setUpdateMessage(result.message)
+      }
+    } catch (error: any) {
+      setUpdateMessage(error.message || 'Failed to update user plan')
+    } finally {
+      setIsUpdating(false)
+    }
+  }
+
   return (
     <div className="space-y-4">
       <Card className="overflow-hidden">
@@ -458,6 +500,7 @@ function UsersTab({ users, pagination, onPageChange }: any) {
                 <th className="text-center p-4 text-sm font-medium text-muted-foreground">Posts</th>
                 <th className="text-center p-4 text-sm font-medium text-muted-foreground">This Month</th>
                 <th className="text-left p-4 text-sm font-medium text-muted-foreground">Joined</th>
+                <th className="text-center p-4 text-sm font-medium text-muted-foreground">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -474,6 +517,14 @@ function UsersTab({ users, pagination, onPageChange }: any) {
                   <td className="p-4 text-sm text-muted-foreground">
                     {new Date(user.createdAt).toLocaleDateString()}
                   </td>
+                  <td className="p-4 text-center">
+                    <button
+                      onClick={() => handleEditPlan(user)}
+                      className="px-3 py-1 text-xs font-medium rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-colors"
+                    >
+                      Edit Plan
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -487,6 +538,87 @@ function UsersTab({ users, pagination, onPageChange }: any) {
           totalPages={pagination.totalPages}
           onPageChange={onPageChange}
         />
+      )}
+
+      {/* Edit Plan Modal */}
+      {editingUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-card border border-border rounded-2xl p-6 w-full max-w-md"
+          >
+            <h2 className="text-xl font-bold text-foreground mb-4">
+              Edit User Plan
+            </h2>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-muted-foreground mb-2">
+                  User
+                </label>
+                <p className="text-sm text-foreground">{editingUser.email}</p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-muted-foreground mb-2">
+                  Current Plan
+                </label>
+                <PlanBadge plan={editingUser.plan} />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-muted-foreground mb-2">
+                  New Plan
+                </label>
+                <div className="grid grid-cols-3 gap-2">
+                  {['FREE', 'PRO', 'BUSINESS'].map((plan) => (
+                    <button
+                      key={plan}
+                      onClick={() => setSelectedPlan(plan)}
+                      className={`px-4 py-3 rounded-lg text-sm font-medium border-2 transition-all ${
+                        selectedPlan === plan
+                          ? 'border-primary bg-primary/20 text-primary'
+                          : 'border-border bg-muted/50 text-muted-foreground hover:border-border/50'
+                      }`}
+                    >
+                      {plan}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {updateMessage && (
+                <div className={`text-sm p-3 rounded-lg ${
+                  updateMessage.includes('Successfully')
+                    ? 'bg-green-500/20 text-green-400'
+                    : 'bg-red-500/20 text-red-400'
+                }`}>
+                  {updateMessage}
+                </div>
+              )}
+            </div>
+
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={handleUpdatePlan}
+                disabled={isUpdating || selectedPlan === editingUser.plan}
+                className="flex-1 px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isUpdating ? 'Updating...' : 'Update Plan'}
+              </button>
+              <button
+                onClick={() => {
+                  setEditingUser(null)
+                  setUpdateMessage('')
+                }}
+                className="px-4 py-2 bg-muted hover:bg-muted/70 rounded-lg font-medium transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </motion.div>
+        </div>
       )}
     </div>
   )
