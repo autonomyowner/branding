@@ -7,10 +7,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```bash
 npm run dev          # Start Vite dev server with HMR
 npm run build        # TypeScript check + production build
+npm run preview      # Preview production build locally
 npm run lint         # ESLint
 npx convex dev       # Start Convex dev server (watches for changes)
 npx convex deploy    # Deploy Convex functions to production
 ```
+
+**Development workflow:** Run `npm run dev` and `npx convex dev` in separate terminals.
 
 ## Architecture Overview
 
@@ -126,6 +129,24 @@ status: 'DRAFT' | 'SCHEDULED' | 'PUBLISHED'
 ```
 
 Conversion helpers in `DataContext.tsx`: `platformToBackend()`, `platformFromBackend()`, `statusToBackend()`, `statusFromBackend()`
+
+## Internationalization (i18n)
+
+Translations in `src/i18n/locales/` - supports English (`en.json`), French (`fr.json`), Arabic (`ar.json`).
+
+Uses `react-i18next` with `useTranslation()` hook:
+```typescript
+const { t } = useTranslation()
+<span>{t('dashboard.welcome')}</span>
+```
+
+## Responsive Design Pattern
+
+Mobile-first with `sm:` breakpoint (640px). Consistent sizing across components:
+- Card padding: `p-2 sm:p-6`
+- Text sizes: `text-[10px] sm:text-sm` or `text-xs sm:text-base`
+- Button heights: `h-8 sm:h-10`
+- Gaps/margins: `gap-1.5 sm:gap-3`, `mb-3 sm:mb-4`
 
 ## Debugging Convex
 

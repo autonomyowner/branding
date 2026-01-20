@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import { useTranslation } from "react-i18next"
+import { UserButton, SignedIn, SignedOut, SignInButton } from "@clerk/clerk-react"
 import { useData, type Post, type Platform } from "../context/DataContext"
 import { Button } from "../components/ui/button"
 import { Logo } from "../components/ui/Logo"
@@ -220,44 +221,32 @@ export function CalendarPage() {
   const dayNames = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
 
   return (
-    <div className="min-h-screen bg-[#050505] overflow-x-hidden">
-      {/* Background grid pattern */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage: `
-              linear-gradient(rgba(251, 191, 36, 0.5) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(251, 191, 36, 0.5) 1px, transparent 1px)
-            `,
-            backgroundSize: '60px 60px'
-          }}
-        />
-        <div className="absolute top-0 left-1/3 w-[800px] h-[800px] bg-amber-500/[0.03] rounded-full blur-[200px]" />
-        <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-orange-500/[0.02] rounded-full blur-[150px]" />
-      </div>
-
+    <div className="min-h-screen bg-background overflow-x-hidden">
       {/* Header */}
-      <header className="border-b border-white/[0.06] bg-black/60 backdrop-blur-2xl sticky top-0 z-50">
-        <div className="max-w-[1600px] mx-auto px-4 sm:px-8 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-6 sm:gap-12">
+      <header className="border-b border-border bg-card/50 backdrop-blur-xl sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
+          <div className="flex items-center gap-4 sm:gap-8">
             <Logo />
-            <nav className="hidden md:flex items-center gap-8">
-              <Link to="/dashboard" className="text-[13px] text-white/40 hover:text-white transition-colors tracking-wide uppercase font-medium">{t('nav.dashboard')}</Link>
-              <Link to="/posts" className="text-[13px] text-white/40 hover:text-white transition-colors tracking-wide uppercase font-medium">{t('nav.posts')}</Link>
-              <Link to="/calendar" className="text-[13px] text-amber-400 tracking-wide uppercase font-medium relative">
-                {t('nav.calendar')}
-                <motion.div
-                  layoutId="nav-indicator"
-                  className="absolute -bottom-[17px] left-0 right-0 h-[2px] bg-gradient-to-r from-amber-400 to-orange-500"
-                />
-              </Link>
+            <nav className="hidden md:flex items-center gap-6">
+              <Link to="/dashboard" className="text-sm text-muted-foreground hover:text-white transition-colors">{t('nav.dashboard')}</Link>
+              <Link to="/posts" className="text-sm text-muted-foreground hover:text-white transition-colors">{t('nav.posts')}</Link>
+              <Link to="/calendar" className="text-sm text-white font-medium">{t('nav.calendar')}</Link>
             </nav>
+          </div>
+          <div className="flex items-center gap-2 sm:gap-4">
+            <SignedIn>
+              <UserButton afterSignOutUrl="/" />
+            </SignedIn>
+            <SignedOut>
+              <SignInButton mode="modal">
+                <Button variant="outline" size="sm" className="text-xs sm:text-sm px-2 sm:px-4">Sign In</Button>
+              </SignInButton>
+            </SignedOut>
           </div>
         </div>
       </header>
 
-      <main className="max-w-[1600px] mx-auto px-4 sm:px-8 py-6 sm:py-8 pb-32 md:pb-8 relative">
+      <main className="max-w-7xl mx-auto px-3 sm:px-6 py-6 sm:py-8 pb-32 md:pb-8">
         {/* Hero Section - Month Display */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -331,7 +320,7 @@ export function CalendarPage() {
               className={`px-5 py-2.5 rounded-full text-xs font-semibold tracking-wider transition-all whitespace-nowrap flex-shrink-0 border ${
                 selectedPlatform === 'all'
                   ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-black border-transparent shadow-lg shadow-amber-500/25'
-                  : 'bg-white/[0.02] text-white/50 border-white/[0.06] hover:bg-white/[0.05] hover:text-white hover:border-white/10'
+                  : 'bg-muted/30 text-muted-foreground border-border hover:bg-muted/50 hover:text-white'
               }`}
             >
               ALL PLATFORMS
@@ -345,7 +334,7 @@ export function CalendarPage() {
                 className={`px-5 py-2.5 rounded-full text-xs font-semibold tracking-wider transition-all whitespace-nowrap flex-shrink-0 border ${
                   selectedPlatform === platform
                     ? 'text-white border-transparent shadow-lg'
-                    : 'bg-white/[0.02] text-white/50 border-white/[0.06] hover:bg-white/[0.05] hover:text-white hover:border-white/10'
+                    : 'bg-muted/30 text-muted-foreground border-border hover:bg-muted/50 hover:text-white'
                 }`}
                 style={selectedPlatform === platform ? {
                   background: platformColors[platform].bg,
@@ -367,7 +356,7 @@ export function CalendarPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="lg:col-span-8 rounded-2xl bg-gradient-to-br from-white/[0.04] to-transparent border border-white/[0.06] p-2 sm:p-6"
+            className="lg:col-span-8 rounded-2xl bg-card border border-border p-2 sm:p-6"
           >
             <div className="flex items-center justify-between mb-3 sm:mb-4">
               <h3 className="text-[10px] sm:text-xs font-semibold text-white/30 tracking-[0.2em] uppercase">This Week</h3>
@@ -448,13 +437,13 @@ export function CalendarPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="hidden sm:block lg:col-span-8 rounded-2xl bg-gradient-to-br from-white/[0.04] to-transparent border border-white/[0.06] overflow-hidden"
+            className="hidden sm:block lg:col-span-8 rounded-2xl bg-card border border-border overflow-hidden"
           >
             {/* Day Headers */}
-            <div className="grid grid-cols-7 border-b border-white/[0.04]">
+            <div className="grid grid-cols-7 border-b border-border">
               {dayNames.map((day, i) => (
                 <div key={day} className={`py-4 text-center text-[11px] font-semibold tracking-[0.15em] ${
-                  i === 0 || i === 6 ? 'text-white/20' : 'text-white/40'
+                  i === 0 || i === 6 ? 'text-muted-foreground/50' : 'text-muted-foreground'
                 }`}>
                   {day}
                 </div>
@@ -483,17 +472,17 @@ export function CalendarPage() {
                       onMouseLeave={() => setHoveredDay(null)}
                       onClick={() => setSelectedDay(day.date)}
                       className={`
-                        relative aspect-square p-2 border-r border-b border-white/[0.03] transition-all duration-200
+                        relative aspect-square p-2 border-r border-b border-border transition-all duration-200
                         ${day.isCurrentMonth ? '' : 'opacity-30'}
-                        ${day.isToday ? 'bg-amber-500/[0.08]' : ''}
-                        ${isSelected ? 'bg-white/[0.06]' : 'hover:bg-white/[0.03]'}
+                        ${day.isToday ? 'bg-amber-500/10' : ''}
+                        ${isSelected ? 'bg-muted' : 'hover:bg-muted/50'}
                         ${hasOptimal && day.isCurrentMonth ? 'bg-emerald-500/[0.05]' : ''}
                       `}
                     >
                       {/* Date */}
                       <div className={`
                         text-sm font-semibold mb-1 flex items-center gap-1
-                        ${day.isToday ? 'text-amber-400' : day.isCurrentMonth ? 'text-white/70' : 'text-white/30'}
+                        ${day.isToday ? 'text-amber-400' : day.isCurrentMonth ? 'text-foreground' : 'text-muted-foreground'}
                       `}>
                         <span className={day.isToday ? 'w-7 h-7 flex items-center justify-center rounded-full bg-amber-500 text-black font-bold' : ''}>
                           {day.date.getDate()}
@@ -520,7 +509,7 @@ export function CalendarPage() {
                             />
                           ))}
                           {day.posts.length > 3 && (
-                            <span className="text-[9px] text-white/40 font-medium">+{day.posts.length - 3}</span>
+                            <span className="text-[9px] text-muted-foreground font-medium">+{day.posts.length - 3}</span>
                           )}
                         </div>
                       )}
@@ -545,7 +534,7 @@ export function CalendarPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="sm:hidden col-span-full rounded-2xl bg-gradient-to-br from-white/[0.04] to-transparent border border-white/[0.06] p-2 max-h-[60vh] overflow-y-auto"
+            className="sm:hidden col-span-full rounded-2xl bg-card border border-border p-2 max-h-[60vh] overflow-y-auto"
           >
             <AnimatePresence mode="wait">
               <motion.div
@@ -572,7 +561,7 @@ export function CalendarPage() {
                         className={`
                           w-full flex items-center gap-3 p-3 rounded-xl transition-all
                           ${day.isToday ? 'bg-amber-500/10 border border-amber-500/20' : 'border border-transparent'}
-                          ${isSelected ? 'bg-white/[0.06] border-white/10' : 'hover:bg-white/[0.03]'}
+                          ${isSelected ? 'bg-muted border-border' : 'hover:bg-muted/50'}
                         `}
                       >
                         {/* Date Block */}
@@ -580,7 +569,7 @@ export function CalendarPage() {
                           w-12 h-12 flex flex-col items-center justify-center rounded-xl flex-shrink-0 font-mono
                           ${day.isToday
                             ? 'bg-amber-500 text-black'
-                            : 'bg-white/[0.04] text-white/70'}
+                            : 'bg-muted/50 text-foreground'}
                         `}>
                           <span className="text-[9px] font-medium opacity-60">{dayName}</span>
                           <span className="text-lg font-bold leading-none">{day.date.getDate()}</span>
@@ -604,7 +593,7 @@ export function CalendarPage() {
                               ))}
                             </div>
                           ) : (
-                            <span className="text-xs text-white/20 font-medium">No posts</span>
+                            <span className="text-xs text-muted-foreground font-medium">No posts</span>
                           )}
                         </div>
 
@@ -626,7 +615,7 @@ export function CalendarPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25 }}
-            className="lg:col-span-4 lg:row-span-2 rounded-2xl bg-gradient-to-br from-white/[0.04] to-transparent border border-white/[0.06] p-2 sm:p-6 flex flex-col"
+            className="lg:col-span-4 lg:row-span-2 rounded-2xl bg-card border border-border p-2 sm:p-6 flex flex-col"
           >
             <AnimatePresence mode="wait">
               <motion.div
@@ -661,25 +650,25 @@ export function CalendarPage() {
                               borderColor: `${platformColors[post.platform].primary}30`
                             }}
                           >
-                            <div className="px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-between border-b border-white/[0.04]">
+                            <div className="px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-between border-b border-border">
                               <div className="flex items-center gap-2 sm:gap-3">
                                 <span
                                   className="w-2 h-2 rounded-full"
                                   style={{ background: platformColors[post.platform].primary }}
                                 />
-                                <span className="text-xs sm:text-sm font-semibold text-white/90">{post.platform}</span>
-                                <span className="text-[10px] sm:text-xs text-white/40 font-mono">{formatTime(post.scheduledFor!)}</span>
+                                <span className="text-xs sm:text-sm font-semibold text-foreground">{post.platform}</span>
+                                <span className="text-[10px] sm:text-xs text-muted-foreground font-mono">{formatTime(post.scheduledFor!)}</span>
                               </div>
-                              <span className="text-[9px] sm:text-[10px] text-white/30 truncate max-w-[60px] sm:max-w-[80px]">{getBrandName(post.brandId)}</span>
+                              <span className="text-[9px] sm:text-[10px] text-muted-foreground truncate max-w-[60px] sm:max-w-[80px]">{getBrandName(post.brandId)}</span>
                             </div>
                             <div className="px-3 sm:px-4 py-2 sm:py-3">
-                              <p className="text-xs sm:text-sm text-white/60 leading-relaxed line-clamp-2 sm:line-clamp-3">{post.content}</p>
+                              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed line-clamp-2 sm:line-clamp-3">{post.content}</p>
                             </div>
-                            <div className="px-3 sm:px-4 py-2 sm:py-3 flex gap-1.5 sm:gap-2 border-t border-white/[0.04]">
+                            <div className="px-3 sm:px-4 py-2 sm:py-3 flex gap-1.5 sm:gap-2 border-t border-border">
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className="flex-1 bg-white/5 hover:bg-white/10 text-white/70 text-[10px] sm:text-xs h-7 sm:h-8"
+                                className="flex-1 bg-muted hover:bg-muted/80 text-foreground text-[10px] sm:text-xs h-7 sm:h-8"
                                 onClick={() => handleCopy(post)}
                               >
                                 {copiedId === post.id ? 'Copied!' : 'Copy'}
@@ -698,11 +687,11 @@ export function CalendarPage() {
                       </div>
                     ) : (
                       <div className="flex-1 flex flex-col items-center justify-center text-center py-6 sm:py-8">
-                        <div className="w-12 sm:w-16 h-12 sm:h-16 rounded-xl sm:rounded-2xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center mb-3 sm:mb-4">
+                        <div className="w-12 sm:w-16 h-12 sm:h-16 rounded-xl sm:rounded-2xl bg-muted/30 border border-border flex items-center justify-center mb-3 sm:mb-4">
                           <span className="text-xl sm:text-2xl opacity-30">📅</span>
                         </div>
-                        <p className="text-white/30 text-xs sm:text-sm mb-1">No posts scheduled</p>
-                        <p className="text-white/20 text-[10px] sm:text-xs">Click below to create one</p>
+                        <p className="text-muted-foreground text-xs sm:text-sm mb-1">No posts scheduled</p>
+                        <p className="text-muted-foreground/60 text-[10px] sm:text-xs">Click below to create one</p>
                       </div>
                     )}
 
@@ -712,7 +701,7 @@ export function CalendarPage() {
                   </>
                 ) : (
                   <div className="flex-1 flex items-center justify-center">
-                    <p className="text-white/30">Select a day to view details</p>
+                    <p className="text-muted-foreground">Select a day to view details</p>
                   </div>
                 )}
               </motion.div>
@@ -724,7 +713,7 @@ export function CalendarPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="col-span-full lg:col-span-8 rounded-2xl bg-gradient-to-br from-white/[0.04] to-transparent border border-white/[0.06] p-2 sm:p-6"
+            className="col-span-full lg:col-span-8 rounded-2xl bg-card border border-border p-2 sm:p-6"
           >
             <h3 className="text-[10px] sm:text-xs font-semibold text-white/30 tracking-[0.2em] uppercase mb-3 sm:mb-5">Optimal Posting Times</h3>
             <div className="flex lg:grid lg:grid-cols-5 gap-3 sm:gap-4 overflow-x-auto pb-2 -mx-1 px-1 lg:mx-0 lg:px-0 lg:overflow-visible scrollbar-hide">
