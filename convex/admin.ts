@@ -196,3 +196,38 @@ export const getEmailCaptures = action({
     };
   },
 });
+
+// Update user plan (admin only)
+export const updateUserPlan = action({
+  args: {
+    token: v.string(),
+    email: v.string(),
+    plan: v.union(v.literal("FREE"), v.literal("PRO"), v.literal("BUSINESS")),
+  },
+  handler: async (ctx, args): Promise<{ success: boolean; message: string }> => {
+    if (!verifyAdminToken(args.token)) {
+      throw new Error("Access denied");
+    }
+
+    // Find user by email
+    const user = await ctx.runQuery(internal.internal.getUserByEmail, { email: args.email });
+
+    if (!user) {
+      return {
+        success: false,
+        message: `User with email ${args.email} not found`,
+      };
+    }
+
+    // Update the user's plan
+    await ctx.runMutation(internal.users.updateUserPlan, {
+      clerkId: user.clerkId,
+      plan: args.plan,
+    });
+
+    return {
+      success: true,
+      message: `Successfully updated ${args.email} to ${args.plan} plan`,
+    };
+  },
+});
