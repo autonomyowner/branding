@@ -263,7 +263,7 @@ export const update = mutation({
       throw new Error("You do not have access to this post");
     }
 
-    const { id, ...updates } = args;
+    const { id, clerkId: _clerkId, ...updates } = args;
 
     // Filter out undefined values
     const filteredUpdates: Record<string, any> = {};
