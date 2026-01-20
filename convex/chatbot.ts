@@ -60,16 +60,29 @@ export const addMessage = mutation({
     assistantMessage: v.string(),
   },
   handler: async (ctx, args) => {
-    const session = await ctx.db
+    const now = Date.now();
+
+    let session = await ctx.db
       .query("chatSessions")
       .withIndex("by_sessionId", (q) => q.eq("sessionId", args.sessionId))
       .first();
 
+    // Create session if it doesn't exist
     if (!session) {
-      throw new Error("Session not found");
+      const sessionId = await ctx.db.insert("chatSessions", {
+        sessionId: args.sessionId,
+        messages: [],
+        messageCount: 0,
+        emailCaptured: false,
+        createdAt: now,
+        updatedAt: now,
+      });
+      session = await ctx.db.get(sessionId);
+      if (!session) {
+        throw new Error("Failed to create session");
+      }
     }
 
-    const now = Date.now();
     const newMessages = [
       ...session.messages,
       { role: "user" as const, content: args.userMessage, timestamp: now },
