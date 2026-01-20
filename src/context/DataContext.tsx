@@ -151,7 +151,17 @@ export function DataProvider({ children }: { children: ReactNode }) {
   // Convex queries - pass clerkId as fallback
   const userData = useQuery(api.users.getByClerkId, clerkId ? { clerkId } : "skip")
   const brandsData = useQuery(api.brands.list, clerkId ? { clerkId } : "skip")
-  const postsData = useQuery(api.posts.list, clerkId ? { clerkId, limit: 1000 } : "skip")
+  // Fetch posts filtered by selected brand (if any)
+  const postsData = useQuery(
+    api.posts.list,
+    clerkId
+      ? {
+          clerkId,
+          limit: 1000,
+          ...(selectedBrandId ? { brandId: selectedBrandId as Id<"brands"> } : {})
+        }
+      : "skip"
+  )
 
   // Convex mutations
   const createBrandMutation = useMutation(api.brands.create)
