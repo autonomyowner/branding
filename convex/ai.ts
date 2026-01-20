@@ -130,7 +130,7 @@ export const generateContent = action({
     }
 
     // Get brand details
-    const brand = await ctx.runQuery(api.brands.getById, { id: args.brandId });
+    const brand = await ctx.runQuery(api.brands.getById, { id: args.brandId, clerkId: userClerkId });
     if (!brand) {
       throw new Error("Brand not found");
     }
@@ -263,7 +263,7 @@ export const videoToPosts = action({
     }
 
     // Get brand details
-    const brand = await ctx.runQuery(api.brands.getById, { id: args.brandId });
+    const brand = await ctx.runQuery(api.brands.getById, { id: args.brandId, clerkId: userClerkId });
     if (!brand) {
       throw new Error("Brand not found");
     }

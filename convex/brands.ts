@@ -82,16 +82,21 @@ export const list = query({
 
 // Get a specific brand
 export const getById = query({
-  args: { id: v.id("brands") },
+  args: {
+    id: v.id("brands"),
+    clerkId: v.optional(v.string()), // Fallback for auth
+  },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
+    const userClerkId = identity?.subject || args.clerkId;
+
+    if (!userClerkId) {
       return null;
     }
 
     const user = await ctx.db
       .query("users")
-      .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+      .withIndex("by_clerkId", (q) => q.eq("clerkId", userClerkId))
       .unique();
 
     if (!user) {
