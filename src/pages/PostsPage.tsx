@@ -95,7 +95,8 @@ export function PostsPage() {
       setScheduledDateTime(null)
     } catch (error) {
       console.error('Failed to schedule post:', error)
-      alert('Failed to schedule post. Please try again.')
+      const message = error instanceof Error ? error.message : 'Unknown error'
+      alert(`Failed to schedule post: ${message}`)
     }
   }
 
