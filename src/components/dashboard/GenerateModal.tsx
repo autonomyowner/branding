@@ -252,17 +252,17 @@ function GenerateModalComponent({ isOpen, onClose, initialImageUrl }: GenerateMo
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           className={`relative w-full mx-4 ${step === 'schedule' ? 'max-w-4xl' : 'max-w-2xl'}`}
         >
-          <Card className="p-4 sm:p-6 bg-card border-border max-h-[90vh] overflow-y-auto">
+          <Card className="p-2 sm:p-6 bg-card border-border max-h-[90vh] overflow-y-auto">
             {/* Header */}
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <h2 className="text-base sm:text-xl font-bold">
                 {step === 'schedule' ? t('generateModal.scheduleTitle') : t('generateModal.title')}
               </h2>
               <button
                 onClick={handleClose}
                 className="text-muted-foreground hover:text-white transition-colors"
               >
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
@@ -271,28 +271,28 @@ function GenerateModalComponent({ isOpen, onClose, initialImageUrl }: GenerateMo
             {step === 'configure' && (
               <>
                 {/* Brand Selection */}
-                <div className="mb-4">
-                  <label className="block text-sm font-medium mb-2">{t('generateModal.selectBrand')}</label>
-                  <div className="flex items-center gap-3 p-3 rounded-lg bg-background border border-border">
+                <div className="mb-3 sm:mb-4">
+                  <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2">{t('generateModal.selectBrand')}</label>
+                  <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg bg-background border border-border">
                     <div
-                      className="w-8 h-8 rounded-md flex items-center justify-center text-sm font-bold text-white"
+                      className="w-6 h-6 sm:w-8 sm:h-8 rounded-md flex items-center justify-center text-xs sm:text-sm font-bold text-white"
                       style={{ backgroundColor: selectedBrand?.color || '#EAB308' }}
                     >
                       {selectedBrand?.initials || '?'}
                     </div>
-                    <span>{selectedBrand?.name || t('generateModal.selectBrand')}</span>
+                    <span className="text-xs sm:text-sm">{selectedBrand?.name || t('generateModal.selectBrand')}</span>
                   </div>
                 </div>
 
                 {/* Platform Selection */}
-                <div className="mb-4">
-                  <label className="block text-sm font-medium mb-2">{t('generateModal.platform')}</label>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
+                <div className="mb-3 sm:mb-4">
+                  <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2">{t('generateModal.platform')}</label>
+                  <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-5 gap-1.5 sm:gap-2">
                     {PLATFORMS.map((platform) => (
                       <button
                         key={platform}
                         onClick={() => setSelectedPlatform(platform)}
-                        className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                        className={`px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-[10px] sm:text-sm font-medium transition-colors ${
                           selectedPlatform === platform
                             ? 'bg-primary text-primary-foreground'
                             : 'bg-background border border-border hover:border-white/20'
@@ -305,14 +305,14 @@ function GenerateModalComponent({ isOpen, onClose, initialImageUrl }: GenerateMo
                 </div>
 
                 {/* Content Style Selection */}
-                <div className="mb-4">
-                  <label className="block text-sm font-medium mb-2">{t('generateModal.style')}</label>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
+                <div className="mb-3 sm:mb-4">
+                  <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2">{t('generateModal.style')}</label>
+                  <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-5 gap-1.5 sm:gap-2">
                     {CONTENT_STYLES.map((style) => (
                       <button
                         key={style.value}
                         onClick={() => setSelectedStyle(style.value)}
-                        className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                        className={`px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-[10px] sm:text-sm font-medium transition-colors ${
                           selectedStyle === style.value
                             ? 'bg-primary text-primary-foreground'
                             : 'bg-background border border-border hover:border-white/20'
@@ -323,59 +323,59 @@ function GenerateModalComponent({ isOpen, onClose, initialImageUrl }: GenerateMo
                       </button>
                     ))}
                   </div>
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">
                     {CONTENT_STYLES.find(s => s.value === selectedStyle)?.description}
                   </p>
                 </div>
 
                 {/* Topic Input */}
-                <div className="mb-4">
-                  <label className="block text-sm font-medium mb-2">{t('generateModal.topic')}</label>
+                <div className="mb-3 sm:mb-4">
+                  <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2">{t('generateModal.topic')}</label>
                   <input
                     type="text"
                     value={topic}
                     onChange={(e) => setTopic(e.target.value)}
                     placeholder={t('generateModal.topicPlaceholder')}
-                    className="w-full px-3 py-2 rounded-lg bg-background border border-border text-sm focus:outline-none focus:border-primary"
+                    className="w-full px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg bg-background border border-border text-xs sm:text-sm focus:outline-none focus:border-primary"
                   />
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">
                     Leave empty to let AI choose from brand topics
                   </p>
                 </div>
 
                 {/* Attached Image Preview */}
                 {attachedImageUrl && (
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium mb-2">Attached Image</label>
+                  <div className="mb-3 sm:mb-4">
+                    <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2">Attached Image</label>
                     <div className="relative rounded-lg overflow-hidden bg-background border border-border">
                       <img
                         src={attachedImageUrl}
                         alt="Attached"
-                        className="w-full h-32 object-cover"
+                        className="w-full h-24 sm:h-32 object-cover"
                       />
                       <button
                         onClick={() => setAttachedImageUrl(undefined)}
-                        className="absolute top-2 end-2 p-1.5 rounded-full bg-black/60 hover:bg-black/80 transition-colors"
+                        className="absolute top-2 end-2 p-1 sm:p-1.5 rounded-full bg-black/60 hover:bg-black/80 transition-colors"
                         title="Remove image"
                       >
-                        <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="w-3 h-3 sm:w-4 sm:h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
                       </button>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">
                       This image will be attached to your post
                     </p>
                   </div>
                 )}
 
                 {/* Model Selection */}
-                <div className="mb-6">
-                  <label className="block text-sm font-medium mb-2">AI Model</label>
+                <div className="mb-4 sm:mb-6">
+                  <label className="block text-xs sm:text-sm font-medium mb-1.5 sm:mb-2">AI Model</label>
                   <select
                     value={selectedModel}
                     onChange={(e) => setSelectedModel(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-background border border-border text-sm focus:outline-none focus:border-primary"
+                    className="w-full px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg bg-background border border-border text-xs sm:text-sm focus:outline-none focus:border-primary"
                   >
                     {availableModels.map((model) => (
                       <option key={model.value} value={model.value}>
@@ -387,22 +387,22 @@ function GenerateModalComponent({ isOpen, onClose, initialImageUrl }: GenerateMo
 
                 {/* Usage Warning */}
                 {getUsagePercentage('posts', 0) >= 80 && (
-                  <div className={`mb-4 p-3 rounded-lg flex items-center justify-between ${
+                  <div className={`mb-3 sm:mb-4 p-2 sm:p-3 rounded-lg flex items-center justify-between ${
                     getUsagePercentage('posts', 0) >= 100
                       ? 'bg-red-500/10 border border-red-500/20'
                       : 'bg-yellow-500/10 border border-yellow-500/20'
                   }`}>
-                    <div className="flex items-center gap-2">
-                      <svg className={`w-4 h-4 ${getUsagePercentage('posts', 0) >= 100 ? 'text-red-400' : 'text-yellow-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="flex items-center gap-1.5 sm:gap-2">
+                      <svg className={`w-3 h-3 sm:w-4 sm:h-4 ${getUsagePercentage('posts', 0) >= 100 ? 'text-red-400' : 'text-yellow-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                       </svg>
-                      <span className={`text-sm ${getUsagePercentage('posts', 0) >= 100 ? 'text-red-400' : 'text-yellow-400'}`}>
-                        {getRemainingCount('posts', 0)} posts remaining this month
+                      <span className={`text-[10px] sm:text-sm ${getUsagePercentage('posts', 0) >= 100 ? 'text-red-400' : 'text-yellow-400'}`}>
+                        {getRemainingCount('posts', 0)} posts remaining
                       </span>
                     </div>
                     <button
                       onClick={() => { handleClose(); openUpgradeModal('post'); }}
-                      className="text-xs text-primary hover:underline"
+                      className="text-[10px] sm:text-xs text-primary hover:underline"
                     >
                       Upgrade
                     </button>
@@ -411,7 +411,7 @@ function GenerateModalComponent({ isOpen, onClose, initialImageUrl }: GenerateMo
 
                 {/* Error */}
                 {error && (
-                  <div className="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+                  <div className="mb-3 sm:mb-4 p-2 sm:p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-[10px] sm:text-sm">
                     {error}
                   </div>
                 )}
@@ -420,11 +420,11 @@ function GenerateModalComponent({ isOpen, onClose, initialImageUrl }: GenerateMo
                 <Button
                   onClick={handleGenerate}
                   disabled={isGenerating || !selectedBrand}
-                  className="w-full"
+                  className="w-full h-8 sm:h-10 text-xs sm:text-sm"
                 >
                   {isGenerating ? (
-                    <span className="flex items-center gap-2">
-                      <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                    <span className="flex items-center gap-1.5 sm:gap-2">
+                      <svg className="animate-spin h-3 w-3 sm:h-4 sm:w-4" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                       </svg>
@@ -440,41 +440,41 @@ function GenerateModalComponent({ isOpen, onClose, initialImageUrl }: GenerateMo
             {step === 'result' && (
               <>
                 {/* Generated Content Display */}
-                <div className="mb-6">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="text-sm text-muted-foreground">For {selectedPlatform}</span>
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-white/10">
+                <div className="mb-4 sm:mb-6">
+                  <div className="flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3 flex-wrap">
+                    <span className="text-[10px] sm:text-sm text-muted-foreground">For {selectedPlatform}</span>
+                    <span className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full bg-white/10">
                       {selectedBrand?.name}
                     </span>
                     {attachedImageUrl && (
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-primary/20 text-primary">
+                      <span className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full bg-primary/20 text-primary">
                         With Image
                       </span>
                     )}
                   </div>
                   {attachedImageUrl && (
-                    <div className="mb-3 rounded-lg overflow-hidden border border-border">
+                    <div className="mb-2 sm:mb-3 rounded-lg overflow-hidden border border-border">
                       <img
                         src={attachedImageUrl}
                         alt="Attached"
-                        className="w-full h-40 object-cover"
+                        className="w-full h-28 sm:h-40 object-cover"
                       />
                     </div>
                   )}
-                  <div className="p-4 rounded-lg bg-background border border-border min-h-[150px] whitespace-pre-wrap">
+                  <div className="p-2 sm:p-4 rounded-lg bg-background border border-border min-h-[100px] sm:min-h-[150px] whitespace-pre-wrap text-xs sm:text-sm">
                     {generatedContent}
                   </div>
                 </div>
 
                 {/* Actions */}
-                <div className="flex gap-3">
-                  <Button variant="outline" onClick={handleRegenerate} className="flex-1">
+                <div className="flex gap-1.5 sm:gap-3">
+                  <Button variant="outline" onClick={handleRegenerate} className="flex-1 h-8 sm:h-10 text-[10px] sm:text-sm px-1 sm:px-4">
                     {t('generateModal.generate')}
                   </Button>
-                  <Button variant="outline" onClick={handleSaveAsDraft} className="flex-1">
+                  <Button variant="outline" onClick={handleSaveAsDraft} className="flex-1 h-8 sm:h-10 text-[10px] sm:text-sm px-1 sm:px-4">
                     {t('generateModal.saveDraft')}
                   </Button>
-                  <Button onClick={handleOpenScheduler} className="flex-1">
+                  <Button onClick={handleOpenScheduler} className="flex-1 h-8 sm:h-10 text-[10px] sm:text-sm px-1 sm:px-4">
                     {t('generateModal.schedule')}
                   </Button>
                 </div>
@@ -484,42 +484,42 @@ function GenerateModalComponent({ isOpen, onClose, initialImageUrl }: GenerateMo
             {step === 'schedule' && (
               <>
                 {/* Schedule Step */}
-                <div className="mb-6">
-                  <div className="flex items-center gap-2 mb-4">
+                <div className="mb-4 sm:mb-6">
+                  <div className="flex items-center gap-1.5 sm:gap-2 mb-3 sm:mb-4">
                     <button
                       onClick={handleBackToResult}
-                      className="p-1.5 rounded-lg hover:bg-white/10 transition-colors text-muted-foreground hover:text-white"
+                      className="p-1 sm:p-1.5 rounded-lg hover:bg-white/10 transition-colors text-muted-foreground hover:text-white"
                     >
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                       </svg>
                     </button>
-                    <span className="text-lg font-semibold">{t('generateModal.scheduleTitle')}</span>
+                    <span className="text-sm sm:text-lg font-semibold">{t('generateModal.scheduleTitle')}</span>
                   </div>
 
                   {/* Content Preview */}
-                  <div className="mb-6 p-3 rounded-lg bg-background/50 border border-border">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xs text-muted-foreground">{selectedPlatform}</span>
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-white/10">
+                  <div className="mb-4 sm:mb-6 p-2 sm:p-3 rounded-lg bg-background/50 border border-border">
+                    <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2 flex-wrap">
+                      <span className="text-[10px] sm:text-xs text-muted-foreground">{selectedPlatform}</span>
+                      <span className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full bg-white/10">
                         {selectedBrand?.name}
                       </span>
                       {attachedImageUrl && (
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-primary/20 text-primary">
+                        <span className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full bg-primary/20 text-primary">
                           With Image
                         </span>
                       )}
                     </div>
                     {attachedImageUrl && (
-                      <div className="mb-2 rounded overflow-hidden">
+                      <div className="mb-1.5 sm:mb-2 rounded overflow-hidden">
                         <img
                           src={attachedImageUrl}
                           alt="Attached"
-                          className="w-full h-20 object-cover"
+                          className="w-full h-16 sm:h-20 object-cover"
                         />
                       </div>
                     )}
-                    <p className="text-sm text-muted-foreground line-clamp-2">{generatedContent}</p>
+                    <p className="text-[10px] sm:text-sm text-muted-foreground line-clamp-2">{generatedContent}</p>
                   </div>
 
                   {/* Date Time Picker */}
@@ -531,14 +531,14 @@ function GenerateModalComponent({ isOpen, onClose, initialImageUrl }: GenerateMo
                 </div>
 
                 {/* Confirm Button */}
-                <div className="flex gap-3">
-                  <Button variant="outline" onClick={handleBackToResult} className="flex-1">
+                <div className="flex gap-1.5 sm:gap-3">
+                  <Button variant="outline" onClick={handleBackToResult} className="flex-1 h-8 sm:h-10 text-[10px] sm:text-sm">
                     {t('generateModal.back')}
                   </Button>
                   <Button
                     onClick={handleConfirmSchedule}
                     disabled={!scheduledDateTime}
-                    className="flex-1"
+                    className="flex-1 h-8 sm:h-10 text-[10px] sm:text-sm"
                   >
                     {t('generateModal.confirmSchedule')}
                   </Button>

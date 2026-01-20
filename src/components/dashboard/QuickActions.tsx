@@ -82,19 +82,19 @@ export function QuickActions({ onGenerateContent, onAddBrand, onRepurpose, onVoi
         {actions.map((action) => (
           <Card
             key={action.id}
-            className={`p-3 sm:p-5 bg-gradient-to-br ${action.gradient} border-white/10 hover:border-white/20 transition-all cursor-pointer group min-w-[140px] sm:min-w-0 flex-shrink-0 sm:flex-shrink`}
+            className={`p-2.5 sm:p-5 bg-gradient-to-br ${action.gradient} border-white/10 hover:border-white/20 transition-all cursor-pointer group min-w-[120px] sm:min-w-0 flex-shrink-0 sm:flex-shrink`}
             onClick={() => handleClick(action.id)}
           >
-            <h3 className="font-medium text-sm sm:text-base mb-0.5 sm:mb-1 group-hover:text-primary transition-colors truncate">
+            <h3 className="font-medium text-xs sm:text-base mb-0.5 sm:mb-1 group-hover:text-primary transition-colors truncate">
               {action.title}
             </h3>
-            <p className="text-xs sm:text-sm text-muted-foreground mb-2 sm:mb-4 line-clamp-2">
+            <p className="text-[10px] sm:text-sm text-muted-foreground mb-2 sm:mb-4 line-clamp-2">
               {action.description}
             </p>
             <Button
               variant={action.primary ? "default" : "outline"}
               size="sm"
-              className="w-full text-xs sm:text-sm h-7 sm:h-8"
+              className="w-full text-[10px] sm:text-sm h-6 sm:h-8"
               onClick={(e) => {
                 e.stopPropagation()
                 handleClick(action.id)

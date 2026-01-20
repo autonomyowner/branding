@@ -3,9 +3,9 @@ import { useState, useRef, useEffect } from 'react';
 import { Button } from './ui/button';
 
 const languages = [
-  { code: 'en', label: 'eng' },
-  { code: 'fr', label: 'fr' },
-  { code: 'ar', label: 'ar' },
+  { code: 'en', label: 'ENG' },
+  { code: 'fr', label: 'FR' },
+  { code: 'ar', label: 'AR' },
 ];
 
 export function LanguageSwitcher() {

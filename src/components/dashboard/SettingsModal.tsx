@@ -115,31 +115,31 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <Card className="w-full max-w-lg p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold">{t('settings.title')}</h2>
+      <Card className="w-full max-w-lg p-2 sm:p-6 max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
+          <h2 className="text-base sm:text-2xl font-bold">{t('settings.title')}</h2>
           <button
             onClick={onClose}
-            className="text-muted-foreground hover:text-white transition-colors"
+            className="text-muted-foreground hover:text-white transition-colors text-sm sm:text-base"
           >
             X
           </button>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Account Info */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Account</h3>
-            <div className="space-y-3">
-              <div className="flex items-center gap-4 p-4 bg-card/50 rounded-lg border border-white/10">
-                <div className="w-12 h-12 rounded-full bg-primary/20 border border-primary/50 flex items-center justify-center text-lg font-medium">
+            <h3 className="text-sm sm:text-lg font-semibold mb-2 sm:mb-4">Account</h3>
+            <div className="space-y-2 sm:space-y-3">
+              <div className="flex items-center gap-2 sm:gap-4 p-2 sm:p-4 bg-card/50 rounded-lg border border-white/10">
+                <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-primary/20 border border-primary/50 flex items-center justify-center text-sm sm:text-lg font-medium">
                   {user?.firstName?.slice(0, 1) || user?.emailAddresses?.[0]?.emailAddress?.slice(0, 1)?.toUpperCase() || 'U'}
                 </div>
-                <div className="flex-1">
-                  <p className="font-medium">
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-xs sm:text-base truncate">
                     {user?.fullName || user?.firstName || 'User'}
                   </p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-[10px] sm:text-sm text-muted-foreground truncate">
                     {user?.emailAddresses?.[0]?.emailAddress}
                   </p>
                 </div>
@@ -149,33 +149,33 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
 
           {/* Subscription Info */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Subscription</h3>
-            <div className="p-4 bg-card/50 rounded-lg border border-white/10 space-y-3">
+            <h3 className="text-sm sm:text-lg font-semibold mb-2 sm:mb-4">Subscription</h3>
+            <div className="p-2 sm:p-4 bg-card/50 rounded-lg border border-white/10 space-y-2 sm:space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Current Plan</span>
-                <span className="font-medium px-3 py-1 rounded-full bg-primary/20 text-primary text-sm">
+                <span className="text-[10px] sm:text-sm text-muted-foreground">Current Plan</span>
+                <span className="font-medium px-2 sm:px-3 py-0.5 sm:py-1 rounded-full bg-primary/20 text-primary text-[10px] sm:text-sm">
                   {planLabel}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Posts this month</span>
-                <span className="font-medium">
+                <span className="text-[10px] sm:text-sm text-muted-foreground">Posts this month</span>
+                <span className="font-medium text-xs sm:text-sm">
                   {subscription.postsThisMonth} / {subscription.postsLimit}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Brands</span>
-                <span className="font-medium">
+                <span className="text-[10px] sm:text-sm text-muted-foreground">Brands</span>
+                <span className="font-medium text-xs sm:text-sm">
                   {subscription.brandsCount} / {subscription.brandsLimit}
                 </span>
               </div>
 
               {/* Features */}
-              <div className="pt-3 border-t border-white/10">
-                <p className="text-sm text-muted-foreground mb-2">Features</p>
-                <div className="grid grid-cols-2 gap-2 text-sm">
+              <div className="pt-2 sm:pt-3 border-t border-white/10">
+                <p className="text-[10px] sm:text-sm text-muted-foreground mb-1.5 sm:mb-2">Features</p>
+                <div className="grid grid-cols-2 gap-1.5 sm:gap-2 text-[10px] sm:text-sm">
                   <div className={currentLimits.hasImageGeneration ? 'text-green-400' : 'text-muted-foreground'}>
-                    {currentLimits.hasImageGeneration ? 'Y' : 'X'} Image Generation
+                    {currentLimits.hasImageGeneration ? 'Y' : 'X'} Image Gen
                   </div>
                   <div className={currentLimits.hasVoiceover ? 'text-green-400' : 'text-muted-foreground'}>
                     {currentLimits.hasVoiceover ? 'Y' : 'X'} Voiceover
@@ -189,7 +189,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
               {subscription.plan !== 'business' && (
                 <Button
                   onClick={handleManageBilling}
-                  className="w-full mt-3"
+                  className="w-full mt-2 sm:mt-3 h-8 sm:h-10 text-[10px] sm:text-sm"
                   variant="outline"
                 >
                   Upgrade Plan
@@ -200,7 +200,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                 <Button
                   onClick={handleManageBilling}
                   variant="ghost"
-                  className="w-full text-sm"
+                  className="w-full text-[10px] sm:text-sm h-7 sm:h-9"
                 >
                   Manage Billing
                 </Button>
@@ -211,21 +211,21 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
           {/* Telegram Integration */}
           {telegramStatus?.configured && (
             <div>
-              <h3 className="text-lg font-semibold mb-4">Telegram Delivery</h3>
-              <div className="p-4 bg-card/50 rounded-lg border border-white/10 space-y-3">
-                <p className="text-sm text-muted-foreground">
+              <h3 className="text-sm sm:text-lg font-semibold mb-2 sm:mb-4">Telegram Delivery</h3>
+              <div className="p-2 sm:p-4 bg-card/50 rounded-lg border border-white/10 space-y-2 sm:space-y-3">
+                <p className="text-[10px] sm:text-sm text-muted-foreground">
                   Receive your scheduled posts directly on Telegram when they're ready to publish.
                 </p>
 
                 {telegramError && (
-                  <p className="text-sm text-red-400">{telegramError}</p>
+                  <p className="text-[10px] sm:text-sm text-red-400">{telegramError}</p>
                 )}
 
                 {!telegramStatus.connected ? (
                   <Button
                     onClick={handleConnectTelegram}
                     disabled={telegramLoading}
-                    className="w-full"
+                    className="w-full h-8 sm:h-10 text-[10px] sm:text-sm"
                     variant="outline"
                   >
                     {telegramLoading ? 'Connecting...' : 'Connect Telegram'}
@@ -233,29 +233,29 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                 ) : (
                   <>
                     <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Status</span>
-                      <span className="text-green-400 text-sm">Connected</span>
+                      <span className="text-[10px] sm:text-sm text-muted-foreground">Status</span>
+                      <span className="text-green-400 text-[10px] sm:text-sm">Connected</span>
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Notifications</span>
+                      <span className="text-[10px] sm:text-sm text-muted-foreground">Notifications</span>
                       <button
                         onClick={handleToggleTelegram}
                         disabled={telegramLoading}
-                        className={`relative w-12 h-6 rounded-full transition-colors ${
+                        className={`relative w-10 sm:w-12 h-5 sm:h-6 rounded-full transition-colors ${
                           telegramStatus.enabled ? 'bg-primary' : 'bg-white/20'
                         }`}
                       >
                         <span
-                          className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform ${
-                            telegramStatus.enabled ? 'start-7' : 'start-1'
+                          className={`absolute top-0.5 sm:top-1 w-4 h-4 rounded-full bg-white transition-transform ${
+                            telegramStatus.enabled ? 'start-5 sm:start-7' : 'start-0.5 sm:start-1'
                           }`}
                         />
                       </button>
                     </div>
 
                     {telegramStatus.linkedAt && (
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-[9px] sm:text-xs text-muted-foreground">
                         Connected {new Date(telegramStatus.linkedAt).toLocaleDateString()}
                       </p>
                     )}
@@ -264,7 +264,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       onClick={handleDisconnectTelegram}
                       disabled={telegramLoading}
                       variant="ghost"
-                      className="w-full text-sm text-red-400 hover:bg-red-400/10"
+                      className="w-full text-[10px] sm:text-sm text-red-400 hover:bg-red-400/10 h-7 sm:h-9"
                     >
                       Disconnect Telegram
                     </Button>
@@ -275,12 +275,12 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
           )}
 
           {/* Sign Out */}
-          <div className="pt-4 border-t border-white/10">
+          <div className="pt-3 sm:pt-4 border-t border-white/10">
             <Button
               onClick={handleSignOut}
               disabled={isSigningOut}
               variant="outline"
-              className="w-full text-red-400 border-red-400/50 hover:bg-red-400/10"
+              className="w-full text-red-400 border-red-400/50 hover:bg-red-400/10 h-8 sm:h-10 text-[10px] sm:text-sm"
             >
               {isSigningOut ? 'Signing out...' : 'Sign Out'}
             </Button>

@@ -148,9 +148,9 @@ export function PostsPage() {
 
         {/* Posts Grid */}
         {filteredPosts.length === 0 ? (
-          <Card className="p-6 sm:p-12 text-center">
-            <p className="text-muted-foreground mb-2 text-sm">{t('posts.noPosts')}</p>
-            <p className="text-xs sm:text-sm text-muted-foreground">
+          <Card className="p-4 sm:p-12 text-center">
+            <p className="text-muted-foreground mb-2 text-xs sm:text-sm">{t('posts.noPosts')}</p>
+            <p className="text-[10px] sm:text-sm text-muted-foreground">
               {posts.length === 0
                 ? t('posts.createPost')
                 : "Try adjusting your filters"
@@ -163,7 +163,7 @@ export function PostsPage() {
             )}
           </Card>
         ) : (
-          <div className="grid gap-3 sm:gap-4">
+          <div className="grid gap-2 sm:gap-4">
             {filteredPosts.map((post, index) => (
               <motion.div
                 key={post.id}
@@ -171,36 +171,36 @@ export function PostsPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.05 * index }}
               >
-                <Card className="p-3 sm:p-6 hover:border-white/20 transition-colors">
+                <Card className="p-2 sm:p-6 hover:border-white/20 transition-colors">
                   {/* Post Header */}
-                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-0 mb-3 sm:mb-4">
-                    <div className="flex items-center gap-1.5 sm:gap-3 flex-wrap">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1.5 sm:gap-0 mb-2 sm:mb-4">
+                    <div className="flex items-center gap-1 sm:gap-3 flex-wrap">
                       <div
-                        className="w-2 h-2 sm:w-3 sm:h-3 rounded-full flex-shrink-0"
+                        className="w-1.5 h-1.5 sm:w-3 sm:h-3 rounded-full flex-shrink-0"
                         style={{ backgroundColor: getBrandColor(post.brandId) }}
                       />
-                      <span className="text-xs sm:text-sm font-medium">{getBrandName(post.brandId)}</span>
-                      <Badge variant="outline" className={`text-[10px] sm:text-xs ${platformColors[post.platform]}`}>
+                      <span className="text-[11px] sm:text-sm font-medium">{getBrandName(post.brandId)}</span>
+                      <Badge variant="outline" className={`text-[9px] sm:text-xs px-1 sm:px-2 py-0 ${platformColors[post.platform]}`}>
                         {post.platform}
                       </Badge>
-                      <Badge variant="secondary" className={`text-[10px] sm:text-xs ${statusColors[post.status]}`}>
+                      <Badge variant="secondary" className={`text-[9px] sm:text-xs px-1 sm:px-2 py-0 ${statusColors[post.status]}`}>
                         {t(`posts.status.${post.status}`)}
                       </Badge>
                     </div>
-                    <span className="text-[10px] sm:text-xs text-muted-foreground">
+                    <span className="text-[9px] sm:text-xs text-muted-foreground">
                       {formatDate(post.createdAt)}
                     </span>
                   </div>
 
                   {/* Post Content */}
                   <div
-                    className={`bg-background/50 rounded-lg p-2 sm:p-4 mb-3 sm:mb-4 ${
-                      expandedPost === post.id ? '' : 'max-h-24 sm:max-h-32 overflow-hidden relative'
+                    className={`bg-background/50 rounded-lg p-1.5 sm:p-4 mb-2 sm:mb-4 ${
+                      expandedPost === post.id ? '' : 'max-h-20 sm:max-h-32 overflow-hidden relative'
                     }`}
                   >
-                    <p className="whitespace-pre-wrap text-xs sm:text-sm">{post.content}</p>
+                    <p className="whitespace-pre-wrap text-[11px] sm:text-sm">{post.content}</p>
                     {expandedPost !== post.id && post.content.length > 200 && (
-                      <div className="absolute bottom-0 left-0 right-0 h-8 sm:h-12 bg-gradient-to-t from-background/50 to-transparent" />
+                      <div className="absolute bottom-0 left-0 right-0 h-6 sm:h-12 bg-gradient-to-t from-background/50 to-transparent" />
                     )}
                   </div>
 
@@ -208,18 +208,18 @@ export function PostsPage() {
                   {post.content.length > 200 && (
                     <button
                       onClick={() => setExpandedPost(expandedPost === post.id ? null : post.id)}
-                      className="text-xs sm:text-sm text-primary hover:underline mb-3 sm:mb-4"
+                      className="text-[10px] sm:text-sm text-primary hover:underline mb-2 sm:mb-4"
                     >
                       {expandedPost === post.id ? 'Show less' : 'Show more'}
                     </button>
                   )}
 
                   {/* Post Actions */}
-                  <div className="flex items-center gap-1.5 sm:gap-2 pt-3 sm:pt-4 border-t border-border">
+                  <div className="flex items-center gap-1 sm:gap-2 pt-2 sm:pt-4 border-t border-border">
                     <Button
                       variant="outline"
                       size="sm"
-                      className="text-xs h-7 sm:h-8 px-2 sm:px-3"
+                      className="text-[10px] sm:text-xs h-6 sm:h-8 px-1.5 sm:px-3"
                       onClick={() => handleCopy(post.content)}
                     >
                       Copy
@@ -228,7 +228,7 @@ export function PostsPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="text-xs h-7 sm:h-8 px-2 sm:px-3 hidden sm:inline-flex"
+                        className="text-[10px] sm:text-xs h-6 sm:h-8 px-1.5 sm:px-3 hidden sm:inline-flex"
                         onClick={() => handlePublish(post.id)}
                       >
                         Mark Published
@@ -237,7 +237,7 @@ export function PostsPage() {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="text-red-400 hover:text-red-300 hover:border-red-400/50 text-xs h-7 sm:h-8 px-2 sm:px-3"
+                      className="text-red-400 hover:text-red-300 hover:border-red-400/50 text-[10px] sm:text-xs h-6 sm:h-8 px-1.5 sm:px-3"
                       onClick={() => deletePost(post.id)}
                     >
                       {t('common.delete')}

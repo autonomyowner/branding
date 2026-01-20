@@ -367,15 +367,15 @@ export function CalendarPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="lg:col-span-8 rounded-2xl bg-gradient-to-br from-white/[0.04] to-transparent border border-white/[0.06] p-5 sm:p-6"
+            className="lg:col-span-8 rounded-2xl bg-gradient-to-br from-white/[0.04] to-transparent border border-white/[0.06] p-2 sm:p-6"
           >
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xs font-semibold text-white/30 tracking-[0.2em] uppercase">This Week</h3>
-              <span className="text-xs text-amber-400/60 font-mono">{new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - {new Date(Date.now() + 6 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
+              <h3 className="text-[10px] sm:text-xs font-semibold text-white/30 tracking-[0.2em] uppercase">This Week</h3>
+              <span className="text-[10px] sm:text-xs text-amber-400/60 font-mono">{new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - {new Date(Date.now() + 6 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
             </div>
 
             {/* Week Activity Bars */}
-            <div className="flex items-end gap-2 sm:gap-3 h-24 sm:h-32">
+            <div className="flex items-end gap-1.5 sm:gap-3 h-20 sm:h-32">
               {dayNames.map((day, i) => {
                 const count = weekStats.dailyCounts[i]
                 const maxCount = Math.max(...weekStats.dailyCounts, 1)
@@ -403,7 +403,7 @@ export function CalendarPage() {
                         </span>
                       )}
                     </motion.div>
-                    <span className={`text-[10px] sm:text-xs font-medium tracking-wider ${isToday ? 'text-amber-400' : 'text-white/30'}`}>
+                    <span className={`text-[8px] sm:text-xs font-medium tracking-wider ${isToday ? 'text-amber-400' : 'text-white/30'}`}>
                       {day}
                     </span>
                   </div>
@@ -417,21 +417,21 @@ export function CalendarPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
-            className="lg:col-span-4 rounded-2xl bg-gradient-to-br from-amber-500/10 to-orange-500/5 border border-amber-500/20 p-5 sm:p-6 relative overflow-hidden"
+            className="lg:col-span-4 rounded-2xl bg-gradient-to-br from-amber-500/10 to-orange-500/5 border border-amber-500/20 p-2 sm:p-6 relative overflow-hidden"
           >
             <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-3xl" />
-            <h3 className="text-xs font-semibold text-amber-400/50 tracking-[0.2em] uppercase mb-2">Weekly Total</h3>
+            <h3 className="text-[10px] sm:text-xs font-semibold text-amber-400/50 tracking-[0.2em] uppercase mb-1 sm:mb-2">Weekly Total</h3>
             <div className="flex items-baseline gap-2">
-              <span className="text-5xl sm:text-6xl font-black text-white tracking-tighter" style={{ fontFamily: "'Inter', system-ui" }}>
+              <span className="text-4xl sm:text-6xl font-black text-white tracking-tighter" style={{ fontFamily: "'Inter', system-ui" }}>
                 <AnimatedCounter value={weekStats.weekTotal} />
               </span>
-              <span className="text-lg text-white/30">posts</span>
+              <span className="text-base sm:text-lg text-white/30">posts</span>
             </div>
-            <div className="mt-4 flex flex-wrap gap-2">
+            <div className="mt-3 sm:mt-4 flex flex-wrap gap-1.5 sm:gap-2">
               {(Object.entries(weekStats.platformCounts) as [Platform, number][]).map(([platform, count]) => (
                 <span
                   key={platform}
-                  className="text-[10px] px-2 py-1 rounded-md font-medium"
+                  className="text-[9px] sm:text-[10px] px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md font-medium"
                   style={{
                     background: platformColors[platform].bg,
                     color: platformColors[platform].primary
@@ -545,7 +545,7 @@ export function CalendarPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="sm:hidden col-span-full rounded-2xl bg-gradient-to-br from-white/[0.04] to-transparent border border-white/[0.06] p-4 max-h-[60vh] overflow-y-auto"
+            className="sm:hidden col-span-full rounded-2xl bg-gradient-to-br from-white/[0.04] to-transparent border border-white/[0.06] p-2 max-h-[60vh] overflow-y-auto"
           >
             <AnimatePresence mode="wait">
               <motion.div
@@ -577,13 +577,13 @@ export function CalendarPage() {
                       >
                         {/* Date Block */}
                         <div className={`
-                          w-14 h-14 flex flex-col items-center justify-center rounded-xl flex-shrink-0 font-mono
+                          w-12 h-12 flex flex-col items-center justify-center rounded-xl flex-shrink-0 font-mono
                           ${day.isToday
                             ? 'bg-amber-500 text-black'
                             : 'bg-white/[0.04] text-white/70'}
                         `}>
-                          <span className="text-[10px] font-medium opacity-60">{dayName}</span>
-                          <span className="text-xl font-bold leading-none">{day.date.getDate()}</span>
+                          <span className="text-[9px] font-medium opacity-60">{dayName}</span>
+                          <span className="text-lg font-bold leading-none">{day.date.getDate()}</span>
                         </div>
 
                         {/* Posts */}
@@ -626,7 +626,7 @@ export function CalendarPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25 }}
-            className="lg:col-span-4 lg:row-span-2 rounded-2xl bg-gradient-to-br from-white/[0.04] to-transparent border border-white/[0.06] p-5 sm:p-6 flex flex-col"
+            className="lg:col-span-4 lg:row-span-2 rounded-2xl bg-gradient-to-br from-white/[0.04] to-transparent border border-white/[0.06] p-2 sm:p-6 flex flex-col"
           >
             <AnimatePresence mode="wait">
               <motion.div
@@ -638,17 +638,17 @@ export function CalendarPage() {
               >
                 {selectedDay ? (
                   <>
-                    <div className="mb-4">
-                      <h3 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+                    <div className="mb-3 sm:mb-4">
+                      <h3 className="text-xl sm:text-3xl font-bold text-white tracking-tight">
                         {selectedDay.toLocaleDateString('en-US', { weekday: 'long' })}
                       </h3>
-                      <p className="text-sm text-white/30 font-mono mt-1">
+                      <p className="text-xs sm:text-sm text-white/30 font-mono mt-1">
                         {selectedDay.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                       </p>
                     </div>
 
                     {selectedDayPosts.length > 0 ? (
-                      <div className="flex-1 space-y-3 overflow-y-auto max-h-[400px] pr-1 custom-scrollbar">
+                      <div className="flex-1 space-y-2 sm:space-y-3 overflow-y-auto max-h-[300px] sm:max-h-[400px] pr-1 custom-scrollbar">
                         {selectedDayPosts.map((post, i) => (
                           <motion.div
                             key={post.id}
@@ -661,25 +661,25 @@ export function CalendarPage() {
                               borderColor: `${platformColors[post.platform].primary}30`
                             }}
                           >
-                            <div className="px-4 py-3 flex items-center justify-between border-b border-white/[0.04]">
-                              <div className="flex items-center gap-3">
+                            <div className="px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-between border-b border-white/[0.04]">
+                              <div className="flex items-center gap-2 sm:gap-3">
                                 <span
                                   className="w-2 h-2 rounded-full"
                                   style={{ background: platformColors[post.platform].primary }}
                                 />
-                                <span className="text-sm font-semibold text-white/90">{post.platform}</span>
-                                <span className="text-xs text-white/40 font-mono">{formatTime(post.scheduledFor!)}</span>
+                                <span className="text-xs sm:text-sm font-semibold text-white/90">{post.platform}</span>
+                                <span className="text-[10px] sm:text-xs text-white/40 font-mono">{formatTime(post.scheduledFor!)}</span>
                               </div>
-                              <span className="text-[10px] text-white/30 truncate max-w-[80px]">{getBrandName(post.brandId)}</span>
+                              <span className="text-[9px] sm:text-[10px] text-white/30 truncate max-w-[60px] sm:max-w-[80px]">{getBrandName(post.brandId)}</span>
                             </div>
-                            <div className="px-4 py-3">
-                              <p className="text-sm text-white/60 leading-relaxed line-clamp-3">{post.content}</p>
+                            <div className="px-3 sm:px-4 py-2 sm:py-3">
+                              <p className="text-xs sm:text-sm text-white/60 leading-relaxed line-clamp-2 sm:line-clamp-3">{post.content}</p>
                             </div>
-                            <div className="px-4 py-3 flex gap-2 border-t border-white/[0.04]">
+                            <div className="px-3 sm:px-4 py-2 sm:py-3 flex gap-1.5 sm:gap-2 border-t border-white/[0.04]">
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className="flex-1 bg-white/5 hover:bg-white/10 text-white/70 text-xs h-8"
+                                className="flex-1 bg-white/5 hover:bg-white/10 text-white/70 text-[10px] sm:text-xs h-7 sm:h-8"
                                 onClick={() => handleCopy(post)}
                               >
                                 {copiedId === post.id ? 'Copied!' : 'Copy'}
@@ -687,7 +687,7 @@ export function CalendarPage() {
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className="text-red-400/70 hover:text-red-400 hover:bg-red-500/10 text-xs h-8 px-3"
+                                className="text-red-400/70 hover:text-red-400 hover:bg-red-500/10 text-[10px] sm:text-xs h-7 sm:h-8 px-2 sm:px-3"
                                 onClick={() => deletePost(post.id)}
                               >
                                 Delete
@@ -697,16 +697,16 @@ export function CalendarPage() {
                         ))}
                       </div>
                     ) : (
-                      <div className="flex-1 flex flex-col items-center justify-center text-center py-8">
-                        <div className="w-16 h-16 rounded-2xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center mb-4">
-                          <span className="text-2xl opacity-30">📅</span>
+                      <div className="flex-1 flex flex-col items-center justify-center text-center py-6 sm:py-8">
+                        <div className="w-12 sm:w-16 h-12 sm:h-16 rounded-xl sm:rounded-2xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-center mb-3 sm:mb-4">
+                          <span className="text-xl sm:text-2xl opacity-30">📅</span>
                         </div>
-                        <p className="text-white/30 text-sm mb-1">No posts scheduled</p>
-                        <p className="text-white/20 text-xs">Click below to create one</p>
+                        <p className="text-white/30 text-xs sm:text-sm mb-1">No posts scheduled</p>
+                        <p className="text-white/20 text-[10px] sm:text-xs">Click below to create one</p>
                       </div>
                     )}
 
-                    <Button asChild className="w-full mt-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-bold shadow-lg shadow-amber-500/20 text-sm h-11">
+                    <Button asChild className="w-full mt-3 sm:mt-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-bold shadow-lg shadow-amber-500/20 text-xs sm:text-sm h-9 sm:h-11">
                       <Link to="/dashboard">Schedule Post</Link>
                     </Button>
                   </>
@@ -724,14 +724,14 @@ export function CalendarPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="hidden lg:block lg:col-span-8 rounded-2xl bg-gradient-to-br from-white/[0.04] to-transparent border border-white/[0.06] p-5 sm:p-6"
+            className="col-span-full lg:col-span-8 rounded-2xl bg-gradient-to-br from-white/[0.04] to-transparent border border-white/[0.06] p-2 sm:p-6"
           >
-            <h3 className="text-xs font-semibold text-white/30 tracking-[0.2em] uppercase mb-5">Optimal Posting Times</h3>
-            <div className="grid grid-cols-5 gap-4">
+            <h3 className="text-[10px] sm:text-xs font-semibold text-white/30 tracking-[0.2em] uppercase mb-3 sm:mb-5">Optimal Posting Times</h3>
+            <div className="flex lg:grid lg:grid-cols-5 gap-3 sm:gap-4 overflow-x-auto pb-2 -mx-1 px-1 lg:mx-0 lg:px-0 lg:overflow-visible scrollbar-hide">
               {(Object.entries(OPTIMAL_TIMES) as [Platform, typeof OPTIMAL_TIMES[Platform]][]).map(([platform, data]) => (
                 <div
                   key={platform}
-                  className={`rounded-xl p-4 transition-all border ${
+                  className={`rounded-xl p-3 sm:p-4 transition-all border min-w-[140px] lg:min-w-0 flex-shrink-0 lg:flex-shrink ${
                     selectedPlatform !== 'all' && selectedPlatform !== platform
                       ? 'opacity-30'
                       : ''
@@ -746,12 +746,12 @@ export function CalendarPage() {
                       className="w-2 h-2 rounded-full"
                       style={{ background: platformColors[platform].primary }}
                     />
-                    <span className="text-xs font-bold text-white/90">{platform}</span>
+                    <span className="text-[10px] sm:text-xs font-bold text-white/90">{platform}</span>
                   </div>
-                  <p className="text-[10px] text-white/40 mb-3 leading-relaxed">{data.description}</p>
+                  <p className="text-[9px] sm:text-[10px] text-white/40 mb-2 sm:mb-3 leading-relaxed line-clamp-2">{data.description}</p>
                   <div className="flex flex-wrap gap-1">
                     {data.times.slice(0, 3).map(time => (
-                      <span key={time} className="text-[9px] px-1.5 py-0.5 rounded bg-black/20 text-white/50 font-mono">
+                      <span key={time} className="text-[8px] sm:text-[9px] px-1.5 py-0.5 rounded bg-black/20 text-white/50 font-mono">
                         {time}
                       </span>
                     ))}
