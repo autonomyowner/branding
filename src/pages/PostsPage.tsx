@@ -65,12 +65,25 @@ export function PostsPage() {
 
   const handleOpenScheduleModal = (post: Post) => {
     setPostToSchedule(post)
-    setScheduledDateTime(post.scheduledFor ? new Date(post.scheduledFor) : null)
+    // If post is already scheduled, use that time. Otherwise, default to tomorrow at 9 AM
+    if (post.scheduledFor) {
+      setScheduledDateTime(new Date(post.scheduledFor))
+    } else {
+      const tomorrow = new Date()
+      tomorrow.setDate(tomorrow.getDate() + 1)
+      tomorrow.setHours(9, 0, 0, 0)
+      setScheduledDateTime(tomorrow)
+    }
     setScheduleModalOpen(true)
   }
 
   const handleSchedulePost = async () => {
-    if (!postToSchedule || !scheduledDateTime) return
+    if (!postToSchedule || !scheduledDateTime) {
+      console.log('Cannot schedule: missing post or datetime', { postToSchedule, scheduledDateTime })
+      return
+    }
+
+    console.log('Scheduling post:', { postId: postToSchedule.id, scheduledFor: scheduledDateTime })
 
     try {
       await updatePost(postToSchedule.id, {
@@ -82,6 +95,7 @@ export function PostsPage() {
       setScheduledDateTime(null)
     } catch (error) {
       console.error('Failed to schedule post:', error)
+      alert('Failed to schedule post. Please try again.')
     }
   }
 
@@ -359,18 +373,25 @@ export function PostsPage() {
                 <Button
                   onClick={handleSchedulePost}
                   disabled={!scheduledDateTime}
-                  className="flex-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-bold"
+                  className="flex-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-bold disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation"
+                  type="button"
                 >
                   {postToSchedule?.status === 'scheduled' ? 'Update Schedule' : 'Schedule Post'}
                 </Button>
                 <Button
                   variant="outline"
                   onClick={handleCloseScheduleModal}
-                  className="px-4 sm:px-6"
+                  className="px-4 sm:px-6 touch-manipulation"
+                  type="button"
                 >
                   Cancel
                 </Button>
               </div>
+              {!scheduledDateTime && (
+                <div className="px-4 sm:px-6 pb-4 text-xs text-amber-400 text-center">
+                  Please select a date and time to schedule this post
+                </div>
+              )}
             </motion.div>
           </div>
         )}
