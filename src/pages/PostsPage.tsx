@@ -1,13 +1,15 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import { useTranslation } from "react-i18next"
-import { useData } from "../context/DataContext"
+import { UserButton, SignedIn, SignedOut, SignInButton } from "@clerk/clerk-react"
+import { useData, type Post } from "../context/DataContext"
 import { Card } from "../components/ui/card"
 import { Badge } from "../components/ui/badge"
 import { Button } from "../components/ui/button"
 import { Logo } from "../components/ui/Logo"
 import { MobileNav } from "../components/dashboard/MobileNav"
+import { DateTimePicker } from "../components/ui/calendar"
 
 const platformColors: Record<string, string> = {
   Instagram: "bg-pink-500/10 text-pink-400 border-pink-500/20",
@@ -32,6 +34,9 @@ export function PostsPage() {
   const [filterStatus, setFilterStatus] = useState<FilterStatus>('all')
   const [filterPlatform, setFilterPlatform] = useState<FilterPlatform>('all')
   const [expandedPost, setExpandedPost] = useState<string | null>(null)
+  const [scheduleModalOpen, setScheduleModalOpen] = useState(false)
+  const [postToSchedule, setPostToSchedule] = useState<Post | null>(null)
+  const [scheduledDateTime, setScheduledDateTime] = useState<Date | null>(null)
 
   const filteredPosts = posts.filter(post => {
     if (filterStatus !== 'all' && post.status !== filterStatus) return false
@@ -58,6 +63,34 @@ export function PostsPage() {
     navigator.clipboard.writeText(content)
   }
 
+  const handleOpenScheduleModal = (post: Post) => {
+    setPostToSchedule(post)
+    setScheduledDateTime(post.scheduledFor ? new Date(post.scheduledFor) : null)
+    setScheduleModalOpen(true)
+  }
+
+  const handleSchedulePost = async () => {
+    if (!postToSchedule || !scheduledDateTime) return
+
+    try {
+      await updatePost(postToSchedule.id, {
+        status: 'scheduled',
+        scheduledFor: scheduledDateTime.getTime()
+      })
+      setScheduleModalOpen(false)
+      setPostToSchedule(null)
+      setScheduledDateTime(null)
+    } catch (error) {
+      console.error('Failed to schedule post:', error)
+    }
+  }
+
+  const handleCloseScheduleModal = () => {
+    setScheduleModalOpen(false)
+    setPostToSchedule(null)
+    setScheduledDateTime(null)
+  }
+
   const formatDate = (timestamp: number) => {
     return new Date(timestamp).toLocaleDateString('en-US', {
       month: 'short',
@@ -80,6 +113,16 @@ export function PostsPage() {
               <Link to="/posts" className="text-sm text-white font-medium">{t('nav.posts')}</Link>
               <Link to="/calendar" className="text-sm text-muted-foreground hover:text-white transition-colors">{t('nav.calendar')}</Link>
             </nav>
+          </div>
+          <div className="flex items-center gap-2 sm:gap-4">
+            <SignedIn>
+              <UserButton afterSignOutUrl="/" />
+            </SignedIn>
+            <SignedOut>
+              <SignInButton mode="modal">
+                <Button variant="outline" size="sm" className="text-xs sm:text-sm px-2 sm:px-4">Sign In</Button>
+              </SignInButton>
+            </SignedOut>
           </div>
         </div>
       </header>
@@ -224,6 +267,16 @@ export function PostsPage() {
                     >
                       Copy
                     </Button>
+                    {(post.status === 'draft' || post.status === 'scheduled') && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-[10px] sm:text-xs h-6 sm:h-8 px-1.5 sm:px-3 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 hover:border-amber-500/50"
+                        onClick={() => handleOpenScheduleModal(post)}
+                      >
+                        {post.status === 'scheduled' ? 'Reschedule' : 'Schedule'}
+                      </Button>
+                    )}
                     {post.status === 'draft' && (
                       <Button
                         variant="outline"
@@ -249,6 +302,77 @@ export function PostsPage() {
           </div>
         )}
       </main>
+
+      {/* Schedule Modal */}
+      <AnimatePresence>
+        {scheduleModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              onClick={handleCloseScheduleModal}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative bg-card border border-border rounded-2xl p-4 sm:p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mb-4 sm:mb-6">
+                <h2 className="text-lg sm:text-2xl font-bold">
+                  {postToSchedule?.status === 'scheduled' ? 'Reschedule Post' : 'Schedule Post'}
+                </h2>
+                <button
+                  onClick={handleCloseScheduleModal}
+                  className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors"
+                >
+                  <span className="text-white/60 text-xl">×</span>
+                </button>
+              </div>
+
+              {postToSchedule && (
+                <div className="mb-4 sm:mb-6 p-3 sm:p-4 rounded-lg bg-background/50 border border-border">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Badge variant="outline" className={`text-xs ${platformColors[postToSchedule.platform]}`}>
+                      {postToSchedule.platform}
+                    </Badge>
+                    <span className="text-xs text-muted-foreground">
+                      {getBrandName(postToSchedule.brandId)}
+                    </span>
+                  </div>
+                  <p className="text-sm text-foreground line-clamp-3">{postToSchedule.content}</p>
+                </div>
+              )}
+
+              <DateTimePicker
+                selectedDateTime={scheduledDateTime}
+                onDateTimeSelect={setScheduledDateTime}
+                minDate={new Date()}
+              />
+
+              <div className="flex gap-2 sm:gap-3 mt-4 sm:mt-6">
+                <Button
+                  onClick={handleSchedulePost}
+                  disabled={!scheduledDateTime}
+                  className="flex-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-bold"
+                >
+                  {postToSchedule?.status === 'scheduled' ? 'Update Schedule' : 'Schedule Post'}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleCloseScheduleModal}
+                  className="px-4 sm:px-6"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* Mobile Navigation */}
       <MobileNav />
