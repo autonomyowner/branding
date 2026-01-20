@@ -3,7 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { useData, PLATFORMS, type Platform } from '../../context/DataContext'
 import { useSubscription } from '../../context/SubscriptionContext'
-import { api } from '../../lib/api'
+import { useAction, useQuery } from 'convex/react'
+import { useUser } from '@clerk/clerk-react'
+import { api as convexApi } from '../../../convex/_generated/api'
+import type { Id } from '../../../convex/_generated/dataModel'
 import { Button } from '../ui/button'
 import { Card } from '../ui/card'
 import { DateTimePicker } from '../ui/calendar'
@@ -33,6 +36,7 @@ function GenerateModalComponent({ isOpen, onClose, initialImageUrl }: GenerateMo
   const { canCreatePost, incrementPostCount, openUpgradeModal, getUsagePercentage, getRemainingCount } = useSubscription()
   const { trackCustomEvent: trackMetaCustomEvent } = useMetaPixel()
   const { trackEvent: trackGA4Event } = useGA4()
+  const { user: clerkUser } = useUser()
   const [selectedPlatform, setSelectedPlatform] = useState<Platform>('Instagram')
   const [selectedStyle, setSelectedStyle] = useState<ContentStyle>('viral')
   const [topic, setTopic] = useState('')
@@ -41,9 +45,12 @@ function GenerateModalComponent({ isOpen, onClose, initialImageUrl }: GenerateMo
   const [error, setError] = useState('')
   const [step, setStep] = useState<'configure' | 'result' | 'schedule'>('configure')
   const [scheduledDateTime, setScheduledDateTime] = useState<Date | null>(null)
-  const [availableModels, setAvailableModels] = useState<Array<{ value: string; label: string }>>([])
   const [selectedModel, setSelectedModel] = useState('anthropic/claude-3-haiku')
   const [attachedImageUrl, setAttachedImageUrl] = useState<string | undefined>(undefined)
+
+  // Convex hooks
+  const availableModels = useQuery(convexApi.ai.getModels) || []
+  const generateContentAction = useAction(convexApi.ai.generateContent)
 
   // Set attached image from initial prop when modal opens
   useEffect(() => {
@@ -54,17 +61,24 @@ function GenerateModalComponent({ isOpen, onClose, initialImageUrl }: GenerateMo
 
   const selectedBrand = brands.find(b => b.id === selectedBrandId) || brands[0]
 
-  // Load available models from backend
+  // Set default model when models are loaded
   useEffect(() => {
-    if (isOpen) {
-      api.getAIModels().then(models => {
-        setAvailableModels(models)
-        if (models.length > 0 && !models.find(m => m.value === selectedModel)) {
-          setSelectedModel(models[0].value)
-        }
-      }).catch(console.error)
+    if (availableModels.length > 0 && !availableModels.find(m => m.value === selectedModel)) {
+      setSelectedModel(availableModels[0].value)
     }
-  }, [isOpen])
+  }, [availableModels, selectedModel])
+
+  // Platform mapping for Convex (uppercase)
+  const platformToBackend = (p: Platform): 'INSTAGRAM' | 'TWITTER' | 'LINKEDIN' | 'TIKTOK' | 'FACEBOOK' => {
+    const map: Record<Platform, 'INSTAGRAM' | 'TWITTER' | 'LINKEDIN' | 'TIKTOK' | 'FACEBOOK'> = {
+      'Instagram': 'INSTAGRAM',
+      'Twitter': 'TWITTER',
+      'LinkedIn': 'LINKEDIN',
+      'TikTok': 'TIKTOK',
+      'Facebook': 'FACEBOOK'
+    }
+    return map[p]
+  }
 
   const handleGenerate = async () => {
     // Check post limit before generating
@@ -83,12 +97,13 @@ function GenerateModalComponent({ isOpen, onClose, initialImageUrl }: GenerateMo
     setError('')
 
     try {
-      const result = await api.generateContent({
-        brandId: selectedBrand.id,
-        platform: selectedPlatform,
+      const result = await generateContentAction({
+        brandId: selectedBrand.id as Id<"brands">,
+        platform: platformToBackend(selectedPlatform),
         topic: topic || undefined,
         style: selectedStyle,
-        model: selectedModel
+        model: selectedModel,
+        clerkId: clerkUser?.id, // Pass clerkId for auth fallback
       })
       setGeneratedContent(result.content)
       setStep('result')

@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
-import { api } from '../lib/api'
+import { useAction } from 'convex/react'
+import { api as convexApi } from '../../convex/_generated/api'
 import { Navbar } from '../components/Navbar'
 import { Card } from '../components/ui/card'
 import { Badge } from '../components/ui/badge'
@@ -8,11 +9,21 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, BarChart, Ba
 
 type Tab = 'overview' | 'users' | 'emails'
 
+// Local storage key for admin token
+const ADMIN_TOKEN_KEY = 'postaify_admin_token'
+
 export function AdminPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [adminToken, setAdminToken] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<Tab>('overview')
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
+
+  // Convex actions
+  const loginAction = useAction(convexApi.admin.login)
+  const getStatsAction = useAction(convexApi.admin.getStats)
+  const getUsersAction = useAction(convexApi.admin.getUsers)
+  const getEmailCapturesAction = useAction(convexApi.admin.getEmailCaptures)
 
   // Login state
   const [username, setUsername] = useState('')
@@ -33,17 +44,55 @@ export function AdminPage() {
   const [emailsPage, setEmailsPage] = useState(1)
   const [emailsPagination, setEmailsPagination] = useState<any>(null)
 
+  const loadData = useCallback(async (token: string) => {
+    setIsLoading(true)
+    setError('')
+
+    try {
+      if (activeTab === 'overview') {
+        const data = await getStatsAction({ token })
+        setStats(data)
+      } else if (activeTab === 'users') {
+        const data = await getUsersAction({ token, page: usersPage, limit: 50 })
+        setUsers(data.users)
+        setUsersPagination(data.pagination)
+      } else if (activeTab === 'emails') {
+        const data = await getEmailCapturesAction({ token, page: emailsPage, limit: 50 })
+        setEmailCaptures(data.captures)
+        setEmailsPagination(data.pagination)
+      }
+    } catch (err: any) {
+      if (err.message.includes('Access denied')) {
+        setError('Access denied. You must be an admin to view this page.')
+        // Clear invalid token
+        localStorage.removeItem(ADMIN_TOKEN_KEY)
+        setIsLoggedIn(false)
+        setAdminToken(null)
+      } else {
+        setError(err.message || 'Failed to load data')
+      }
+    } finally {
+      setIsLoading(false)
+    }
+  }, [activeTab, usersPage, emailsPage, getStatsAction, getUsersAction, getEmailCapturesAction])
+
   useEffect(() => {
     // Check if already logged in
-    const loggedIn = api.isAdminLoggedIn()
-    setIsLoggedIn(loggedIn)
-
-    if (loggedIn) {
-      loadData()
+    const storedToken = localStorage.getItem(ADMIN_TOKEN_KEY)
+    if (storedToken) {
+      setIsLoggedIn(true)
+      setAdminToken(storedToken)
+      loadData(storedToken)
     } else {
       setIsLoading(false)
     }
-  }, [activeTab, usersPage, emailsPage])
+  }, [])
+
+  useEffect(() => {
+    if (adminToken) {
+      loadData(adminToken)
+    }
+  }, [activeTab, usersPage, emailsPage, adminToken, loadData])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -51,10 +100,12 @@ export function AdminPage() {
     setIsLoggingIn(true)
 
     try {
-      await api.adminLogin(username, password)
+      const result = await loginAction({ username, password })
+      localStorage.setItem(ADMIN_TOKEN_KEY, result.token)
+      setAdminToken(result.token)
       setIsLoggedIn(true)
       setPassword('')
-      loadData()
+      loadData(result.token)
     } catch (err: any) {
       setLoginError(err.message || 'Invalid username or password')
     } finally {
@@ -63,38 +114,11 @@ export function AdminPage() {
   }
 
   const handleLogout = () => {
-    api.adminLogout()
+    localStorage.removeItem(ADMIN_TOKEN_KEY)
     setIsLoggedIn(false)
+    setAdminToken(null)
     setUsername('')
     setPassword('')
-  }
-
-  const loadData = async () => {
-    setIsLoading(true)
-    setError('')
-
-    try {
-      if (activeTab === 'overview') {
-        const data = await api.getAdminStats()
-        setStats(data)
-      } else if (activeTab === 'users') {
-        const data = await api.getAdminUsers(usersPage, 50)
-        setUsers(data.users)
-        setUsersPagination(data.pagination)
-      } else if (activeTab === 'emails') {
-        const data = await api.getAdminEmailCaptures(emailsPage, 50)
-        setEmailCaptures(data.captures)
-        setEmailsPagination(data.pagination)
-      }
-    } catch (err: any) {
-      if (err.message.includes('Access denied')) {
-        setError('Access denied. You must be an admin to view this page.')
-      } else {
-        setError(err.message || 'Failed to load data')
-      }
-    } finally {
-      setIsLoading(false)
-    }
   }
 
   // Show login form if not logged in

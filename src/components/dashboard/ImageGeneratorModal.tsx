@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback, useMemo, memo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useSubscription } from '../../context/SubscriptionContext'
-import { api } from '../../lib/api'
+import { useQuery, useAction } from 'convex/react'
+import { useUser } from '@clerk/clerk-react'
+import { api as convexApi } from '../../../convex/_generated/api'
 import { Button } from '../ui/button'
 import { Card } from '../ui/card'
 
@@ -30,6 +32,11 @@ const ASPECT_RATIOS = [
 
 function ImageGeneratorModalComponent({ isOpen, onClose, onCreatePost }: ImageGeneratorModalProps) {
   const { canUseFeature, openUpgradeModal } = useSubscription()
+  const { user: clerkUser } = useUser()
+
+  // Convex hooks
+  const availableModels = useQuery(convexApi.images.getModels) || []
+  const generateImageAction = useAction(convexApi.imagesAction.generate)
 
   const [prompt, setPrompt] = useState('')
   const [selectedModel, setSelectedModel] = useState('fal-ai/flux/schnell')
@@ -39,21 +46,15 @@ function ImageGeneratorModalComponent({ isOpen, onClose, onCreatePost }: ImageGe
   const [isGenerating, setIsGenerating] = useState(false)
   const [error, setError] = useState('')
   const [step, setStep] = useState<'configure' | 'result'>('configure')
-  const [availableModels, setAvailableModels] = useState<Array<{ id: string; name: string; speed: string }>>([])
 
   const hasAccess = canUseFeature('image')
 
-  // Load available models
+  // Set default model when models are loaded
   useEffect(() => {
-    if (isOpen && hasAccess) {
-      api.getImageModels().then(models => {
-        setAvailableModels(models)
-        if (models.length > 0 && !models.find(m => m.id === selectedModel)) {
-          setSelectedModel(models[0].id)
-        }
-      }).catch(console.error)
+    if (availableModels.length > 0 && !availableModels.find(m => m.id === selectedModel)) {
+      setSelectedModel(availableModels[0].id)
     }
-  }, [isOpen, hasAccess])
+  }, [availableModels, selectedModel])
 
   const handleGenerate = async () => {
     if (!hasAccess) {
@@ -71,11 +72,12 @@ function ImageGeneratorModalComponent({ isOpen, onClose, onCreatePost }: ImageGe
     setError('')
 
     try {
-      const result = await api.generateImage({
+      const result = await generateImageAction({
         prompt,
         model: selectedModel,
         aspectRatio: selectedAspectRatio,
-        style: selectedStyle !== 'none' ? selectedStyle : undefined
+        style: selectedStyle !== 'none' ? selectedStyle : undefined,
+        clerkId: clerkUser?.id, // Pass clerkId for auth fallback
       })
       setGeneratedImageUrl(result.url)
       setStep('result')

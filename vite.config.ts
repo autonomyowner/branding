@@ -9,6 +9,8 @@ export default defineConfig({
     target: 'es2015',
     cssCodeSplit: true,
     minify: 'esbuild',
+    // Enable source maps for debugging (disable in production if needed)
+    sourcemap: false,
     rollupOptions: {
       output: {
         manualChunks: {
@@ -16,15 +18,29 @@ export default defineConfig({
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
           'animation-vendor': ['framer-motion'],
           'i18n-vendor': ['i18next', 'react-i18next', 'i18next-browser-languagedetector'],
-          'ui-vendor': ['@radix-ui/react-accordion', '@radix-ui/react-slot']
-        }
+          'ui-vendor': ['@radix-ui/react-accordion', '@radix-ui/react-slot'],
+          'clerk-vendor': ['@clerk/clerk-react']
+        },
+        // Optimize asset file names for caching
+        assetFileNames: 'assets/[name]-[hash][extname]',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        entryFileNames: 'assets/[name]-[hash].js'
       }
     },
     // Optimize chunk size
-    chunkSizeWarningLimit: 600
+    chunkSizeWarningLimit: 600,
+    // Enable CSS minification
+    cssMinify: true
   },
   // Optimize dependencies pre-bundling
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-router-dom', 'framer-motion']
+  },
+  // Server optimization for development
+  server: {
+    // Enable pre-bundling
+    warmup: {
+      clientFiles: ['./src/pages/LandingPage.tsx', './src/pages/AdLandingPage.tsx']
+    }
   }
 })

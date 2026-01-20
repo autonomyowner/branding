@@ -1,6 +1,8 @@
-import { createContext, useContext, type ReactNode, useCallback, useState, useEffect, useRef } from 'react'
-import { useAuth } from '@clerk/clerk-react'
-import { api, invalidateCache } from '../lib/api'
+import { createContext, useContext, type ReactNode, useCallback, useState, useMemo, useEffect } from 'react'
+import { useQuery, useMutation } from 'convex/react'
+import { useUser } from '@clerk/clerk-react'
+import { api } from '../../convex/_generated/api'
+import type { Id } from '../../convex/_generated/dataModel'
 
 // Types
 export interface Brand {
@@ -83,213 +85,275 @@ interface DataContextType {
   // Stats
   getStats: () => Stats
 
-  // Refresh data
+  // Refresh data (no-op in Convex - data is real-time)
   refreshData: () => Promise<void>
 }
 
 const DataContext = createContext<DataContextType | null>(null)
 
+// Helper to convert platform case
+const platformToBackend = (p: Platform): 'INSTAGRAM' | 'TWITTER' | 'LINKEDIN' | 'TIKTOK' | 'FACEBOOK' => {
+  const map: Record<Platform, 'INSTAGRAM' | 'TWITTER' | 'LINKEDIN' | 'TIKTOK' | 'FACEBOOK'> = {
+    'Instagram': 'INSTAGRAM',
+    'Twitter': 'TWITTER',
+    'LinkedIn': 'LINKEDIN',
+    'TikTok': 'TIKTOK',
+    'Facebook': 'FACEBOOK'
+  }
+  return map[p]
+}
+
+const platformFromBackend = (p: string): Platform => {
+  const map: Record<string, Platform> = {
+    'INSTAGRAM': 'Instagram',
+    'TWITTER': 'Twitter',
+    'LINKEDIN': 'LinkedIn',
+    'TIKTOK': 'TikTok',
+    'FACEBOOK': 'Facebook'
+  }
+  return map[p] || p as Platform
+}
+
+const statusToBackend = (s: string): 'DRAFT' | 'SCHEDULED' | 'PUBLISHED' => {
+  return s.toUpperCase() as 'DRAFT' | 'SCHEDULED' | 'PUBLISHED'
+}
+
+const statusFromBackend = (s: string): 'draft' | 'scheduled' | 'published' => {
+  return s.toLowerCase() as 'draft' | 'scheduled' | 'published'
+}
+
 export function DataProvider({ children }: { children: ReactNode }) {
-  const { getToken, isSignedIn, isLoaded, userId } = useAuth()
-
-  const [user, setUser] = useState<UserProfile | null>(null)
-  const [brands, setBrands] = useState<Brand[]>([])
-  const [posts, setPosts] = useState<Post[]>([])
   const [selectedBrandId, setSelectedBrandId] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [userSynced, setUserSynced] = useState(false)
 
-  // Track previous user ID to detect user changes
-  const prevUserIdRef = useRef<string | null | undefined>(undefined)
+  // Get Clerk user
+  const { user: clerkUser, isLoaded: clerkLoaded } = useUser()
+  const clerkId = clerkUser?.id
 
-  // Clear all data and cache when user changes (sign out or different user signs in)
+  // Sync user mutation
+  const syncUserMutation = useMutation(api.users.syncUser)
+
+  // Sync user on load
   useEffect(() => {
-    // Always clear cache when userId changes (including first load)
-    if (prevUserIdRef.current !== userId) {
-      invalidateCache() // Clear API cache
-
-      // Only clear state if we had a previous user (not first load)
-      if (prevUserIdRef.current !== undefined) {
-        setUser(null)
-        setBrands([])
-        setPosts([])
-        setSelectedBrandId(null)
-      }
+    if (clerkLoaded && clerkUser && !userSynced) {
+      syncUserMutation({
+        clerkId: clerkUser.id,
+        email: clerkUser.primaryEmailAddress?.emailAddress || '',
+        name: clerkUser.fullName || undefined,
+        avatarUrl: clerkUser.imageUrl || undefined,
+      }).then(() => {
+        setUserSynced(true)
+      }).catch(console.error)
     }
-    prevUserIdRef.current = userId
-  }, [userId])
+  }, [clerkLoaded, clerkUser, userSynced, syncUserMutation])
 
-  // Set up API token getter
-  useEffect(() => {
-    api.setTokenGetter(async () => {
-      try {
-        return await getToken()
-      } catch {
-        return null
-      }
-    })
-  }, [getToken])
+  // Convex queries - pass clerkId as fallback
+  const userData = useQuery(api.users.getByClerkId, clerkId ? { clerkId } : "skip")
+  const brandsData = useQuery(api.brands.list, clerkId ? { clerkId } : "skip")
+  const postsData = useQuery(api.posts.list, clerkId ? { clerkId, limit: 1000 } : "skip")
 
-  // Load data when signed in
-  const refreshData = useCallback(async () => {
-    if (!isSignedIn) {
-      setUser(null)
-      setBrands([])
-      setPosts([])
-      setIsLoading(false)
-      return
+  // Convex mutations
+  const createBrandMutation = useMutation(api.brands.create)
+  const updateBrandMutation = useMutation(api.brands.update)
+  const deleteBrandMutation = useMutation(api.brands.remove)
+  const createPostMutation = useMutation(api.posts.create)
+  const updatePostMutation = useMutation(api.posts.update)
+  const deletePostMutation = useMutation(api.posts.remove)
+
+  // Determine loading state
+  const isLoading = userData === undefined || brandsData === undefined || postsData === undefined
+
+  // Transform user data
+  const user: UserProfile | null = useMemo(() => {
+    if (!userData) return null
+    return {
+      id: userData._id,
+      email: userData.email,
+      name: userData.name ?? null,
+      avatarUrl: userData.avatarUrl ?? null,
+      plan: userData.plan
     }
+  }, [userData])
 
-    setIsLoading(true)
-    setError(null)
+  // Transform brands data
+  const brands: Brand[] = useMemo(() => {
+    if (!brandsData) return []
+    return brandsData.map(b => ({
+      id: b._id,
+      name: b.name,
+      color: b.color,
+      initials: b.initials,
+      voice: b.voice,
+      topics: b.topics,
+      description: b.description || '',
+      createdAt: b._creationTime,
+      postCount: b.postCount
+    }))
+  }, [brandsData])
 
+  // Transform posts data
+  const posts: Post[] = useMemo(() => {
+    if (!postsData?.posts) return []
+    return postsData.posts.map(p => ({
+      id: p._id,
+      brandId: p.brand?._id || '',
+      platform: platformFromBackend(p.platform),
+      content: p.content,
+      imageUrl: p.imageUrl ?? undefined,
+      voiceUrl: p.voiceUrl ?? undefined,
+      status: statusFromBackend(p.status),
+      scheduledFor: p.scheduledFor ? new Date(p.scheduledFor).toISOString() : undefined,
+      createdAt: p._creationTime,
+      publishedAt: p.publishedAt,
+      brand: p.brand ? {
+        id: p.brand._id,
+        name: p.brand.name,
+        color: p.brand.color,
+        initials: p.brand.initials
+      } : undefined
+    }))
+  }, [postsData])
+
+  // Auto-select first brand if none selected
+  useMemo(() => {
+    if (brands.length > 0 && !selectedBrandId) {
+      setSelectedBrandId(brands[0].id)
+    }
+  }, [brands, selectedBrandId])
+
+  // Brand CRUD operations
+  const addBrand = useCallback(async (brandData: Omit<Brand, 'id' | 'createdAt'>): Promise<Brand> => {
     try {
-      // Fetch user, brands, and posts in parallel
-      // Fetch more posts to ensure all scheduled posts appear in calendar
-      const [userData, brandsData, postsData] = await Promise.all([
-        api.getMe(),
-        api.getBrands(),
-        api.getPosts({ limit: 1000 })
-      ])
-
-      setUser({
-        id: userData.id,
-        email: userData.email,
-        name: userData.name,
-        avatarUrl: userData.avatarUrl,
-        plan: userData.plan
+      setError(null)
+      const brandId = await createBrandMutation({
+        name: brandData.name,
+        description: brandData.description || undefined,
+        color: brandData.color,
+        initials: brandData.initials,
+        voice: brandData.voice,
+        topics: brandData.topics,
+        clerkId: clerkId || undefined,
       })
 
-      setBrands(brandsData.map(b => ({
-        id: b.id,
-        name: b.name,
-        color: b.color,
-        initials: b.initials,
-        voice: b.voice,
-        topics: b.topics,
-        description: b.description || '',
-        createdAt: new Date(b.createdAt).getTime(),
-        postCount: b.postCount
-      })))
-
-      // Helper to normalize platform case from backend (INSTAGRAM -> Instagram)
-      const normalizePlatform = (p: string): Platform => {
-        const platformMap: Record<string, Platform> = {
-          'INSTAGRAM': 'Instagram',
-          'TWITTER': 'Twitter',
-          'LINKEDIN': 'LinkedIn',
-          'TIKTOK': 'TikTok',
-          'FACEBOOK': 'Facebook'
-        }
-        return platformMap[p.toUpperCase()] || p as Platform
-      }
-
-      setPosts(postsData.posts.map(p => ({
-        id: p.id,
-        brandId: p.brand.id,
-        platform: normalizePlatform(p.platform),
-        content: p.content,
-        imageUrl: p.imageUrl || undefined,
-        voiceUrl: p.voiceUrl || undefined,
-        status: p.status.toLowerCase() as 'draft' | 'scheduled' | 'published',
-        scheduledFor: p.scheduledFor || undefined,
-        createdAt: new Date(p.createdAt).getTime(),
-        publishedAt: p.publishedAt ? new Date(p.publishedAt).getTime() : undefined,
-        brand: p.brand
-      })))
-
-      // Select first brand if none selected (use functional update to avoid race condition)
-      if (brandsData.length > 0) {
-        setSelectedBrandId(currentId => currentId ?? brandsData[0].id)
+      // Return a temporary brand object - the real one will come from the query
+      return {
+        ...brandData,
+        id: brandId,
+        createdAt: Date.now()
       }
     } catch (err) {
-      console.error('Failed to load data:', err)
-      setError(err instanceof Error ? err.message : 'Failed to load data')
-    } finally {
-      setIsLoading(false)
+      const message = err instanceof Error ? err.message : 'Failed to create brand'
+      setError(message)
+      throw err
     }
-  }, [isSignedIn])
-
-  // Load data on mount and when auth changes
-  useEffect(() => {
-    if (isLoaded) {
-      refreshData()
-    }
-  }, [isLoaded, isSignedIn, refreshData])
-
-  const addBrand = useCallback(async (brandData: Omit<Brand, 'id' | 'createdAt'>): Promise<Brand> => {
-    const result = await api.createBrand({
-      name: brandData.name,
-      description: brandData.description,
-      color: brandData.color,
-      initials: brandData.initials,
-      voice: brandData.voice,
-      topics: brandData.topics
-    }) as { id: string; createdAt: string }
-
-    const newBrand: Brand = {
-      ...brandData,
-      id: result.id,
-      createdAt: new Date(result.createdAt).getTime()
-    }
-    setBrands(prev => [...prev, newBrand])
-    return newBrand
-  }, [])
+  }, [createBrandMutation, clerkId])
 
   const updateBrand = useCallback(async (id: string, updates: Partial<Brand>) => {
-    await api.updateBrand(id, updates)
-    setBrands(prev => prev.map(b => b.id === id ? { ...b, ...updates } : b))
-  }, [])
+    try {
+      setError(null)
+      await updateBrandMutation({
+        id: id as Id<"brands">,
+        name: updates.name,
+        description: updates.description,
+        color: updates.color,
+        initials: updates.initials,
+        voice: updates.voice,
+        topics: updates.topics
+      })
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to update brand'
+      setError(message)
+      throw err
+    }
+  }, [updateBrandMutation])
 
   const deleteBrand = useCallback(async (id: string) => {
-    await api.deleteBrand(id)
-    setBrands(prev => {
-      const remaining = prev.filter(b => b.id !== id)
-      // Use functional update for selectedBrandId to avoid race condition
-      setSelectedBrandId(currentId => {
-        if (currentId === id) {
-          return remaining.length > 0 ? remaining[0].id : null
-        }
-        return currentId
-      })
-      return remaining
-    })
-  }, [])
+    try {
+      setError(null)
+      await deleteBrandMutation({ id: id as Id<"brands"> })
+
+      // If the deleted brand was selected, select another one
+      if (selectedBrandId === id) {
+        const remaining = brands.filter(b => b.id !== id)
+        setSelectedBrandId(remaining.length > 0 ? remaining[0].id : null)
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to delete brand'
+      setError(message)
+      throw err
+    }
+  }, [deleteBrandMutation, selectedBrandId, brands])
 
   const selectBrand = useCallback((id: string | null) => {
     setSelectedBrandId(id)
   }, [])
 
+  // Post CRUD operations
   const addPost = useCallback(async (postData: Omit<Post, 'id' | 'createdAt'>): Promise<Post> => {
-    const result = await api.createPost({
-      content: postData.content,
-      platform: postData.platform,
-      brandId: postData.brandId,
-      imageUrl: postData.imageUrl,
-      voiceUrl: postData.voiceUrl,
-      status: postData.status,
-      scheduledFor: postData.scheduledFor
-    }) as { id: string; createdAt: string }
+    try {
+      setError(null)
+      const postId = await createPostMutation({
+        content: postData.content,
+        platform: platformToBackend(postData.platform),
+        brandId: postData.brandId as Id<"brands">,
+        imageUrl: postData.imageUrl,
+        voiceUrl: postData.voiceUrl,
+        status: statusToBackend(postData.status),
+        scheduledFor: postData.scheduledFor ? new Date(postData.scheduledFor).getTime() : undefined,
+        clerkId: clerkId || undefined, // Pass clerkId for auth fallback
+      })
 
-    const newPost: Post = {
-      ...postData,
-      id: result.id,
-      createdAt: new Date(result.createdAt).getTime()
+      // Return a temporary post object - the real one will come from the query
+      return {
+        ...postData,
+        id: postId,
+        createdAt: Date.now()
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to create post'
+      setError(message)
+      throw err
     }
-    setPosts(prev => [newPost, ...prev])
-    return newPost
-  }, [])
+  }, [createPostMutation, clerkId])
 
   const updatePost = useCallback(async (id: string, updates: Partial<Post>) => {
-    await api.updatePost(id, updates)
-    setPosts(prev => prev.map(p => p.id === id ? { ...p, ...updates } : p))
-  }, [])
+    try {
+      setError(null)
+      await updatePostMutation({
+        id: id as Id<"posts">,
+        content: updates.content,
+        platform: updates.platform ? platformToBackend(updates.platform) : undefined,
+        imageUrl: updates.imageUrl === undefined ? undefined : (updates.imageUrl || null),
+        voiceUrl: updates.voiceUrl === undefined ? undefined : (updates.voiceUrl || null),
+        status: updates.status ? statusToBackend(updates.status) : undefined,
+        scheduledFor: updates.scheduledFor === undefined
+          ? undefined
+          : (updates.scheduledFor ? new Date(updates.scheduledFor).getTime() : null),
+        clerkId: clerkId || undefined, // Pass clerkId for auth fallback
+      })
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to update post'
+      setError(message)
+      throw err
+    }
+  }, [updatePostMutation, clerkId])
 
   const deletePost = useCallback(async (id: string) => {
-    await api.deletePost(id)
-    setPosts(prev => prev.filter(p => p.id !== id))
-  }, [])
+    try {
+      setError(null)
+      await deletePostMutation({
+        id: id as Id<"posts">,
+        clerkId: clerkId || undefined, // Pass clerkId for auth fallback
+      })
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to delete post'
+      setError(message)
+      throw err
+    }
+  }, [deletePostMutation, clerkId])
 
+  // Stats calculation
   const getStats = useCallback((): Stats => {
     return {
       postsScheduled: posts.filter(p => p.status === 'scheduled').length,
@@ -298,6 +362,12 @@ export function DataProvider({ children }: { children: ReactNode }) {
       totalPosts: posts.length
     }
   }, [posts])
+
+  // Refresh data - no-op in Convex as data is real-time
+  const refreshData = useCallback(async () => {
+    // Convex queries are automatically reactive
+    // This function exists for API compatibility
+  }, [])
 
   return (
     <DataContext.Provider value={{

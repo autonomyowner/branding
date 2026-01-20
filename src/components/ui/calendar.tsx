@@ -196,7 +196,7 @@ export function TimePicker({ selectedTime, onTimeSelect }: TimePickerProps) {
   return (
     <div className="space-y-4">
       <label className="block text-sm font-semibold text-white/60">Select Time</label>
-      <div className="space-y-4 max-h-[240px] overflow-y-auto pr-2 custom-scrollbar">
+      <div className="space-y-4 max-h-[240px] overflow-y-auto pe-2 custom-scrollbar">
         {Object.entries(groupedTimes).map(([period, times]) => (
           <div key={period}>
             <div className="text-[10px] font-semibold text-white/30 uppercase tracking-wider mb-2">{period}</div>

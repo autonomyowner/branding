@@ -84,7 +84,7 @@ export function MobileNav({ hideNav = false }: MobileNavProps) {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed bottom-4 left-4 right-4 md:hidden z-50"
+            className="fixed bottom-4 start-4 end-4 md:hidden z-50"
           >
             <div className="bg-card/95 backdrop-blur-xl border border-border rounded-2xl shadow-2xl shadow-black/20 px-2 py-2">
               <div className="flex items-center justify-around">
@@ -102,7 +102,7 @@ export function MobileNav({ hideNav = false }: MobileNavProps) {
                         }`}
                       >
                         {item.icon}
-                        <span className="text-[10px] font-medium">{item.label}</span>
+                        <span className="text-xs font-medium">{item.label}</span>
                       </Link>
                     )
                   }
@@ -118,7 +118,7 @@ export function MobileNav({ hideNav = false }: MobileNavProps) {
                       }`}
                     >
                       {item.icon}
-                      <span className="text-[10px] font-medium">{item.label}</span>
+                      <span className="text-xs font-medium">{item.label}</span>
                     </button>
                   )
                 })}

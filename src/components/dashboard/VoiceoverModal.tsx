@@ -2,7 +2,9 @@ import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { useSubscription } from '../../context/SubscriptionContext'
-import { api } from '../../lib/api'
+import { useAction } from 'convex/react'
+import { useUser } from '@clerk/clerk-react'
+import { api as convexApi } from '../../../convex/_generated/api'
 import { Button } from '../ui/button'
 import { Card } from '../ui/card'
 
@@ -38,6 +40,11 @@ type VoiceoverStyle = typeof VOICEOVER_STYLES[number]['value']
 export function VoiceoverModal({ isOpen, onClose, initialText = '' }: VoiceoverModalProps) {
   const { t } = useTranslation()
   const { canUseFeature, openUpgradeModal } = useSubscription()
+  const { user: clerkUser } = useUser()
+
+  // Convex actions
+  const getVoicesAction = useAction(convexApi.voice.getVoices)
+  const generateVoiceAction = useAction(convexApi.voice.generate)
 
   // Script state
   const [script, setScript] = useState(initialText)
@@ -98,7 +105,9 @@ export function VoiceoverModal({ isOpen, onClose, initialText = '' }: VoiceoverM
     setError('')
 
     try {
-      const fetchedVoices = await api.getVoices()
+      const fetchedVoices = await getVoicesAction({
+        clerkId: clerkUser?.id, // Pass clerkId for auth fallback
+      })
       setVoices(fetchedVoices)
       if (fetchedVoices.length > 0 && !selectedVoiceId) {
         setSelectedVoiceId(fetchedVoices[0].id)
@@ -132,10 +141,11 @@ export function VoiceoverModal({ isOpen, onClose, initialText = '' }: VoiceoverM
     setError('')
 
     try {
-      const result = await api.generateVoiceover({
+      const result = await generateVoiceAction({
         text: script,
         voiceId: selectedVoiceId,
-        style: voiceStyle
+        style: voiceStyle,
+        clerkId: clerkUser?.id, // Pass clerkId for auth fallback
       })
       setAudioUrl(result.url)
     } catch (err) {
@@ -275,7 +285,7 @@ export function VoiceoverModal({ isOpen, onClose, initialText = '' }: VoiceoverM
               </button>
             </div>
 
-            <div className="overflow-y-auto flex-1 pr-2 -mr-2">
+            <div className="overflow-y-auto flex-1 pe-2 -me-2">
               {/* Script Section */}
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-2">
@@ -395,7 +405,7 @@ export function VoiceoverModal({ isOpen, onClose, initialText = '' }: VoiceoverM
                           <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
                         </svg>
                       ) : (
-                        <svg className="w-5 h-5 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 text-white ms-1" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M8 5v14l11-7z" />
                         </svg>
                       )}

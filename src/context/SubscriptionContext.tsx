@@ -1,6 +1,7 @@
-import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from 'react'
-import { useAuth } from '@clerk/clerk-react'
-import { api } from '../lib/api'
+import { createContext, useContext, useState, useCallback, useMemo, type ReactNode } from 'react'
+import { useQuery, useAction } from 'convex/react'
+import { useUser } from '@clerk/clerk-react'
+import { api } from '../../convex/_generated/api'
 
 // Plan types
 export type PlanType = 'free' | 'pro' | 'business'
@@ -108,9 +109,9 @@ const DEFAULT_SUBSCRIPTION: SubscriptionState = {
 const SubscriptionContext = createContext<SubscriptionContextType | null>(null)
 
 export function SubscriptionProvider({ children }: { children: ReactNode }) {
-  const { isSignedIn, isLoaded, getToken } = useAuth()
-  const [subscription, setSubscription] = useState<SubscriptionState>(DEFAULT_SUBSCRIPTION)
-  const [isLoading, setIsLoading] = useState(true)
+  // Get Clerk user for auth fallback
+  const { user: clerkUser } = useUser()
+  const clerkId = clerkUser?.id
 
   // Upgrade modal state
   const [showUpgradeModal, setShowUpgradeModal] = useState(false)
@@ -121,52 +122,33 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
     return localStorage.getItem('t21-welcome-seen') === 'true'
   })
 
-  // Set up API token
-  useEffect(() => {
-    api.setTokenGetter(async () => {
-      try {
-        return await getToken()
-      } catch {
-        return null
-      }
-    })
-  }, [getToken])
+  // Convex query for user data - use getByClerkId for auth fallback
+  const userData = useQuery(api.users.getByClerkId, clerkId ? { clerkId } : "skip")
 
-  // Fetch subscription data from backend
-  const refreshSubscription = useCallback(async () => {
-    if (!isSignedIn) {
-      setSubscription({ ...DEFAULT_SUBSCRIPTION, hasSeenWelcome })
-      setIsLoading(false)
-      return
+  // Convex actions for Stripe
+  const createCheckoutAction = useAction(api.subscriptionsAction.createCheckout)
+  const createPortalAction = useAction(api.subscriptionsAction.createPortal)
+
+  // Determine loading state
+  const isLoading = userData === undefined
+
+  // Build subscription state from user data
+  const subscription: SubscriptionState = useMemo(() => {
+    if (!userData) {
+      return { ...DEFAULT_SUBSCRIPTION, hasSeenWelcome }
     }
 
-    try {
-      const userData = await api.getMe()
-      const planKey = userData.plan.toLowerCase() as PlanType
+    const planKey = userData.plan.toLowerCase() as PlanType
 
-      setSubscription({
-        plan: planKey,
-        postsThisMonth: userData.usage.postsThisMonth,
-        postsLimit: userData.usage.postsLimit,
-        brandsCount: userData.usage.brands,
-        brandsLimit: userData.usage.brandsLimit,
-        hasSeenWelcome
-      })
-    } catch (err) {
-      console.error('Failed to fetch subscription:', err)
-      // Fall back to defaults
-      setSubscription({ ...DEFAULT_SUBSCRIPTION, hasSeenWelcome })
-    } finally {
-      setIsLoading(false)
+    return {
+      plan: planKey,
+      postsThisMonth: userData.usage.postsThisMonth,
+      postsLimit: userData.usage.postsLimit,
+      brandsCount: userData.usage.brands,
+      brandsLimit: userData.usage.brandsLimit,
+      hasSeenWelcome
     }
-  }, [isSignedIn, hasSeenWelcome])
-
-  // Load subscription on mount
-  useEffect(() => {
-    if (isLoaded) {
-      refreshSubscription()
-    }
-  }, [isLoaded, isSignedIn, refreshSubscription])
+  }, [userData, hasSeenWelcome])
 
   // Get current plan limits
   const currentLimits = PLAN_LIMITS[subscription.plan]
@@ -195,12 +177,10 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
     }
   }, [currentLimits])
 
-  // Increment post count (optimistic update)
+  // Increment post count - no-op in Convex (handled by mutation)
   const incrementPostCount = useCallback(() => {
-    setSubscription(prev => ({
-      ...prev,
-      postsThisMonth: prev.postsThisMonth + 1
-    }))
+    // In Convex, the post count is incremented by the createPost mutation
+    // The UI will automatically update when the query refreshes
   }, [])
 
   // Get usage percentage for progress bars
@@ -234,7 +214,6 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
   const markWelcomeSeen = useCallback(() => {
     setHasSeenWelcome(true)
     localStorage.setItem('t21-welcome-seen', 'true')
-    setSubscription(prev => ({ ...prev, hasSeenWelcome: true }))
   }, [])
 
   // Capture email (store locally for later use)
@@ -245,33 +224,42 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
   // Upgrade plan via Stripe checkout
   const upgradePlan = useCallback(async (plan: 'PRO' | 'BUSINESS') => {
     try {
-      const { url } = await api.createCheckout({
+      const result = await createCheckoutAction({
         plan,
         successUrl: `${window.location.origin}/dashboard?success=true`,
-        cancelUrl: `${window.location.origin}/dashboard?cancelled=true`
+        cancelUrl: `${window.location.origin}/dashboard?cancelled=true`,
+        clerkId: clerkId || undefined, // Pass clerkId for auth fallback
       })
-      window.location.href = url
+      window.location.href = result.url
     } catch (err) {
       console.error('Failed to create checkout:', err)
       throw err
     }
-  }, [])
+  }, [createCheckoutAction, clerkId])
 
   // Open billing portal
   const openBillingPortal = useCallback(async () => {
     try {
-      const { url } = await api.createPortal(`${window.location.origin}/dashboard`)
-      window.location.href = url
+      const result = await createPortalAction({
+        returnUrl: `${window.location.origin}/dashboard`,
+        clerkId: clerkId || undefined, // Pass clerkId for auth fallback
+      })
+      window.location.href = result.url
     } catch (err) {
       console.error('Failed to open billing portal:', err)
       throw err
     }
+  }, [createPortalAction, clerkId])
+
+  // Refresh subscription - no-op in Convex (data is real-time)
+  const refreshSubscription = useCallback(async () => {
+    // Convex queries are automatically reactive
   }, [])
 
-  // Check and reset monthly (handled by backend, just refresh)
+  // Check and reset monthly - no-op (handled by backend)
   const checkAndResetMonthly = useCallback(() => {
-    refreshSubscription()
-  }, [refreshSubscription])
+    // Monthly reset is handled by the backend
+  }, [])
 
   return (
     <SubscriptionContext.Provider value={{

@@ -64,7 +64,7 @@ export function AgentFeatures() {
 
   return (
     <section id="agents" ref={ref} className="py-24 relative">
-      <div className="max-w-6xl mx-auto px-6">
+      <div className="max-w-6xl mx-auto px-4 md:px-6">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

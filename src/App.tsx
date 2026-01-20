@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import { useEffect, lazy, Suspense } from "react"
 import { useTranslation } from "react-i18next"
 import { ClerkProvider, SignedIn, SignedOut, useAuth } from "@clerk/clerk-react"
+import { ConvexProviderWithClerk } from "convex/react-clerk"
+import { convex } from "./main"
 import { DataProvider } from "./context/DataContext"
 import { SubscriptionProvider, useSubscription } from "./context/SubscriptionContext"
 import { UpgradeModal } from "./components/UpgradeModal"
@@ -164,11 +166,13 @@ function App() {
       signInFallbackRedirectUrl="/dashboard"
       signUpFallbackRedirectUrl="/dashboard"
     >
-      <DataProvider>
-        <SubscriptionProvider>
-          <AppContent />
-        </SubscriptionProvider>
-      </DataProvider>
+      <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
+        <DataProvider>
+          <SubscriptionProvider>
+            <AppContent />
+          </SubscriptionProvider>
+        </DataProvider>
+      </ConvexProviderWithClerk>
     </ClerkProvider>
   )
 }

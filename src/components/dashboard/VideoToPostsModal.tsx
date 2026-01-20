@@ -3,7 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { useData, type Platform } from '../../context/DataContext'
 import { useSubscription } from '../../context/SubscriptionContext'
-import { api } from '../../lib/api'
+import { useAction } from 'convex/react'
+import { useUser } from '@clerk/clerk-react'
+import { api as convexApi } from '../../../convex/_generated/api'
+import type { Id } from '../../../convex/_generated/dataModel'
 import { Button } from '../ui/button'
 import { Card } from '../ui/card'
 import { DateTimePicker } from '../ui/calendar'
@@ -31,6 +34,8 @@ export function VideoToPostsModal({ isOpen, onClose }: VideoToPostsModalProps) {
   const { t } = useTranslation()
   const { brands, selectedBrandId, addPost } = useData()
   const { canUseFeature, openUpgradeModal } = useSubscription()
+  const { user: clerkUser } = useUser()
+  const videoToPostsAction = useAction(convexApi.ai.videoToPosts)
 
   // State
   const [step, setStep] = useState<Step>('input')
@@ -67,6 +72,18 @@ export function VideoToPostsModal({ isOpen, onClose }: VideoToPostsModalProps) {
     setStep('configure')
   }
 
+  // Platform conversion helper
+  const platformToBackend = (p: Platform): 'INSTAGRAM' | 'TWITTER' | 'LINKEDIN' | 'TIKTOK' | 'FACEBOOK' => {
+    const map: Record<Platform, 'INSTAGRAM' | 'TWITTER' | 'LINKEDIN' | 'TIKTOK' | 'FACEBOOK'> = {
+      'Instagram': 'INSTAGRAM',
+      'Twitter': 'TWITTER',
+      'LinkedIn': 'LINKEDIN',
+      'TikTok': 'TIKTOK',
+      'Facebook': 'FACEBOOK'
+    }
+    return map[p]
+  }
+
   // Generate posts
   const handleGenerate = async () => {
     if (!hasAccess) {
@@ -85,13 +102,14 @@ export function VideoToPostsModal({ isOpen, onClose }: VideoToPostsModalProps) {
     setError('')
 
     try {
-      const result = await api.videoToPosts({
-        brandId: selectedBrand.id,
-        platform: selectedPlatform,
+      const result = await videoToPostsAction({
+        brandId: selectedBrand.id as Id<"brands">,
+        platform: platformToBackend(selectedPlatform),
         transcript,
-        videoUrl: videoUrl || undefined,
+        videoTitle: videoUrl || 'Video content',
         numberOfPosts,
-        style: selectedStyle
+        style: selectedStyle as 'viral' | 'storytelling' | 'educational' | 'controversial' | 'inspirational',
+        clerkId: clerkUser?.id,
       })
 
       setGeneratedPosts(result.posts)

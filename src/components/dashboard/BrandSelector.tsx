@@ -63,7 +63,7 @@ export function BrandSelector({ onAddBrand }: BrandSelectorProps) {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="absolute right-0 mt-2 w-56 rounded-lg bg-card border border-border shadow-xl z-50 overflow-hidden"
+              className="absolute end-0 mt-2 w-48 sm:w-56 max-w-[calc(100vw-2rem)] rounded-lg bg-card border border-border shadow-xl z-50 overflow-hidden"
             >
               <div className="p-2">
                 <p className="text-xs text-muted-foreground px-2 py-1 mb-1">{t('brandSelector.select')}</p>
@@ -88,7 +88,7 @@ export function BrandSelector({ onAddBrand }: BrandSelectorProps) {
                     </div>
                     <span className="text-sm">{brand.name}</span>
                     {selectedBrandId === brand.id && (
-                      <svg className="w-4 h-4 ml-auto text-primary" fill="currentColor" viewBox="0 0 20 20">
+                      <svg className="w-4 h-4 ms-auto text-primary" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                     )}

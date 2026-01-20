@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
+import { useMutation } from 'convex/react'
+import { api as convexApi } from '../../convex/_generated/api'
 import { Button } from './ui/button'
 import { Card } from './ui/card'
 import { useSubscription } from '../context/SubscriptionContext'
 import { useMetaPixel } from '../hooks/useMetaPixel'
 import { useGA4 } from '../hooks/useGA4'
-import { api } from '../lib/api'
 
 interface EmailCaptureModalProps {
   isOpen: boolean
@@ -29,6 +30,7 @@ export function EmailCaptureModal({
   const { captureEmail } = useSubscription()
   const { trackEvent: trackMetaEvent } = useMetaPixel()
   const { trackEvent: trackGA4Event } = useGA4()
+  const captureEmailMutation = useMutation(convexApi.emails.capture)
   const [email, setEmail] = useState('')
   const [acceptMarketing, setAcceptMarketing] = useState(true)
   const [error, setError] = useState('')
@@ -55,8 +57,8 @@ export function EmailCaptureModal({
     setError('')
 
     try {
-      // Save email to backend
-      await api.captureEmail({
+      // Save email to backend via Convex
+      await captureEmailMutation({
         email,
         marketingConsent: acceptMarketing,
         source: 'pricing_modal',

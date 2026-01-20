@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react"
 import { useTranslation } from "react-i18next"
 import { useClerk, useUser } from "@clerk/clerk-react"
+import { useQuery, useMutation, useAction } from "convex/react"
+import { api as convexApi } from "../../../convex/_generated/api"
 import { Card } from "../ui/card"
 import { Button } from "../ui/button"
 import { useSubscription } from "../../context/SubscriptionContext"
-import { api } from "../../lib/api"
 
 interface SettingsModalProps {
   isOpen: boolean
@@ -22,56 +23,36 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const { t } = useTranslation()
   const { signOut } = useClerk()
   const { user } = useUser()
+  const clerkId = user?.id
   const { subscription, currentLimits, openBillingPortal } = useSubscription()
   const [isSigningOut, setIsSigningOut] = useState(false)
 
-  // Telegram state
-  const [telegramStatus, setTelegramStatus] = useState<TelegramStatus | null>(null)
+  // Convex hooks for Telegram
+  const telegramStatus = useQuery(
+    convexApi.telegram.getStatus,
+    clerkId ? { clerkId } : "skip"
+  )
+  const connectTelegramAction = useAction(convexApi.telegram.connect)
+  const disconnectTelegramMutation = useMutation(convexApi.telegram.disconnect)
+  const toggleTelegramMutation = useMutation(convexApi.telegram.toggle)
+
+  // Local loading/error state for telegram operations
   const [telegramLoading, setTelegramLoading] = useState(false)
   const [telegramError, setTelegramError] = useState<string | null>(null)
 
-  // Fetch Telegram status when modal opens
-  useEffect(() => {
-    if (isOpen) {
-      fetchTelegramStatus()
-    }
-  }, [isOpen])
-
-  const fetchTelegramStatus = async () => {
-    try {
-      const status = await api.getTelegramStatus()
-      setTelegramStatus(status)
-      setTelegramError(null)
-    } catch (err) {
-      console.error('Failed to fetch Telegram status:', err)
-    }
-  }
-
   const handleConnectTelegram = async () => {
+    if (!clerkId) return
     setTelegramLoading(true)
     setTelegramError(null)
     try {
-      const { connectLink } = await api.getTelegramConnectLink()
+      const result = await connectTelegramAction({ clerkId })
       // Open the Telegram connect link in a new window
-      window.open(connectLink, '_blank')
-      // Poll for connection status
-      const pollInterval = setInterval(async () => {
-        try {
-          const status = await api.getTelegramStatus()
-          if (status.connected) {
-            setTelegramStatus(status)
-            clearInterval(pollInterval)
-            setTelegramLoading(false)
-          }
-        } catch {
-          // Ignore polling errors
-        }
-      }, 3000)
-      // Stop polling after 2 minutes
+      window.open(result.connectLink, '_blank')
+      // Polling not needed - Convex query is reactive
+      // Just wait a bit then stop loading
       setTimeout(() => {
-        clearInterval(pollInterval)
         setTelegramLoading(false)
-      }, 120000)
+      }, 5000)
     } catch (err) {
       setTelegramError('Failed to generate connect link')
       setTelegramLoading(false)
@@ -79,10 +60,11 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   }
 
   const handleDisconnectTelegram = async () => {
+    if (!clerkId) return
     setTelegramLoading(true)
     try {
-      await api.disconnectTelegram()
-      setTelegramStatus(prev => prev ? { ...prev, connected: false, enabled: false } : null)
+      await disconnectTelegramMutation({ clerkId })
+      setTelegramError(null)
     } catch (err) {
       setTelegramError('Failed to disconnect')
     } finally {
@@ -91,11 +73,11 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   }
 
   const handleToggleTelegram = async () => {
-    if (!telegramStatus) return
+    if (!telegramStatus || !clerkId) return
     setTelegramLoading(true)
     try {
-      const { enabled } = await api.toggleTelegram(!telegramStatus.enabled)
-      setTelegramStatus(prev => prev ? { ...prev, enabled } : null)
+      await toggleTelegramMutation({ enabled: !telegramStatus.enabled, clerkId })
+      setTelegramError(null)
     } catch (err) {
       setTelegramError('Failed to toggle notifications')
     } finally {
@@ -266,7 +248,7 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                       >
                         <span
                           className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform ${
-                            telegramStatus.enabled ? 'left-7' : 'left-1'
+                            telegramStatus.enabled ? 'start-7' : 'start-1'
                           }`}
                         />
                       </button>
