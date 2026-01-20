@@ -45,6 +45,16 @@ interface AdminEmailCapture {
   capturedAt: number;
 }
 
+interface AdminBotLead {
+  id: string;
+  email: string;
+  sessionId: string;
+  messageCount: number;
+  messageHistory: Array<{ role: string; content: string }>;
+  capturedAt: number;
+  source: string;
+}
+
 // Helper to verify admin token
 function verifyAdminToken(token: string): boolean {
   const adminUsername = process.env.ADMIN_USERNAME;
@@ -229,5 +239,70 @@ export const updateUserPlan = action({
       success: true,
       message: `Successfully updated ${args.email} to ${args.plan} plan`,
     };
+  },
+});
+
+// Get bot leads for admin
+export const getBotLeads = action({
+  args: {
+    token: v.string(),
+    page: v.optional(v.number()),
+    limit: v.optional(v.number()),
+  },
+  handler: async (ctx, args): Promise<{
+    leads: AdminBotLead[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
+  }> => {
+    if (!verifyAdminToken(args.token)) {
+      throw new Error("Access denied");
+    }
+
+    const page = args.page || 1;
+    const limit = Math.min(100, args.limit || 50);
+    const offset = (page - 1) * limit;
+
+    const result = await ctx.runQuery(internal.internal.getAdminBotLeads, { limit, offset }) as {
+      leads: AdminBotLead[];
+      total: number;
+    };
+
+    return {
+      leads: result.leads,
+      pagination: {
+        page,
+        limit,
+        total: result.total,
+        totalPages: Math.ceil(result.total / limit),
+      },
+    };
+  },
+});
+
+// Get bot leads stats for admin dashboard
+export const getBotLeadsStats = action({
+  args: {
+    token: v.string(),
+  },
+  handler: async (ctx, args): Promise<{
+    total: number;
+    recentLeads: number;
+    monthlyLeads: number;
+  }> => {
+    if (!verifyAdminToken(args.token)) {
+      throw new Error("Access denied");
+    }
+
+    const stats = await ctx.runQuery(internal.internal.getBotLeadsStats) as {
+      total: number;
+      recentLeads: number;
+      monthlyLeads: number;
+    };
+
+    return stats;
   },
 });

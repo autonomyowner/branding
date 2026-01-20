@@ -67,4 +67,38 @@ export default defineSchema({
     planInterest: v.optional(v.string()),
     capturedAt: v.number(),
   }).index("by_email", ["email"]),
+
+  // Chatbot tables
+  chatSessions: defineTable({
+    sessionId: v.string(), // unique browser session ID
+    messages: v.array(
+      v.object({
+        role: v.union(v.literal("user"), v.literal("assistant")),
+        content: v.string(),
+        timestamp: v.number(),
+      })
+    ),
+    messageCount: v.number(), // tracks user messages for limit
+    email: v.optional(v.string()), // captured after limit reached
+    emailCaptured: v.boolean(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_sessionId", ["sessionId"])
+    .index("by_email", ["email"]),
+
+  botLeads: defineTable({
+    email: v.string(),
+    sessionId: v.string(),
+    messageHistory: v.array(
+      v.object({
+        role: v.union(v.literal("user"), v.literal("assistant")),
+        content: v.string(),
+      })
+    ),
+    capturedAt: v.number(),
+    source: v.literal("chatbot"),
+  })
+    .index("by_email", ["email"])
+    .index("by_capturedAt", ["capturedAt"]),
 });

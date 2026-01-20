@@ -8,6 +8,7 @@ import { DataProvider } from "./context/DataContext"
 import { SubscriptionProvider, useSubscription } from "./context/SubscriptionContext"
 import { UpgradeModal } from "./components/UpgradeModal"
 import { PageViewTracker } from "./components/PageViewTracker"
+import { Chatbot } from "./components/Chatbot"
 
 // Get Clerk publishable key from environment
 const CLERK_PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
@@ -92,6 +93,7 @@ function AppContent() {
         </Suspense>
       </BrowserRouter>
       <GlobalUpgradeModal />
+      <Chatbot />
     </>
   )
 }

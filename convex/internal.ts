@@ -182,3 +182,53 @@ export const getAdminEmailCaptures = internalQuery({
     };
   },
 });
+
+// Get admin bot leads list (internal use only)
+export const getAdminBotLeads = internalQuery({
+  args: {
+    limit: v.number(),
+    offset: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const allLeads = await ctx.db.query("botLeads").collect();
+
+    // Sort by captured time descending
+    allLeads.sort((a, b) => b.capturedAt - a.capturedAt);
+
+    const total = allLeads.length;
+    const leads = allLeads.slice(args.offset, args.offset + args.limit);
+
+    return {
+      leads: leads.map((l) => ({
+        id: l._id,
+        email: l.email,
+        sessionId: l.sessionId,
+        messageCount: l.messageHistory.length,
+        messageHistory: l.messageHistory,
+        capturedAt: l.capturedAt,
+        source: l.source,
+      })),
+      total,
+    };
+  },
+});
+
+// Get bot leads stats (internal use only)
+export const getBotLeadsStats = internalQuery({
+  args: {},
+  handler: async (ctx) => {
+    const now = Date.now();
+    const sevenDaysAgo = now - 7 * 24 * 60 * 60 * 1000;
+    const thirtyDaysAgo = now - 30 * 24 * 60 * 60 * 1000;
+
+    const allLeads = await ctx.db.query("botLeads").collect();
+    const recentLeads = allLeads.filter((l) => l.capturedAt > sevenDaysAgo).length;
+    const monthlyLeads = allLeads.filter((l) => l.capturedAt > thirtyDaysAgo).length;
+
+    return {
+      total: allLeads.length,
+      recentLeads,
+      monthlyLeads,
+    };
+  },
+});

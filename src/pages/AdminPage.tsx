@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, Fragment } from 'react'
 import { motion } from 'framer-motion'
 import { useAction } from 'convex/react'
 import { api as convexApi } from '../../convex/_generated/api'
@@ -7,7 +7,7 @@ import { Card } from '../components/ui/card'
 import { Badge } from '../components/ui/badge'
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts'
 
-type Tab = 'overview' | 'users' | 'emails'
+type Tab = 'overview' | 'users' | 'emails' | 'botleads'
 
 // Local storage key for admin token
 const ADMIN_TOKEN_KEY = 'postaify_admin_token'
@@ -25,6 +25,8 @@ export function AdminPage() {
   const getUsersAction = useAction(convexApi.admin.getUsers)
   const getEmailCapturesAction = useAction(convexApi.admin.getEmailCaptures)
   const updateUserPlanAction = useAction(convexApi.admin.updateUserPlan)
+  const getBotLeadsAction = useAction(convexApi.admin.getBotLeads)
+  const getBotLeadsStatsAction = useAction(convexApi.admin.getBotLeadsStats)
 
   // Login state
   const [username, setUsername] = useState('')
@@ -45,6 +47,12 @@ export function AdminPage() {
   const [emailsPage, setEmailsPage] = useState(1)
   const [emailsPagination, setEmailsPagination] = useState<any>(null)
 
+  // Bot leads data
+  const [botLeads, setBotLeads] = useState<any[]>([])
+  const [botLeadsPage, setBotLeadsPage] = useState(1)
+  const [botLeadsPagination, setBotLeadsPagination] = useState<any>(null)
+  const [botLeadsStats, setBotLeadsStats] = useState<any>(null)
+
   const loadData = useCallback(async (token: string) => {
     setIsLoading(true)
     setError('')
@@ -53,6 +61,9 @@ export function AdminPage() {
       if (activeTab === 'overview') {
         const data = await getStatsAction({ token })
         setStats(data)
+        // Also load bot leads stats for overview
+        const botStats = await getBotLeadsStatsAction({ token })
+        setBotLeadsStats(botStats)
       } else if (activeTab === 'users') {
         const data = await getUsersAction({ token, page: usersPage, limit: 50 })
         setUsers(data.users)
@@ -61,6 +72,10 @@ export function AdminPage() {
         const data = await getEmailCapturesAction({ token, page: emailsPage, limit: 50 })
         setEmailCaptures(data.captures)
         setEmailsPagination(data.pagination)
+      } else if (activeTab === 'botleads') {
+        const data = await getBotLeadsAction({ token, page: botLeadsPage, limit: 50 })
+        setBotLeads(data.leads)
+        setBotLeadsPagination(data.pagination)
       }
     } catch (err: any) {
       if (err.message.includes('Access denied')) {
@@ -75,7 +90,7 @@ export function AdminPage() {
     } finally {
       setIsLoading(false)
     }
-  }, [activeTab, usersPage, emailsPage, getStatsAction, getUsersAction, getEmailCapturesAction])
+  }, [activeTab, usersPage, emailsPage, botLeadsPage, getStatsAction, getUsersAction, getEmailCapturesAction, getBotLeadsAction, getBotLeadsStatsAction])
 
   useEffect(() => {
     // Check if already logged in
@@ -93,7 +108,7 @@ export function AdminPage() {
     if (adminToken) {
       loadData(adminToken)
     }
-  }, [activeTab, usersPage, emailsPage, adminToken, loadData])
+  }, [activeTab, usersPage, emailsPage, botLeadsPage, adminToken, loadData])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -226,11 +241,12 @@ export function AdminPage() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 mb-6 border-b border-border">
+        <div className="flex gap-2 mb-6 border-b border-border overflow-x-auto">
           {[
             { id: 'overview', label: 'Overview' },
             { id: 'users', label: 'Users' },
             { id: 'emails', label: 'Email Captures' },
+            { id: 'botleads', label: 'Bot Leads' },
           ].map(tab => (
             <button
               key={tab.id}
@@ -238,8 +254,9 @@ export function AdminPage() {
                 setActiveTab(tab.id as Tab)
                 if (tab.id === 'users') setUsersPage(1)
                 if (tab.id === 'emails') setEmailsPage(1)
+                if (tab.id === 'botleads') setBotLeadsPage(1)
               }}
-              className={`px-4 py-2 font-medium transition-colors relative ${
+              className={`px-4 py-2 font-medium transition-colors relative whitespace-nowrap ${
                 activeTab === tab.id
                   ? 'text-primary'
                   : 'text-muted-foreground hover:text-foreground'
@@ -258,7 +275,7 @@ export function AdminPage() {
 
         {/* Content */}
         <div>
-          {activeTab === 'overview' && stats && <OverviewTab stats={stats} />}
+          {activeTab === 'overview' && stats && <OverviewTab stats={stats} botLeadsStats={botLeadsStats} />}
           {activeTab === 'users' && (
             <UsersTab
               users={users}
@@ -276,6 +293,13 @@ export function AdminPage() {
               onPageChange={setEmailsPage}
             />
           )}
+          {activeTab === 'botleads' && (
+            <BotLeadsTab
+              leads={botLeads}
+              pagination={botLeadsPagination}
+              onPageChange={setBotLeadsPage}
+            />
+          )}
         </div>
       </div>
     </div>
@@ -283,7 +307,7 @@ export function AdminPage() {
 }
 
 // Overview Tab
-function OverviewTab({ stats }: { stats: any }) {
+function OverviewTab({ stats, botLeadsStats }: { stats: any; botLeadsStats: any }) {
   // Prepare chart data
   const userDistributionData = [
     { name: 'Free', value: stats.users.free, color: '#9ca3af' },
@@ -322,6 +346,15 @@ function OverviewTab({ stats }: { stats: any }) {
           color="text-green-400"
         />
       </div>
+
+      {/* Bot Leads Stats */}
+      {botLeadsStats && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <StatCard title="Bot Leads (Total)" value={botLeadsStats.total} color="text-purple-400" />
+          <StatCard title="Bot Leads (7 days)" value={botLeadsStats.recentLeads} color="text-purple-400" />
+          <StatCard title="Bot Leads (30 days)" value={botLeadsStats.monthlyLeads} color="text-purple-400" />
+        </div>
+      )}
 
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -668,6 +701,93 @@ function EmailsTab({ captures, pagination, onPageChange }: any) {
       </Card>
 
       {pagination && (
+        <Pagination
+          page={pagination.page}
+          totalPages={pagination.totalPages}
+          onPageChange={onPageChange}
+        />
+      )}
+    </div>
+  )
+}
+
+// Bot Leads Tab
+function BotLeadsTab({ leads, pagination, onPageChange }: any) {
+  const [expandedLead, setExpandedLead] = useState<string | null>(null)
+
+  return (
+    <div className="space-y-4">
+      <Card className="overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-muted/50">
+              <tr>
+                <th className="text-left p-4 text-sm font-medium text-muted-foreground">Email</th>
+                <th className="text-center p-4 text-sm font-medium text-muted-foreground">Messages</th>
+                <th className="text-left p-4 text-sm font-medium text-muted-foreground">Captured</th>
+                <th className="text-center p-4 text-sm font-medium text-muted-foreground">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {leads.map((lead: any) => (
+                <Fragment key={lead.id}>
+                  <tr className="border-t border-border hover:bg-muted/30 transition-colors">
+                    <td className="p-4 text-sm text-foreground">{lead.email}</td>
+                    <td className="p-4 text-center text-sm text-foreground">{lead.messageCount}</td>
+                    <td className="p-4 text-sm text-muted-foreground">
+                      {new Date(lead.capturedAt).toLocaleString()}
+                    </td>
+                    <td className="p-4 text-center">
+                      <button
+                        onClick={() => setExpandedLead(expandedLead === lead.id ? null : lead.id)}
+                        className="px-3 py-1 text-xs font-medium rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-colors"
+                      >
+                        {expandedLead === lead.id ? 'Hide Chat' : 'View Chat'}
+                      </button>
+                    </td>
+                  </tr>
+                  {expandedLead === lead.id && (
+                    <tr className="bg-muted/20">
+                      <td colSpan={4} className="p-4">
+                        <div className="max-h-64 overflow-y-auto space-y-2 rounded-lg bg-background p-4 border border-border">
+                          {lead.messageHistory.map((msg: any, idx: number) => (
+                            <div
+                              key={idx}
+                              className={`p-3 rounded-lg max-w-[80%] ${
+                                msg.role === 'user'
+                                  ? 'bg-primary/20 ml-auto text-right'
+                                  : 'bg-muted mr-auto'
+                              }`}
+                            >
+                              <p className="text-xs text-muted-foreground mb-1 font-medium">
+                                {msg.role === 'user' ? 'User' : 'Bot'}
+                              </p>
+                              <p className="text-sm text-foreground whitespace-pre-wrap">{msg.content}</p>
+                            </div>
+                          ))}
+                          {lead.messageHistory.length === 0 && (
+                            <p className="text-sm text-muted-foreground text-center py-4">
+                              No messages recorded
+                            </p>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+
+      {leads.length === 0 && (
+        <div className="text-center py-12 text-muted-foreground">
+          No bot leads captured yet
+        </div>
+      )}
+
+      {pagination && pagination.totalPages > 1 && (
         <Pagination
           page={pagination.page}
           totalPages={pagination.totalPages}
