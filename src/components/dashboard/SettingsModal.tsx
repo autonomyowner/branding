@@ -6,6 +6,7 @@ import { api as convexApi } from "../../../convex/_generated/api"
 import { Card } from "../ui/card"
 import { Button } from "../ui/button"
 import { useSubscription } from "../../context/SubscriptionContext"
+import { useData } from "../../context/DataContext"
 
 interface SettingsModalProps {
   isOpen: boolean
@@ -25,7 +26,10 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const { user } = useUser()
   const clerkId = user?.id
   const { subscription, currentLimits, openBillingPortal } = useSubscription()
+  const { brands, deleteBrand } = useData()
   const [isSigningOut, setIsSigningOut] = useState(false)
+  const [brandToDelete, setBrandToDelete] = useState<string | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   // Convex hooks for Telegram
   const telegramStatus = useQuery(
@@ -105,6 +109,24 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
       // Stripe not configured - show message
       alert('Billing management is not available yet.')
     }
+  }
+
+  const handleDeleteBrand = async () => {
+    if (!brandToDelete) return
+    setIsDeleting(true)
+    try {
+      await deleteBrand(brandToDelete)
+      setBrandToDelete(null)
+    } catch (err) {
+      console.error('Failed to delete brand:', err)
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
+  const getBrandToDeleteName = () => {
+    const brand = brands.find(b => b.id === brandToDelete)
+    return brand?.name || 'this brand'
   }
 
   const planLabel = {
@@ -208,6 +230,52 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
             </div>
           </div>
 
+          {/* Manage Brands */}
+          <div>
+            <h3 className="text-sm sm:text-lg font-semibold mb-2 sm:mb-4">Manage Brands</h3>
+            <div className="p-2 sm:p-4 bg-card/50 rounded-lg border border-white/10 space-y-2">
+              {brands.length === 0 ? (
+                <p className="text-[10px] sm:text-sm text-muted-foreground">
+                  No brands created yet.
+                </p>
+              ) : (
+                <div className="space-y-2">
+                  {brands.map((brand) => (
+                    <div
+                      key={brand.id}
+                      className="flex items-center justify-between p-2 sm:p-3 bg-black/20 rounded-lg border border-white/5"
+                    >
+                      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                        <div
+                          className="w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-[10px] sm:text-xs font-semibold shrink-0"
+                          style={{ backgroundColor: brand.color + '30', color: brand.color }}
+                        >
+                          {brand.initials}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="font-medium text-[10px] sm:text-sm truncate">{brand.name}</p>
+                          <p className="text-[9px] sm:text-xs text-muted-foreground">
+                            {brand.postCount || 0} posts
+                          </p>
+                        </div>
+                      </div>
+                      <Button
+                        onClick={() => setBrandToDelete(brand.id)}
+                        variant="ghost"
+                        className="text-[10px] sm:text-xs text-red-400 hover:bg-red-400/10 h-6 sm:h-8 px-2 sm:px-3 shrink-0"
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <p className="text-[9px] sm:text-xs text-muted-foreground mt-2">
+                Deleting a brand will also delete all its posts.
+              </p>
+            </div>
+          </div>
+
           {/* Telegram Integration */}
           {telegramStatus?.configured && (
             <div>
@@ -287,6 +355,36 @@ export function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
           </div>
         </div>
       </Card>
+
+      {/* Delete Brand Confirmation Dialog */}
+      {brandToDelete && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[60] p-4">
+          <Card className="w-full max-w-sm p-4 sm:p-6">
+            <h3 className="text-base sm:text-lg font-semibold mb-2">Delete Brand?</h3>
+            <p className="text-[10px] sm:text-sm text-muted-foreground mb-4">
+              Are you sure you want to delete <span className="text-white font-medium">{getBrandToDeleteName()}</span>?
+              This will permanently delete the brand and all its posts. This action cannot be undone.
+            </p>
+            <div className="flex gap-2 sm:gap-3">
+              <Button
+                onClick={() => setBrandToDelete(null)}
+                variant="outline"
+                disabled={isDeleting}
+                className="flex-1 h-8 sm:h-10 text-[10px] sm:text-sm"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleDeleteBrand}
+                disabled={isDeleting}
+                className="flex-1 bg-red-500 hover:bg-red-600 text-white h-8 sm:h-10 text-[10px] sm:text-sm"
+              >
+                {isDeleting ? 'Deleting...' : 'Delete'}
+              </Button>
+            </div>
+          </Card>
+        </div>
+      )}
     </div>
   )
 }
