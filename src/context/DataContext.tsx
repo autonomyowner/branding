@@ -281,7 +281,10 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const deleteBrand = useCallback(async (id: string) => {
     try {
       setError(null)
-      await deleteBrandMutation({ id: id as Id<"brands"> })
+      await deleteBrandMutation({
+        id: id as Id<"brands">,
+        clerkId: clerkId || undefined,
+      })
 
       // If the deleted brand was selected, select another one
       if (selectedBrandId === id) {
@@ -293,7 +296,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
       setError(message)
       throw err
     }
-  }, [deleteBrandMutation, selectedBrandId, brands])
+  }, [deleteBrandMutation, selectedBrandId, brands, clerkId])
 
   const selectBrand = useCallback((id: string | null) => {
     setSelectedBrandId(id)

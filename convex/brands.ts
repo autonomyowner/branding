@@ -221,9 +221,12 @@ export const update = mutation({
 
 // Delete a brand and its posts
 export const remove = mutation({
-  args: { id: v.id("brands") },
+  args: {
+    id: v.id("brands"),
+    clerkId: v.optional(v.string()), // Fallback for auth
+  },
   handler: async (ctx, args) => {
-    const user = await getAuthenticatedUser(ctx);
+    const user = await getAuthenticatedUser(ctx, args.clerkId);
 
     const brand = await ctx.db.get(args.id);
 
