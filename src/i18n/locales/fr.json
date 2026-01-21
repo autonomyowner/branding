@@ -147,6 +147,16 @@
     "savePercentage": "Économisez 20%",
     "year": "an",
     "compare": "Comparer les Plans",
+    "valueStack": {
+      "headline": "Remplacez 5+ abonnements par un seul",
+      "totalValue": "Valeur totale",
+      "content": "Contenu",
+      "images": "Images",
+      "voiceover": "Voix off",
+      "channels": "5 canaux",
+      "ifBoughtSeparately": "Si achetés séparément",
+      "save87": "Économisez 87%"
+    },
     "starter": {
       "name": "Gratuit Pour Toujours",
       "price": "0€",

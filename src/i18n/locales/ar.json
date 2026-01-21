@@ -147,6 +147,16 @@
     "savePercentage": "وفر 20%",
     "year": "سنة",
     "compare": "قارن الخطط",
+    "valueStack": {
+      "headline": "استبدل 5+ اشتراكات باشتراك واحد",
+      "totalValue": "القيمة الإجمالية",
+      "content": "المحتوى",
+      "images": "الصور",
+      "voiceover": "التعليق الصوتي",
+      "channels": "5 قنوات",
+      "ifBoughtSeparately": "إذا تم شراؤها منفصلة",
+      "save87": "وفر 87%"
+    },
     "starter": {
       "name": "مجاني للأبد",
       "price": "$0",

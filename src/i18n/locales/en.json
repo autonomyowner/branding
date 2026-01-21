@@ -146,6 +146,16 @@
     "yearlyLabel": "Yearly",
     "savePercentage": "Save 20%",
     "year": "year",
+    "valueStack": {
+      "headline": "Replace 5+ subscriptions with one",
+      "totalValue": "Total value",
+      "content": "Content",
+      "images": "Images",
+      "voiceover": "Voiceover",
+      "channels": "5 channels",
+      "ifBoughtSeparately": "If bought separately",
+      "save87": "Save 87%"
+    },
     "starter": {
       "name": "Free Forever",
       "price": "$0",

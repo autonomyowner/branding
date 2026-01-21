@@ -255,6 +255,59 @@ export function Pricing() {
           </div>
         </motion.div>
 
+        {/* Competitor Comparison - Value Stack */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="mb-16"
+        >
+          <Card className="max-w-2xl mx-auto p-6 sm:p-8 bg-gradient-to-br from-muted/50 to-muted/20 border-border/50">
+            <div className="text-center mb-6">
+              <p className="text-sm text-muted-foreground mb-2">{t('pricing.valueStack.headline')}</p>
+              <div className="text-2xl sm:text-3xl font-bold">
+                {t('pricing.valueStack.totalValue')}: <span className="text-muted-foreground line-through">$151/{t('pricing.monthly')}</span>
+                <span className="text-primary ml-2">→ $19/{t('pricing.monthly')}</span>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              {/* Competitor Stack */}
+              <div className="flex items-center justify-between py-2 border-b border-border/30">
+                <span className="text-muted-foreground">Jasper AI <span className="text-xs">({t('pricing.valueStack.content')})</span></span>
+                <span className="font-medium">$39/{t('pricing.monthly')}</span>
+              </div>
+              <div className="flex items-center justify-between py-2 border-b border-border/30">
+                <span className="text-muted-foreground">Midjourney <span className="text-xs">({t('pricing.valueStack.images')})</span></span>
+                <span className="font-medium">$30/{t('pricing.monthly')}</span>
+              </div>
+              <div className="flex items-center justify-between py-2 border-b border-border/30">
+                <span className="text-muted-foreground">ElevenLabs <span className="text-xs">({t('pricing.valueStack.voiceover')})</span></span>
+                <span className="font-medium">$22/{t('pricing.monthly')}</span>
+              </div>
+              <div className="flex items-center justify-between py-2 border-b border-border/30">
+                <span className="text-muted-foreground">Buffer Team <span className="text-xs">({t('pricing.valueStack.channels')})</span></span>
+                <span className="font-medium">$60/{t('pricing.monthly')}</span>
+              </div>
+
+              {/* Total */}
+              <div className="flex items-center justify-between pt-3">
+                <span className="text-muted-foreground font-medium">{t('pricing.valueStack.ifBoughtSeparately')}</span>
+                <span className="font-bold text-lg line-through text-muted-foreground">$151/{t('pricing.monthly')}</span>
+              </div>
+
+              {/* POSTAIFY Value */}
+              <div className="flex items-center justify-between py-4 px-4 -mx-4 bg-primary/10 rounded-lg border border-primary/20">
+                <span className="font-bold text-foreground">POSTAIFY Pro</span>
+                <div className="text-right">
+                  <span className="font-bold text-2xl text-primary">$19/{t('pricing.monthly')}</span>
+                  <span className="block text-xs text-green-400">{t('pricing.valueStack.save87')}</span>
+                </div>
+              </div>
+            </div>
+          </Card>
+        </motion.div>
+
         {/* Pricing Cards with 3D Tilt */}
         <div className="grid md:grid-cols-3 gap-6" style={{ perspective: "1000px" }}>
           {plans.map((plan, index) => (
