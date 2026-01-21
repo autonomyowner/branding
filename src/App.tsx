@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom"
 import { useEffect, lazy, Suspense } from "react"
 import { useTranslation } from "react-i18next"
 import { ClerkProvider, SignedIn, SignedOut, useAuth } from "@clerk/clerk-react"
@@ -27,6 +27,13 @@ const SignInPage = lazy(() => import("./pages/SignInPage").then(m => ({ default:
 const SignUpPage = lazy(() => import("./pages/SignUpPage").then(m => ({ default: m.SignUpPage })))
 const SSOCallback = lazy(() => import("./pages/SSOCallback").then(m => ({ default: m.SSOCallback })))
 const AdminPage = lazy(() => import("./pages/AdminPage").then(m => ({ default: m.AdminPage })))
+
+// Chatbot only on landing page
+function LandingPageChatbot() {
+  const location = useLocation()
+  if (location.pathname !== '/') return null
+  return <Chatbot />
+}
 
 // Global upgrade modal component
 function GlobalUpgradeModal() {
@@ -91,9 +98,9 @@ function AppContent() {
             <Route path="/admin" element={<AdminPage />} />
           </Routes>
         </Suspense>
+        <LandingPageChatbot />
       </BrowserRouter>
       <GlobalUpgradeModal />
-      <Chatbot />
     </>
   )
 }
