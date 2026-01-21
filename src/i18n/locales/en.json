@@ -10,52 +10,56 @@
     "calendar": "Calendar"
   },
   "hero": {
-    "title": "The First",
-    "titleHighlight": "Automated Content Platform",
+    "title": "30 Days of Content",
+    "titleHighlight": "In 15 Minutes",
     "goToDashboard": "Go to Dashboard",
-    "subtitle": "Create brands, schedule posts, and automate your social media content. An AI-powered platform for content automation.",
-    "cta": "Start Free",
-    "ctaFree": "Start Free - No Credit Card",
-    "freePlanInfo": "2 brands, 20 posts/month free",
-    "viewPricing": "View Pricing",
+    "subtitle": "No writers. No designers. No burnout. Just click, approve, post.",
+    "subtitleSecondary": "AI does the work. You take the credit.",
+    "cta": "Create My Content Now",
+    "ctaFree": "Create My Content Now",
+    "freePlanInfo": "See results in 5 minutes. Free forever.",
+    "viewPricing": "See What's Included",
     "demo": "See How It Works",
-    "users": "The first automated content platform",
+    "users": "From zero to 30 days of content in one sitting",
     "trustedBy": "Trusted by businesses worldwide",
-    "trustNoCreditCard": "No credit card required",
-    "trustCancel": "Cancel anytime",
-    "trustLocalData": "Your data stays private"
+    "trustNoCreditCard": "Results in 5 minutes",
+    "trustCancel": "No credit card needed",
+    "trustLocalData": "Cancel anytime",
+    "transformationBefore": "8+ hours",
+    "transformationAfter": "15 min",
+    "transformationLabel": "of content work"
   },
   "problem": {
-    "title": "Stop Manual",
-    "titleHighlight": "Content Creation",
-    "oldWay": "THE OLD WAY",
-    "newWay": "THE NEW WAY",
+    "title": "Never Run Out",
+    "titleHighlight": "Of Content Again",
+    "oldWay": "WITHOUT POSTAIFY",
+    "newWay": "WITH POSTAIFY",
     "before": {
-      "title": "Before: Manual Content Work",
-      "point1": "Creating posts one by one",
-      "point2": "Inconsistent posting schedule",
-      "point3": "Managing multiple brands separately",
-      "point4": "Hours spent on content ideas",
-      "point5": "No team collaboration"
+      "title": "The Content Hamster Wheel",
+      "point1": "Staring at blank screens for hours",
+      "point2": "Posting randomly, missing momentum",
+      "point3": "Juggling multiple accounts = chaos",
+      "point4": "Sunday night content panic",
+      "point5": "Hiring writers you can't afford"
     },
     "after": {
-      "title": "After: Automated Content",
-      "point1": "Generate posts automatically with AI",
-      "point2": "Schedule content in advance",
-      "point3": "Manage all brands in one place",
-      "point4": "AI generates content ideas instantly",
-      "point5": "Team collaboration built-in"
+      "title": "Content on Autopilot",
+      "point1": "30 days of posts in one sitting",
+      "point2": "AI matches your brand voice perfectly",
+      "point3": "All platforms, one dashboard",
+      "point4": "Schedule months ahead, stress-free",
+      "point5": "Professional quality, zero team needed"
     },
     "flow": {
-      "step1": "Create Brand",
+      "step1": "Describe",
       "step2": "Generate",
-      "step3": "Publish"
+      "step3": "Approve"
     }
   },
   "agents": {
-    "title": "Everything You Need",
-    "titleHighlight": "In One Platform",
-    "subtitle": "Create brands, generate content, schedule posts, and collaborate with your team - all automated with AI.",
+    "title": "AI Does The Work.",
+    "titleHighlight": "You Approve.",
+    "subtitle": "Every tool you need to create a month of content in minutes. No learning curve. No expertise required.",
     "sales": {
       "category": "Content",
       "title": "AI Content Generation",
@@ -114,70 +118,70 @@
     }
   },
   "howItWorks": {
-    "title": "How It",
-    "titleHighlight": "Works",
+    "title": "From Zero to 30 Days",
+    "titleHighlight": "In 4 Steps",
     "step1": {
-      "title": "Create Brand",
-      "description": "Set up your brand with voice, style, and topics"
+      "title": "Describe Your Brand",
+      "description": "Tell us your voice, style, and topics. Takes 2 minutes."
     },
     "step2": {
-      "title": "Generate Content",
-      "description": "AI creates posts tailored to your brand"
+      "title": "Click Generate",
+      "description": "AI creates a month of posts. You watch it happen."
     },
     "step3": {
-      "title": "Schedule Posts",
-      "description": "Plan your content calendar in advance"
+      "title": "Approve & Schedule",
+      "description": "Review, tweak if needed, pick your dates."
     },
     "step4": {
-      "title": "Automate",
-      "description": "Let the platform handle posting automatically"
+      "title": "You're Done",
+      "description": "Content goes out on autopilot. Go live your life."
     }
   },
   "pricing": {
-    "title": "Simple",
-    "titleHighlight": "Pricing",
-    "subtitle": "Start free, scale as you grow.",
+    "title": "Less Than",
+    "titleHighlight": "$0.01 Per Post",
+    "subtitle": "A month of content costs less than a coffee. No writers. No designers. No stress.",
     "monthly": "month",
     "monthlyLabel": "Monthly",
     "yearlyLabel": "Yearly",
     "savePercentage": "Save 20%",
     "year": "year",
     "starter": {
-      "name": "Free",
+      "name": "Free Forever",
       "price": "$0",
-      "description": "Perfect for getting started",
-      "cta": "Start Free",
-      "feature1": "2 brands",
-      "feature2": "Up to 20 posts",
-      "feature3": "Basic scheduling",
-      "feature4": "Community support"
+      "description": "See results in 5 minutes",
+      "cta": "Start Creating Now",
+      "feature1": "2 brand profiles",
+      "feature2": "20 posts/month",
+      "feature3": "Smart scheduling",
+      "feature4": "All platforms included"
     },
     "pro": {
       "name": "Pro",
       "price": "$9",
       "priceYearly": "$79",
       "saveAmount": "Save $29",
-      "description": "For growing businesses",
-      "cta": "Get Pro",
-      "feature1": "5 brands",
-      "feature2": "Up to 1,000 posts",
-      "feature3": "Advanced scheduling",
-      "feature4": "Priority support",
-      "feature5": "Team collaboration"
+      "description": "Full content machine",
+      "cta": "Unlock Pro",
+      "feature1": "5 brand profiles",
+      "feature2": "1,000 posts/month",
+      "feature3": "AI image generation",
+      "feature4": "AI voiceovers",
+      "feature5": "YouTube repurposing"
     },
     "enterprise": {
-      "name": "Business",
+      "name": "Agency",
       "price": "$39",
       "priceYearly": "$299",
       "saveAmount": "Save $169",
-      "description": "For agencies and large teams",
-      "cta": "Get Business",
+      "description": "For teams & agencies",
+      "cta": "Scale My Agency",
       "feature1": "Unlimited brands",
-      "feature2": "Up to 90,000 posts",
-      "feature3": "Full automation",
-      "feature4": "Dedicated support",
-      "feature5": "Advanced analytics",
-      "feature6": "API access"
+      "feature2": "90,000 posts/month",
+      "feature3": "Everything in Pro",
+      "feature4": "Team collaboration",
+      "feature5": "API access",
+      "feature6": "Dedicated support"
     }
   },
   "faq": {

@@ -261,10 +261,36 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 px-4"
+          className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-4 px-4"
         >
           {t('hero.subtitle')}
         </motion.p>
+
+        {/* Transformation Stat - The Grand Slam Visual */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.25 }}
+          className="flex items-center justify-center gap-3 sm:gap-4 mb-10"
+        >
+          <div className="flex flex-col items-center px-4 py-2 rounded-lg bg-red-500/10 border border-red-500/20">
+            <span className="text-2xl sm:text-3xl font-bold text-red-400 line-through decoration-2">
+              {t('hero.transformationBefore') || '8+ hours'}
+            </span>
+            <span className="text-xs sm:text-sm text-red-400/70">{t('hero.transformationLabel') || 'of content work'}</span>
+          </div>
+          <div className="flex items-center">
+            <svg className="w-6 h-6 sm:w-8 sm:h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </div>
+          <div className="flex flex-col items-center px-4 py-2 rounded-lg bg-primary/10 border border-primary/20">
+            <span className="text-2xl sm:text-3xl font-bold text-primary">
+              {t('hero.transformationAfter') || '15 min'}
+            </span>
+            <span className="text-xs sm:text-sm text-primary/70">{t('hero.transformationLabel') || 'of content work'}</span>
+          </div>
+        </motion.div>
 
         {/* CTAs */}
         <motion.div

@@ -206,9 +206,19 @@ export function Pricing() {
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
             {t('pricing.title')}, <span className="text-primary">{t('pricing.titleHighlight')}</span>
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-8">
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-4">
             {t('pricing.subtitle')}
           </p>
+
+          {/* Value Guarantee */}
+          <div className="flex items-center justify-center gap-2 mb-8 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 w-fit mx-auto">
+            <svg className="w-4 h-4 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+            <span className="text-sm text-green-400 font-medium">
+              See results in 5 minutes or it's free
+            </span>
+          </div>
 
           {/* Billing Toggle */}
           <div className="flex items-center justify-center gap-3">
@@ -279,14 +289,6 @@ export function Pricing() {
                   {isYearly && plan.saveAmount && (
                     <p className="text-sm text-green-400 mt-1">{plan.saveAmount}</p>
                   )}
-                  {/* Beta badge for paid plans */}
-                  {plan.price !== '£0' && plan.price !== '$0' && (
-                    <div className="mt-2 inline-block px-2 py-1 rounded-full bg-amber-500/20 border border-amber-500/30">
-                      <span className="text-xs font-medium text-amber-400">
-                        Beta - Paid plans coming soon
-                      </span>
-                    </div>
-                  )}
                 </div>
 
                 <Button
@@ -295,7 +297,7 @@ export function Pricing() {
                   style={{ transform: "translateZ(50px)" }}
                   onClick={() => handleSelectPlan(plan)}
                 >
-                  {plan.price === '£0' || plan.price === '$0' ? plan.cta : 'Join Waitlist'}
+                  {plan.cta}
                 </Button>
 
                 <ul className="space-y-3" style={{ transform: "translateZ(20px)" }}>

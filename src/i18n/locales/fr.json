@@ -10,52 +10,56 @@
     "calendar": "Calendrier"
   },
   "hero": {
-    "title": "La Première",
-    "titleHighlight": "Plateforme de Contenu Automatisée",
+    "title": "30 Jours de Contenu",
+    "titleHighlight": "En 15 Minutes",
     "goToDashboard": "Aller au Tableau de Bord",
-    "subtitle": "Créez des marques, planifiez des publications et automatisez votre contenu sur les réseaux sociaux. Une plateforme alimentée par l'IA pour l'automatisation du contenu.",
-    "cta": "Commencer Gratuit",
-    "ctaFree": "Gratuit - Sans Carte",
-    "freePlanInfo": "2 marques, 20 publications/mois gratuit",
-    "viewPricing": "Voir les Tarifs",
+    "subtitle": "Sans rédacteurs. Sans designers. Sans burnout. Cliquez, approuvez, publiez.",
+    "subtitleSecondary": "L'IA fait le travail. Vous prenez le crédit.",
+    "cta": "Créer Mon Contenu",
+    "ctaFree": "Créer Mon Contenu",
+    "freePlanInfo": "Résultats en 5 minutes. Gratuit pour toujours.",
+    "viewPricing": "Voir Ce Qui Est Inclus",
     "demo": "Voir Comment Ça Marche",
-    "users": "La première plateforme de contenu automatisée",
+    "users": "De zéro à 30 jours de contenu en une session",
     "trustedBy": "Approuvé par des entreprises du monde entier",
-    "trustNoCreditCard": "Aucune carte de crédit requise",
-    "trustCancel": "Annulez à tout moment",
-    "trustLocalData": "Vos données restent privées"
+    "trustNoCreditCard": "Résultats en 5 minutes",
+    "trustCancel": "Sans carte de crédit",
+    "trustLocalData": "Annulez à tout moment",
+    "transformationBefore": "8+ heures",
+    "transformationAfter": "15 min",
+    "transformationLabel": "de travail contenu"
   },
   "problem": {
-    "title": "Arrêtez la Création",
-    "titleHighlight": "Manuelle de Contenu",
-    "oldWay": "L'ANCIENNE MÉTHODE",
-    "newWay": "LA NOUVELLE MÉTHODE",
+    "title": "Plus Jamais à Court",
+    "titleHighlight": "De Contenu",
+    "oldWay": "SANS POSTAIFY",
+    "newWay": "AVEC POSTAIFY",
     "before": {
-      "title": "Avant: Travail Manuel",
-      "point1": "Créer des publications une par une",
-      "point2": "Calendrier de publication incohérent",
-      "point3": "Gérer plusieurs marques séparément",
-      "point4": "Des heures sur les idées de contenu",
-      "point5": "Pas de collaboration d'équipe"
+      "title": "La Roue du Hamster",
+      "point1": "Fixer des écrans vides pendant des heures",
+      "point2": "Publier au hasard, perdre l'élan",
+      "point3": "Jongler avec plusieurs comptes = chaos",
+      "point4": "Panique du dimanche soir",
+      "point5": "Embaucher des rédacteurs inabordables"
     },
     "after": {
-      "title": "Après: Contenu Automatisé",
-      "point1": "Générez des publications automatiquement avec l'IA",
-      "point2": "Planifiez le contenu à l'avance",
-      "point3": "Gérez toutes les marques en un seul endroit",
-      "point4": "L'IA génère des idées instantanément",
-      "point5": "Collaboration d'équipe intégrée"
+      "title": "Contenu en Pilote Auto",
+      "point1": "30 jours de publications en une session",
+      "point2": "L'IA correspond parfaitement à votre voix",
+      "point3": "Toutes les plateformes, un tableau de bord",
+      "point4": "Planifiez des mois à l'avance, sans stress",
+      "point5": "Qualité pro, aucune équipe nécessaire"
     },
     "flow": {
-      "step1": "Créer Marque",
-      "step2": "Générer",
-      "step3": "Publier"
+      "step1": "Décrivez",
+      "step2": "Générez",
+      "step3": "Approuvez"
     }
   },
   "agents": {
-    "title": "Tout Ce Dont Vous Avez Besoin",
-    "titleHighlight": "En Une Seule Plateforme",
-    "subtitle": "Créez des marques, générez du contenu, planifiez des publications et collaborez avec votre équipe - tout automatisé avec l'IA.",
+    "title": "L'IA Fait le Travail.",
+    "titleHighlight": "Vous Approuvez.",
+    "subtitle": "Tous les outils pour créer un mois de contenu en minutes. Aucune courbe d'apprentissage. Aucune expertise requise.",
     "sales": {
       "category": "Contenu",
       "title": "Génération de Contenu IA",
@@ -114,29 +118,29 @@
     }
   },
   "howItWorks": {
-    "title": "Comment Ça",
-    "titleHighlight": "Fonctionne",
+    "title": "De Zéro à 30 Jours",
+    "titleHighlight": "En 4 Étapes",
     "step1": {
-      "title": "Créer Marque",
-      "description": "Configurez votre marque avec voix, style et sujets"
+      "title": "Décrivez Votre Marque",
+      "description": "Dites-nous votre voix, style et sujets. 2 minutes."
     },
     "step2": {
-      "title": "Générer Contenu",
-      "description": "L'IA crée des publications adaptées à votre marque"
+      "title": "Cliquez Générer",
+      "description": "L'IA crée un mois de publications. Regardez."
     },
     "step3": {
-      "title": "Planifier Publications",
-      "description": "Planifiez votre calendrier de contenu à l'avance"
+      "title": "Approuvez et Planifiez",
+      "description": "Vérifiez, ajustez si besoin, choisissez vos dates."
     },
     "step4": {
-      "title": "Automatiser",
-      "description": "Laissez la plateforme gérer la publication automatiquement"
+      "title": "C'est Terminé",
+      "description": "Le contenu sort en pilote auto. Vivez votre vie."
     }
   },
   "pricing": {
-    "title": "Tarifs",
-    "titleHighlight": "Simples",
-    "subtitle": "Commencez gratuitement, évoluez selon vos besoins.",
+    "title": "Moins de",
+    "titleHighlight": "0,01€ Par Publication",
+    "subtitle": "Un mois de contenu coûte moins qu'un café. Sans rédacteurs. Sans designers. Sans stress.",
     "monthly": "mois",
     "monthlyLabel": "Mensuel",
     "yearlyLabel": "Annuel",
@@ -144,41 +148,41 @@
     "year": "an",
     "compare": "Comparer les Plans",
     "starter": {
-      "name": "Gratuit",
+      "name": "Gratuit Pour Toujours",
       "price": "0€",
-      "description": "Parfait pour commencer",
-      "cta": "Commencer Gratuit",
-      "feature1": "2 marques",
-      "feature2": "Jusqu'à 20 publications",
-      "feature3": "Planification basique",
-      "feature4": "Support communautaire"
+      "description": "Résultats en 5 minutes",
+      "cta": "Commencer à Créer",
+      "feature1": "2 profils de marque",
+      "feature2": "20 publications/mois",
+      "feature3": "Planification intelligente",
+      "feature4": "Toutes les plateformes"
     },
     "pro": {
       "name": "Pro",
       "price": "9€",
       "priceYearly": "79€",
       "saveAmount": "Économisez 29€",
-      "description": "Pour les entreprises en croissance",
-      "cta": "Obtenir Pro",
-      "feature1": "5 marques",
-      "feature2": "Jusqu'à 1 000 publications",
-      "feature3": "Planification avancée",
-      "feature4": "Support prioritaire",
-      "feature5": "Collaboration d'équipe"
+      "description": "Machine à contenu complète",
+      "cta": "Débloquer Pro",
+      "feature1": "5 profils de marque",
+      "feature2": "1 000 publications/mois",
+      "feature3": "Génération d'images IA",
+      "feature4": "Voix off IA",
+      "feature5": "Réutilisation YouTube"
     },
     "enterprise": {
-      "name": "Business",
+      "name": "Agence",
       "price": "39€",
       "priceYearly": "299€",
       "saveAmount": "Économisez 169€",
-      "description": "Pour les agences et grandes équipes",
-      "cta": "Obtenir Business",
+      "description": "Pour équipes et agences",
+      "cta": "Faire Évoluer Mon Agence",
       "feature1": "Marques illimitées",
-      "feature2": "Jusqu'à 90 000 publications",
-      "feature3": "Automatisation complète",
-      "feature4": "Support dédié",
-      "feature5": "Analyses avancées",
-      "feature6": "Accès API"
+      "feature2": "90 000 publications/mois",
+      "feature3": "Tout dans Pro",
+      "feature4": "Collaboration équipe",
+      "feature5": "Accès API",
+      "feature6": "Support dédié"
     }
   },
   "faq": {
