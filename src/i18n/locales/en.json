@@ -139,7 +139,7 @@
   },
   "pricing": {
     "title": "Less Than",
-    "titleHighlight": "$0.01 Per Post",
+    "titleHighlight": "$0.02 Per Post",
     "subtitle": "A month of content costs less than a coffee. No writers. No designers. No stress.",
     "monthly": "month",
     "monthlyLabel": "Monthly",
@@ -158,9 +158,9 @@
     },
     "pro": {
       "name": "Pro",
-      "price": "$9",
-      "priceYearly": "$79",
-      "saveAmount": "Save $29",
+      "price": "$19",
+      "priceYearly": "$149",
+      "saveAmount": "Save $79",
       "description": "Full content machine",
       "cta": "Unlock Pro",
       "feature1": "5 brand profiles",
@@ -171,9 +171,9 @@
     },
     "enterprise": {
       "name": "Agency",
-      "price": "$39",
-      "priceYearly": "$299",
-      "saveAmount": "Save $169",
+      "price": "$49",
+      "priceYearly": "$399",
+      "saveAmount": "Save $189",
       "description": "For teams & agencies",
       "cta": "Scale My Agency",
       "feature1": "Unlimited brands",
@@ -557,8 +557,8 @@
       "video": "YouTube to Posts",
       "support": "Priority Support"
     },
-    "price": "$9",
-    "pricePerPost": "Less than $0.01 per post",
+    "price": "$19",
+    "pricePerPost": "Less than $0.02 per post",
     "viewPlans": "View Plans",
     "upgradeToPro": "Upgrade to Pro"
   }

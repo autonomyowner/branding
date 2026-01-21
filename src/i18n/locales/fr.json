@@ -139,7 +139,7 @@
   },
   "pricing": {
     "title": "Moins de",
-    "titleHighlight": "0,01€ Par Publication",
+    "titleHighlight": "0,02€ Par Publication",
     "subtitle": "Un mois de contenu coûte moins qu'un café. Sans rédacteurs. Sans designers. Sans stress.",
     "monthly": "mois",
     "monthlyLabel": "Mensuel",
@@ -159,9 +159,9 @@
     },
     "pro": {
       "name": "Pro",
-      "price": "9€",
-      "priceYearly": "79€",
-      "saveAmount": "Économisez 29€",
+      "price": "19€",
+      "priceYearly": "149€",
+      "saveAmount": "Économisez 79€",
       "description": "Machine à contenu complète",
       "cta": "Débloquer Pro",
       "feature1": "5 profils de marque",
@@ -172,9 +172,9 @@
     },
     "enterprise": {
       "name": "Agence",
-      "price": "39€",
-      "priceYearly": "299€",
-      "saveAmount": "Économisez 169€",
+      "price": "49€",
+      "priceYearly": "399€",
+      "saveAmount": "Économisez 189€",
       "description": "Pour équipes et agences",
       "cta": "Faire Évoluer Mon Agence",
       "feature1": "Marques illimitées",
@@ -515,8 +515,8 @@
       "video": "YouTube vers Publications",
       "support": "Support Prioritaire"
     },
-    "price": "9€",
-    "pricePerPost": "Moins de 0,01€ par publication",
+    "price": "19€",
+    "pricePerPost": "Moins de 0,02€ par publication",
     "viewPlans": "Voir les Plans",
     "upgradeToPro": "Passer à Pro"
   },

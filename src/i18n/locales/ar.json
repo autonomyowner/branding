@@ -139,7 +139,7 @@
   },
   "pricing": {
     "title": "أقل من",
-    "titleHighlight": "$0.01 لكل منشور",
+    "titleHighlight": "$0.02 لكل منشور",
     "subtitle": "شهر من المحتوى يكلف أقل من فنجان قهوة. بدون كتّاب. بدون مصممين. بدون توتر.",
     "monthly": "شهرياً",
     "monthlyLabel": "شهري",
@@ -159,9 +159,9 @@
     },
     "pro": {
       "name": "احترافي",
-      "price": "$9",
-      "priceYearly": "$79",
-      "saveAmount": "وفر $29",
+      "price": "$19",
+      "priceYearly": "$149",
+      "saveAmount": "وفر $79",
       "description": "آلة محتوى كاملة",
       "cta": "افتح الاحترافي",
       "feature1": "5 ملفات علامة تجارية",
@@ -172,9 +172,9 @@
     },
     "enterprise": {
       "name": "الوكالات",
-      "price": "$39",
-      "priceYearly": "$299",
-      "saveAmount": "وفر $169",
+      "price": "$49",
+      "priceYearly": "$399",
+      "saveAmount": "وفر $189",
       "description": "للفرق والوكالات",
       "cta": "وسّع وكالتي",
       "feature1": "علامات تجارية غير محدودة",
@@ -558,8 +558,8 @@
       "video": "يوتيوب إلى منشورات",
       "support": "دعم ذو أولوية"
     },
-    "price": "$9",
-    "pricePerPost": "أقل من $0.01 لكل منشور",
+    "price": "$19",
+    "pricePerPost": "أقل من $0.02 لكل منشور",
     "viewPlans": "عرض الخطط",
     "upgradeToPro": "الترقية إلى الاحترافي"
   }
